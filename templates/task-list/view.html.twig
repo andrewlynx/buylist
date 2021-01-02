@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create new task list{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-6">Created: {{ task_list.createdAt|date }}</div>
+        <div class="col-sm-6">Last Update: {{ task_list.updatedAt|date }}</div>
+    </div>
+    {{ form(form) }}
+    <hr>
+    <h3>Add items</h3>
+    {{ form(create_item_form) }}
+    <div id="list-items">
+        {% for taskItem in task_list.taskItems %}
+            {% include 'task-item/task-item.html.twig' with {'task_item': taskItem, 'complete_item_forms': complete_item_forms} %}
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -41,16 +43,46 @@ class User implements UserInterface
      */
     private $isVerified = false;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=TaskList::class, mappedBy="shared", orphanRemoval=true)
+     */
+    private $shared;
+
+    /**
+     * @ORM\OneToMany(targetEntity=TaskList::class, mappedBy="creator")
+     */
+    private $taskLists;
+
+    /**
+     *
+     */
+    public function __construct()
+    {
+        $this->shared = new ArrayCollection();
+        $this->taskLists = new ArrayCollection();
+    }
+
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
+    /**
+     * @param string $email
+     *
+     * @return User
+     */
     public function setEmail(string $email): self
     {
         $this->email = $email;
@@ -80,6 +112,11 @@ class User implements UserInterface
         return array_unique($roles);
     }
 
+    /**
+     * @param array $roles
+     *
+     * @return User
+     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -95,6 +132,11 @@ class User implements UserInterface
         return (string) $this->password;
     }
 
+    /**
+     * @param string $password
+     *
+     * @return User
+     */
     public function setPassword(string $password): self
     {
         $this->password = $password;
@@ -119,14 +161,99 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
+    /**
+     * @return bool
+     */
     public function isVerified(): bool
     {
         return $this->isVerified;
     }
 
+    /**
+     * @param bool $isVerified
+     *
+     * @return User
+     */
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|TaskList[]
+     */
+    public function getShared(): Collection
+    {
+        return $this->shared;
+    }
+
+    /**
+     * @param TaskList $shared
+     *
+     * @return User
+     */
+    public function addShared(TaskList $shared): self
+    {
+        if (!$this->shared->contains($shared)) {
+            $this->shared[] = $shared;
+            $shared->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param TaskList $shared
+     *
+     * @return User
+     */
+    public function removeShared(TaskList $shared): self
+    {
+        if ($this->shared->removeElement($shared)) {
+            // set the owning side to null (unless already changed)
+            if ($shared->getCreator() === $this) {
+                $shared->setCreator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|TaskList[]
+     */
+    public function getTaskLists(): Collection
+    {
+        return $this->taskLists;
+    }
+
+    /**
+     * @param TaskList $taskList
+     *
+     * @return User
+     */
+    public function addTaskList(TaskList $taskList): self
+    {
+        if (!$this->taskLists->contains($taskList)) {
+            $this->taskLists[] = $taskList;
+            $taskList->addShared($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param TaskList $taskList
+     *
+     * @return User
+     */
+    public function removeTaskList(TaskList $taskList): self
+    {
+        if ($this->taskLists->removeElement($taskList)) {
+            $taskList->removeShared($this);
+        }
 
         return $this;
     }

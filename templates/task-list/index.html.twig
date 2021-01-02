@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome!{% endblock %}
+
+{% block body %}
+    <a href="{{ path('task_list_create') }}" class="btn btn-default">Create new Task List</a>
+    <hr>
+    {% if task_lists %}
+        <div class="row">
+            <div class="col-md-12">Name</div>
+        </div>
+        {% for task_list in task_lists %}
+            <div class="row">
+                <div class="col-md-6"><a href="{{ path('task_list_view', {'id': task_list.id}) }}"><h4>{{ task_list.name }}</h4></a></div>
+                <div class="col-md-3"><a href="{{ path('task_list_view', {'id': task_list.id}) }}" class="btn-primary btn-sm btn">View</a></div>
+                <div class="col-md-3">{{ form(forms[task_list.id]) }}</div>
+            </div>
+        {% endfor %}
+    {% else %}
+        {% include 'common/no-result.html.twig' only %}
+    {% endif %}
+{% endblock %}
