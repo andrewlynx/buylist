@@ -5,6 +5,7 @@
 {% block body %}
     <a href="{{ path('task_list_create') }}" class="btn btn-default">Create new Task List</a>
     <hr>
+    <h4>Your lists</h4>
     {% if task_lists %}
         <div class="row">
             <div class="col-md-12">Name</div>
@@ -13,7 +14,23 @@
             <div class="row">
                 <div class="col-md-6"><a href="{{ path('task_list_view', {'id': task_list.id}) }}"><h4>{{ task_list.name }}</h4></a></div>
                 <div class="col-md-3"><a href="{{ path('task_list_view', {'id': task_list.id}) }}" class="btn-primary btn-sm btn">View</a></div>
-                <div class="col-md-3">{{ form(forms[task_list.id]) }}</div>
+                <div class="col-md-3">{% include 'common/_delete_form.html.twig' with {'item': task_list, 'path': 'task_list_delete'} %}</div>
+            </div>
+        {% endfor %}
+    {% else %}
+        {% include 'common/no-result.html.twig' only %}
+    {% endif %}
+    <hr>
+    <h4>Shared with you lists</h4>
+    {% if shared_lists %}
+        <div class="row">
+            <div class="col-md-12">Name</div>
+        </div>
+        {% for task_list in shared_lists %}
+            <div class="row">
+                <div class="col-md-6"><a href="{{ path('task_list_view', {'id': task_list.id}) }}"><h4>{{ task_list.name }}</h4></a></div>
+                <div class="col-md-3"><a href="{{ path('task_list_view', {'id': task_list.id}) }}" class="btn-primary btn-sm btn">View</a></div>
+                <div class="col-md-3">Remove</div>
             </div>
         {% endfor %}
     {% else %}

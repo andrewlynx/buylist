@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\TaskList;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -32,5 +33,19 @@ class TaskListRepository extends ServiceEntityRepository
             ->setParameter('user', $user);
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return array
+     */
+    public function getSharedTasks(User $user): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->innerJoin('t.shared', 'u', 'WITH', 'u.email = :email')
+            ->setParameter('email', $user->getEmail());
+
+        return $qb->getQuery()->getArrayResult();
     }
 }

@@ -25,10 +25,8 @@ use Symfony\Component\Validator\Exception\ValidatorException;
  */
 class TaskItemController extends AbstractController
 {
-
-
     /**
-     * @Route("/create", name="create")
+     * @Route("/create", name="create", methods={"POST"})
      *
      * @param Request $request
      *
@@ -88,7 +86,7 @@ class TaskItemController extends AbstractController
     }
 
     /**
-     * @Route("/complete", name="complete")
+     * @Route("/complete", name="complete", methods={"POST"})
      *
      * @param Request             $request
      * @param SerializerInterface $serializer
@@ -113,7 +111,7 @@ class TaskItemController extends AbstractController
             $taskItemRepo = $this->getDoctrine()->getRepository(TaskItem::class);
             /** @var TaskItem $taskItem */
             $taskItem = $taskItemRepo->find($taskItemCompleteData->getId());
-            $taskItem->setCompleted($taskItemCompleteData->isCompleted());
+            $taskItem->setCompleted(!$taskItemCompleteData->isCompleted());
 
             $this->getDoctrine()->getManager()->flush();
 

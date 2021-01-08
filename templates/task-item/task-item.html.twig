@@ -1,6 +1,8 @@
-<div class="row {{  task_item.completed ? 'completed' }}" id="item-id-{{ task_item.id }}">
-    <div class="col-sm-2">{{ form(complete_item_forms[task_item.id]) }}</div>
-    <div class="col-sm-6">{{ task_item.name }}</div>
-    <div class="col-sm-2">{{ task_item.qty }}</div>
+<div class="row task-item {{  task_item.completed ? 'completed' }}" id="item-id-{{ task_item.id }}">
+    <div class="col-sm-10 task-item-description">
+        <div class="col-sm-3 task-item-qty">{{ task_item.qty }}</div>
+        {{ task_item.name }}
+        {{ form(complete_item_forms[task_item.id]) }}
+    </div>
     <div class="col-sm-2">delete</div>
 </div>

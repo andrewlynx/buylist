@@ -4,16 +4,28 @@
 
 {% block body %}
     <div class="row">
-        <div class="col-sm-6">Created: {{ task_list.createdAt|date }}</div>
-        <div class="col-sm-6">Last Update: {{ task_list.updatedAt|date }}</div>
-    </div>
-    {{ form(form) }}
-    <hr>
-    <h3>Add items</h3>
-    {{ form(create_item_form) }}
-    <div id="list-items">
-        {% for taskItem in task_list.taskItems %}
-            {% include 'task-item/task-item.html.twig' with {'task_item': taskItem, 'complete_item_forms': complete_item_forms} %}
-        {% endfor %}
+        <div class="col-sm-8">
+            {{ form(form) }}
+            <hr>
+            <h3>Add items</h3>
+            {{ form(create_item_form) }}
+            <div id="list-items">
+                {% for taskItem in task_list.taskItems %}
+                    {% include 'task-item/task-item.html.twig' with {'task_item': taskItem, 'complete_item_forms': complete_item_forms} %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div>Created: {{ task_list.createdAt|date }}</div>
+            <div>Last Update: {{ task_list.updatedAt|date }}</div>
+            <hr>
+            <h3>Share list</h3>
+            {{ form(task_list_share) }}
+            <div id="shared-users">
+                {% for user in task_list.shared %}
+                    {% include 'task-list/shared-user.html.twig' with {'user': user} %}
+                {% endfor %}
+            </div>
+        </div>
     </div>
 {% endblock %}

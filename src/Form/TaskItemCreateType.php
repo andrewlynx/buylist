@@ -18,7 +18,9 @@ class TaskItemCreateType extends AbstractType
 
         $builder
             ->add('name')
-            ->add('qty')
+            ->add('qty', null, [
+                'required' => false,
+            ])
             ->add('list_id', HiddenType::class, [
                 'data' => $taskList->getId()
             ])
