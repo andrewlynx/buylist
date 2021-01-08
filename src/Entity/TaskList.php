@@ -80,6 +80,11 @@ class TaskList
     private $taskItems;
 
     /**
+     * @ORM\OneToMany(targetEntity=EmailInvitation::class, mappedBy="TaskList")
+     */
+    private $emailInvitations;
+
+    /**
      *
      */
     public function __construct()
