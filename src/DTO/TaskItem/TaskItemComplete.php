@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\JsonRequest;
+namespace App\DTO\TaskItem;
 
 class TaskItemComplete
 {
@@ -12,17 +12,17 @@ class TaskItemComplete
     /**
      * @var string
      */
-    private $token;
+    public $token;
 
     /**
      * @var string
      */
-    private $completed;
+    public $completed;
 
     /**
      * @var int
      */
-    private $id;
+    public $id;
 
     /**
      * @param array $dataArray
@@ -32,29 +32,5 @@ class TaskItemComplete
         $this->token = $dataArray[self::FIELD_TOKEN];
         $this->completed = (bool) ($dataArray[self::FIELD_COMPLETED] ?? 0);
         $this->id = $dataArray[self::FIELD_ID];
-    }
-
-    /**
-     * @return string
-     */
-    public function getToken(): string
-    {
-        return $this->token;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isCompleted(): bool
-    {
-        return $this->completed;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
     }
 }

@@ -2,13 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\JsonRequest\TaskItemComplete;
-use App\Entity\JsonRequest\TaskItemCreate;
+use App\DTO\TaskItem\TaskItemComplete;
+use App\DTO\TaskItem\TaskItemCreate;
 use App\Entity\JsonResponse\JsonError;
 use App\Entity\JsonResponse\JsonSuccess;
 use App\Entity\TaskItem;
 use App\Entity\TaskList;
 use App\Form\TaskItemCompleteType;
+use App\UseCase\TaskItem\TaskItemHandler;
 use DateTime;
 use Exception;
 use RuntimeException;
@@ -29,12 +30,11 @@ class TaskItemController extends AbstractController
      * @Route("/create", name="create", methods={"POST"})
      *
      * @param Request $request
+     * @param TaskItemHandler $taskItemHandler
      *
      * @return Response
-     *
-     * @throws Exception
      */
-    public function create(Request $request): Response
+    public function create(Request $request, TaskItemHandler $taskItemHandler): Response
     {
         try {
             $dataArray = json_decode($request->getContent(), true);
@@ -43,25 +43,11 @@ class TaskItemController extends AbstractController
             }
 
             $taskItemCreateData = new TaskItemCreate($dataArray);
-            if (!$this->isCsrfTokenValid(TaskItemCreate::FORM_NAME, $taskItemCreateData->getToken())) {
+            if (!$this->isCsrfTokenValid(TaskItemCreate::FORM_NAME, $taskItemCreateData->token)) {
                 throw new ValidatorException('Invalid CSRF token');
             }
 
-            $taskListRepo = $this->getDoctrine()->getRepository(TaskList::class);
-            /** @var TaskList $taskList */
-            $taskList = $taskListRepo->find($taskItemCreateData->getListId());
-
-            if (!$taskList || $taskList->getCreator() !== $this->getUser()) {
-                throw new Exception('Error assigning new Item to List');
-            }
-
-            $taskItem = (new TaskItem())
-                ->setName($taskItemCreateData->getName())
-                ->setQty($taskItemCreateData->getQty())
-                ->setTaskList($taskList->setUpdatedAt(new DateTime()));
-
-            $this->getDoctrine()->getManager()->persist($taskItem);
-            $this->getDoctrine()->getManager()->flush();
+            $taskItem = $taskItemHandler->create($taskItemCreateData, $this->getUser());
 
             $completeForm = $this->createForm(TaskItemCompleteType::class, $taskItem, [
                 'action' => $this->generateUrl('task_item_complete'),
@@ -90,12 +76,13 @@ class TaskItemController extends AbstractController
      *
      * @param Request             $request
      * @param SerializerInterface $serializer
+     * @param TaskItemHandler     $taskItemHandler
      *
      * @return Response
      *
      * @throws Exception
      */
-    public function complete(Request $request, SerializerInterface $serializer): Response
+    public function complete(Request $request, SerializerInterface $serializer, TaskItemHandler $taskItemHandler): Response
     {
         try {
             $dataArray = json_decode($request->getContent(), true);
@@ -104,16 +91,10 @@ class TaskItemController extends AbstractController
             }
 
             $taskItemCompleteData = new TaskItemComplete($dataArray);
-            if (!$this->isCsrfTokenValid(TaskItemComplete::FORM_NAME, $taskItemCompleteData->getToken())) {
+            if (!$this->isCsrfTokenValid(TaskItemComplete::FORM_NAME, $taskItemCompleteData->token)) {
                 throw new ValidatorException('Invalid CSRF token');
             }
-
-            $taskItemRepo = $this->getDoctrine()->getRepository(TaskItem::class);
-            /** @var TaskItem $taskItem */
-            $taskItem = $taskItemRepo->find($taskItemCompleteData->getId());
-            $taskItem->setCompleted(!$taskItemCompleteData->isCompleted());
-
-            $this->getDoctrine()->getManager()->flush();
+            $taskItem = $taskItemHandler->complete($taskItemCompleteData);
 
             return new JsonSuccess(
                 $serializer->serialize($taskItem, 'json', [AbstractNormalizer::ATTRIBUTES => ['id', 'completed']])

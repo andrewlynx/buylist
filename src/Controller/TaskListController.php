@@ -2,8 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\JsonRequest\TaskItemCreate;
-use App\Entity\JsonRequest\TaskListShare;
+use App\DTO\TaskList\TaskListShare;
 use App\Entity\JsonResponse\JsonError;
 use App\Entity\JsonResponse\JsonSuccess;
 use App\Entity\TaskItem;
@@ -14,7 +13,7 @@ use App\Form\TaskItemCompleteType;
 use App\Form\TaskItemCreateType;
 use App\Form\TaskListType;
 use App\Repository\TaskListRepository;
-use App\Repository\UserRepository;
+use App\UseCase\TaskList\TaskListHandler;
 use DateTime;
 use Exception;
 use RuntimeException;
@@ -35,12 +34,11 @@ class TaskListController extends AbstractController
     /**
      * @Route("/", name="index")
      *
-     * @param Request            $request
      * @param TaskListRepository $taskListRepository
      *
      * @return Response
      */
-    public function index(Request $request, TaskListRepository $taskListRepository): Response
+    public function index(TaskListRepository $taskListRepository): Response
     {
         $taskLists = $taskListRepository->getUsersTasks($this->getUser());
         $sharedLists = $taskListRepository->getSharedTasks($this->getUser());
@@ -57,22 +55,15 @@ class TaskListController extends AbstractController
     /**
      * @Route("/create", name="create")
      *
-     * @param Request $request
+     * @param TaskListHandler $taskListHandler
      *
      * @return Response
      *
      * @throws Exception
      */
-    public function create(Request $request): Response
+    public function create(TaskListHandler $taskListHandler): Response
     {
-        $taskList = (new TaskList())
-            ->setName('New List')
-            ->setCreator($this->getUser())
-            ->setCreatedAt(new DateTime())
-            ->setUpdatedAt(new DateTime());
-
-        $this->getDoctrine()->getManager()->persist($taskList);
-        $this->getDoctrine()->getManager()->flush();
+        $taskList = $taskListHandler->create($this->getUser());
 
         return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
     }
@@ -89,9 +80,7 @@ class TaskListController extends AbstractController
      */
     public function view(TaskList $taskList, Request $request): Response
     {
-        if ($taskList->getCreator() !== $this->getUser()) {
-            throw new AccessDeniedException();
-        }
+        $this->checkSharedAccess($taskList, $this->getUser());
 
         $form = $this->createForm(TaskListType::class, $taskList)
             ->handleRequest($request);
@@ -136,9 +125,7 @@ class TaskListController extends AbstractController
      */
     public function delete(TaskList $taskList, Request $request): Response
     {
-        if ($taskList->getCreator() !== $this->getUser()) {
-            throw new AccessDeniedException();
-        }
+        $this->checkCreatorAccess($taskList, $this->getUser());
 
         if ($this->isCsrfTokenValid('delete'.$taskList->getId(), $request->request->get('_token'))) {
             $this->getDoctrine()->getManager()->remove($taskList);
@@ -155,12 +142,13 @@ class TaskListController extends AbstractController
     /**
      * @Route("/share/{id}", name="share", methods={"POST"})
      *
-     * @param TaskList $taskList
-     * @param Request  $request
+     * @param TaskList        $taskList
+     * @param Request         $request
+     * @param TaskListHandler $taskListHandler
      *
      * @return Response
      */
-    public function taskListShare(TaskList $taskList, Request $request): Response
+    public function taskListShare(TaskList $taskList, Request $request, TaskListHandler $taskListHandler): Response
     {
         try {
             $dataArray = json_decode($request->getContent(), true);
@@ -169,27 +157,20 @@ class TaskListController extends AbstractController
             }
 
             $taskListShareData = new TaskListShare($dataArray);
-            if (!$this->isCsrfTokenValid(TaskListShare::FORM_NAME, $taskListShareData->getToken())) {
+            if (!$this->isCsrfTokenValid(TaskListShare::FORM_NAME, $taskListShareData->token)) {
                 throw new ValidatorException('Invalid CSRF token');
             }
 
-            $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['email' => $taskListShareData->getEmail()]);
-            if ($user) {
-                $taskList->addShared($user);
-                $this->getDoctrine()->getManager()->flush();
-                // @todo send notification email
-                return new JsonSuccess(
-                    $this->renderView(
-                        'task-list/shared-user.html.twig',
-                        [
-                            'user' => $user,
-                        ]
-                    )
-                );
-            }
+            $user = $taskListHandler->share($taskList, $taskListShareData);
 
-            // @todo send invitation email
-            return new JsonError('User not found. The registration invitation was send on this email');
+            return new JsonSuccess(
+                $this->renderView(
+                    'task-list/shared-user.html.twig',
+                    [
+                        'user' => $user,
+                    ]
+                )
+            );
 
         } catch (Exception $e) {
             return new JsonError(
@@ -215,7 +196,7 @@ class TaskListController extends AbstractController
      *
      * @return array
      */
-    public function getCompleteItemFormsViews(iterable $taskItems): array
+    private function getCompleteItemFormsViews(iterable $taskItems): array
     {
         $views = [];
         foreach ($taskItems as $taskItem) {
@@ -223,5 +204,31 @@ class TaskListController extends AbstractController
         }
 
         return $views;
+    }
+
+    /**
+     * @param TaskList $taskList
+     * @param User     $user
+     *
+     * @throws AccessDeniedException
+     */
+    private function checkCreatorAccess(TaskList $taskList, User $user): void
+    {
+        if ($taskList->getCreator() !== $user) {
+            throw new AccessDeniedException();
+        }
+    }
+
+    /**
+     * @param TaskList $taskList
+     * @param User     $user
+     *
+     * @throws AccessDeniedException
+     */
+    private function checkSharedAccess(TaskList $taskList, User $user): void
+    {
+        if (!($taskList->getCreator() === $user || $taskList->getShared()->contains($user))) {
+            throw new AccessDeniedException();
+        }
     }
 }

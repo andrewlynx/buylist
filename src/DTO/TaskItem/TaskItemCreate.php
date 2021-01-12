@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\JsonRequest;
+namespace App\DTO\TaskItem;
 
 class TaskItemCreate
 {
@@ -13,22 +13,22 @@ class TaskItemCreate
     /**
      * @var string
      */
-    private $token;
+    public $token;
 
     /**
      * @var string
      */
-    private $name;
+    public $name;
 
     /**
      * @var string
      */
-    private $qty;
+    public $qty;
 
     /**
      * @var int
      */
-    private $listId;
+    public $listId;
 
     /**
      * @param array $dataArray
@@ -39,37 +39,5 @@ class TaskItemCreate
         $this->name = $dataArray[self::FIELD_NAME];
         $this->qty = $dataArray[self::FIELD_QTY];
         $this->listId = $dataArray[self::FIELD_LIST_ID];
-    }
-
-    /**
-     * @return string
-     */
-    public function getToken(): string
-    {
-        return $this->token;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getQty(): ?string
-    {
-        return $this->qty;
-    }
-
-    /**
-     * @return int
-     */
-    public function getListId(): int
-    {
-        return $this->listId;
     }
 }

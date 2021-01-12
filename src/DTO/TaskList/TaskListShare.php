@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\JsonRequest;
+namespace App\DTO\TaskList;
 
 class TaskListShare
 {
@@ -11,12 +11,12 @@ class TaskListShare
     /**
      * @var string
      */
-    private $token;
+    public $token;
 
     /**
      * @var string
      */
-    private $email;
+    public $email;
 
     /**
      * @param array $dataArray
@@ -25,21 +25,5 @@ class TaskListShare
     {
         $this->token = $dataArray[self::FIELD_TOKEN];
         $this->email = $dataArray[self::FIELD_EMAIL];
-    }
-
-    /**
-     * @return string
-     */
-    public function getToken(): string
-    {
-        return $this->token;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmail(): string
-    {
-        return $this->email;
     }
 }

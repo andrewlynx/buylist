@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use App\Repository\EmailInvitationRepository;
 use DateTimeInterface;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,7 +26,7 @@ class EmailInvitation
     /**
      * @ORM\ManyToOne(targetEntity=TaskList::class, inversedBy="emailInvitations", cascade={"remove", "persist"})
      */
-    private $TaskList;
+    private $taskList;
 
     /**
      * @ORM\Column(type="datetime")
@@ -54,7 +52,7 @@ class EmailInvitation
     /**
      * @param string $email
      *
-     * @return EmailInvitation
+     * @return $this
      */
     public function setEmail(string $email): self
     {
@@ -68,7 +66,19 @@ class EmailInvitation
      */
     public function getTaskList(): TaskList
     {
-        return $this->TaskList;
+        return $this->taskList;
+    }
+
+    /**
+     * @param TaskList $taskList
+     *
+     * @return $this
+     */
+    public function setTaskList(TaskList $taskList): self
+    {
+        $this->taskList = $taskList;
+
+        return $this;
     }
 
     /**
@@ -82,7 +92,7 @@ class EmailInvitation
     /**
      * @param DateTimeInterface $createdDate
      *
-     * @return EmailInvitation
+     * @return $this
      */
     public function setCreatedDate(DateTimeInterface $createdDate): self
     {

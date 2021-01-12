@@ -19,32 +19,17 @@ class EmailInvitationRepository extends ServiceEntityRepository
         parent::__construct($registry, EmailInvitation::class);
     }
 
-    // /**
-    //  * @return EmailInvitation[] Returns an array of EmailInvitation objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param string $email
+     *
+     * @return array|null
+     */
+    public function getPendingInvitations(string $email): ?array
     {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('e.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('i')
+            ->andWhere('i.email = :email')
+            ->setParameter('email', $email);
 
-    /*
-    public function findOneBySomeField($value): ?EmailInvitation
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $qb->getQuery()->getResult();
     }
-    */
 }
