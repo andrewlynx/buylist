@@ -16,6 +16,9 @@
             </div>
         </div>
         <div class="col-sm-4">
+            {% if app.user != task_list.creator %}
+                <div>List created by <b>{{ task_list.creator.email }}</b></div>
+            {% endif %}
             <div>Created: {{ task_list.createdAt|date }}</div>
             <div>Last Update: {{ task_list.updatedAt|date }}</div>
             <hr>

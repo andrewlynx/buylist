@@ -7,12 +7,17 @@
     <hr>
     <h4>Your lists</h4>
     {% if task_lists %}
-        <div class="row">
-            <div class="col-md-12">Name</div>
-        </div>
         {% for task_list in task_lists %}
             <div class="row">
-                <div class="col-md-6"><a href="{{ path('task_list_view', {'id': task_list.id}) }}"><h4>{{ task_list.name }}</h4></a></div>
+                <div class="col-md-6">
+                    <a href="{{ path('task_list_view', {'id': task_list.id}) }}">
+                        <h4>{{ task_list.name }}
+                        {% if task_list.shared|length > 0 %}
+                            (shared)
+                        {% endif %}
+                        </h4>
+                    </a>
+                </div>
                 <div class="col-md-3"><a href="{{ path('task_list_view', {'id': task_list.id}) }}" class="btn-primary btn-sm btn">View</a></div>
                 <div class="col-md-3">{% include 'common/_delete_form.html.twig' with {'item': task_list, 'path': 'task_list_delete'} %}</div>
             </div>
@@ -23,10 +28,12 @@
     <hr>
     <h4>Shared with you lists</h4>
     {% if shared_lists %}
-        <div class="row">
-            <div class="col-md-12">Name</div>
-        </div>
+        {% set author = '' %}
         {% for task_list in shared_lists %}
+            {% if task_list.creator.email != author %}
+                {% set author = task_list.creator.email %}
+                <h5>By {{ task_list.creator.email }}</h5>
+            {% endif %}
             <div class="row">
                 <div class="col-md-6"><a href="{{ path('task_list_view', {'id': task_list.id}) }}"><h4>{{ task_list.name }}</h4></a></div>
                 <div class="col-md-3"><a href="{{ path('task_list_view', {'id': task_list.id}) }}" class="btn-primary btn-sm btn">View</a></div>

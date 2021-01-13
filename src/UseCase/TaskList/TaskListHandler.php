@@ -56,11 +56,16 @@ class TaskListHandler
      */
     public function share(TaskList $taskList, TaskListShare $dto): User
     {
+        /** @var User $user */
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => $dto->email]);
-        if ($user) {
+        if ($user && $user !== $taskList->getCreator()) {
             $taskList->addShared($user);
             $this->em->flush();
             // @todo send notification email
+
+            return $user;
+        } elseif ($user === $taskList->getCreator()) {
+            throw new Exception('This user is this List author');
         } else {
             $invitation = (new EmailInvitation())
                 ->setEmail($dto->email)

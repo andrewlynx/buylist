@@ -44,8 +44,11 @@ class TaskListRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('t')
             ->innerJoin('t.shared', 'u', 'WITH', 'u.email = :email')
-            ->setParameter('email', $user->getEmail());
+            ->setParameter('email', $user->getEmail())
+            ->orderBy('t.creator' )
+            ->addOrderBy('t.createdAt')
+        ;
 
-        return $qb->getQuery()->getArrayResult();
+        return $qb->getQuery()->getResult();
     }
 }

@@ -57,6 +57,7 @@ class RegistrationHandler
         foreach ($pending as $invitation) {
             $taskList = $invitation->getTaskList()->addShared($user);
             $this->em->persist($taskList);
+            $this->em->remove($invitation);
         }
 
         $this->em->flush();
