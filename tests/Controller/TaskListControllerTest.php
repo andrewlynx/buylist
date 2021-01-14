@@ -4,9 +4,10 @@ namespace App\Tests\Controller;
 
 use App\Repository\TaskListRepository;
 use App\Repository\UserRepository;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Csrf\CsrfTokenManager;
 
 class TaskListControllerTest extends WebTestCase
 {
@@ -14,7 +15,7 @@ class TaskListControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('GET', '/task-list');
+        $client->request('GET', $client->getContainer()->get('router')->generate('task_list_index'));
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $this->assertSame('/login', $client->getResponse()->headers->get('Location'));
 
@@ -33,7 +34,7 @@ class TaskListControllerTest extends WebTestCase
         $this->assertCount(1, $listRepository->findAll());
 
         $client = $this->logInUser($client);
-        $client->request('GET', '/task-list/create');
+        $client->request('GET', $client->getContainer()->get('router')->generate('task_list_create'));
         $this->assertCount(2, $listRepository->findAll());
     }
 
@@ -43,17 +44,63 @@ class TaskListControllerTest extends WebTestCase
 
         $client = $this->logInUser($client);
 
-        $client->request('GET', '/task-list/1');
+        $client->request('GET', $client->getContainer()->get('router')->generate('task_list_view', ['id' => 1]));
         $this->assertResponseIsSuccessful();
     }
 
     public function testViewAccessDenied()
     {
         $client = static::createClient();
+        $client->catchExceptions(false);
 
         $client = $this->logInUser($client, 'user2@example.com');
-        $client->request('GET', '/task-list/1');
-        $this->assertResponseStatusCodeSame(403);
+        $this->expectExceptionMessage('Access Denied.');
+        $client->request('GET', $client->getContainer()->get('router')->generate('task_list_view', ['id' => 1]));
+    }
+
+    public function testDeleteInvalidCsrf()
+    {
+        $client = static::createClient();
+        $client->catchExceptions(false);
+
+        $client = $this->logInUser($client);
+        $this->expectExceptionMessage('Invalid CSRF token');
+        $client->request('GET', $client->getContainer()->get('router')->generate('task_list_delete', ['id' => 1]));
+    }
+
+    public function testDeleteAccessDenied()
+    {
+        $client = static::createClient();
+        $client->catchExceptions(false);
+
+        $client = $this->logInUser($client, 'user3@example.com');
+        $this->expectExceptionMessage('Access Denied.');
+        $client->request(
+            'DELETE',
+            $client->getContainer()->get('router')->generate('task_list_delete', ['id' => 1]),
+            [
+                '_token' => static::$container->get('security.csrf.token_manager')->getToken('delete1'),
+            ]
+        );
+    }
+
+    public function testDelete()
+    {
+        $client = static::createClient();
+        $client = $this->logInUser($client);
+
+        $client->request(
+            'DELETE',
+            $client->getContainer()->get('router')->generate('task_list_delete', ['id' => 1]),
+            [
+                '_token' => static::$container->get('security.csrf.token_manager')->getToken('delete1'),
+            ]
+        );
+        $this->assertResponseStatusCodeSame(302);
+
+        /** @var TaskListRepository $userRepository */
+        $listRepository = static::$container->get(TaskListRepository::class);
+        $this->assertCount(0, $listRepository->findAll());
     }
 
     private function logInUser(KernelBrowser $client, $email = 'user1@example.com'): KernelBrowser

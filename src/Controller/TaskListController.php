@@ -23,7 +23,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
@@ -119,9 +118,11 @@ class TaskListController extends AbstractController
      * @Route("/delete/{id}", name="delete")
      *
      * @param TaskList $taskList
-     * @param Request  $request
+     * @param Request $request
      *
      * @return Response
+     *
+     * @throws Exception
      */
     public function delete(TaskList $taskList, Request $request): Response
     {
@@ -136,7 +137,7 @@ class TaskListController extends AbstractController
             return $this->redirectToRoute('task_list_index');
         }
 
-        throw new InvalidCsrfTokenException();
+        throw new Exception('Invalid CSRF token');
     }
 
     /**

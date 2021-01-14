@@ -4,6 +4,7 @@
 /.env.*.local
 /var/
 /vendor/
+/code_coverage/
 ###< symfony/framework-bundle ###
 
 /.idea/

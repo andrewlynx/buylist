@@ -34,4 +34,9 @@
     <extensions>
         <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
     </extensions>
+
+    <logging>
+        <log type="coverage-html" target="./code_coverage"
+             lowUpperBound="50" highLowerBound="80" />
+    </logging>
 </phpunit>
