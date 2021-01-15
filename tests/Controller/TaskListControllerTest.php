@@ -4,10 +4,8 @@ namespace App\Tests\Controller;
 
 use App\Repository\TaskListRepository;
 use App\Repository\UserRepository;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\Security\Csrf\CsrfTokenManager;
 
 class TaskListControllerTest extends WebTestCase
 {

@@ -29,7 +29,7 @@ class RegistrationController extends AbstractController
     }
 
     /**
-     * @Route("/register", name="app_register")
+     * @Route("/{_locale}/register", name="app_register")
      *
      * @param Request                   $request
      * @param GuardAuthenticatorHandler $guardHandler

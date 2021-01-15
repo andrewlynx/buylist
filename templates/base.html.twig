@@ -15,11 +15,23 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a href="{{ path('index') }}">Hello</a>
+                <a href="{{ path('index') }}"><h4>Listiq</h4></a>
+            </div>
+            <div class="dropdown pull-right">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="localeSwitch" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ app.request.locale }}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="localeSwitch">
+                    {% for lang in locales|split('|') %}
+                        {% if lang != app.request.locale %}
+                            <a href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': lang})) }}">{{ lang }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
             {% if app.user %}
                 <div class="mb-3 pull-right">
-                    Hello, {{ app.user.username }} <a class="btn btn-default navbar-btn" href="{{ path('app_logout') }}">Logout</a>
+                    {{ "header.hello"|trans }}, {{ app.user.username }} <a class="btn btn-default navbar-btn" href="{{ path('app_logout') }}">{{ "header.logout"|trans }}</a>
                 </div>
             {% endif %}
         </div>
@@ -34,6 +46,12 @@
         {% endfor %}
         {% block body %}{% endblock %}
     </div>
+    <footer class="bd-footer">
+        <div class="container-fluid p-3 p-md-5 text-right">
+            <hr>
+            <p>© Andrew Melnik, 2021</p>
+        </div>
+    </footer>
         {% block javascripts %}
             <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"

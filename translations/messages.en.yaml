@@ -1,0 +1,8 @@
+header:
+  hello: Hello
+  logout: Logout
+security:
+  or: or
+  please: Please
+  register: register
+  sign_in: 'sign in'

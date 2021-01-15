@@ -1,0 +1,8 @@
+header:
+  hello: Вiтаю
+  logout: Вийти
+security:
+  or: або
+  please: Будь ласка
+  register: зареэструйтесь
+  sign_in: зайдiть

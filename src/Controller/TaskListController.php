@@ -26,7 +26,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
- * @Route("/task-list", name="task_list_")
+ * @Route("/{_locale}/task-list", name="task_list_")
  */
 class TaskListController extends AbstractController
 {

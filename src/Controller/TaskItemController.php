@@ -22,7 +22,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
- * @Route("/task-item", name="task_item_")
+ * @Route("/{_locale}/task-item", name="task_item_")
  */
 class TaskItemController extends AbstractController
 {
