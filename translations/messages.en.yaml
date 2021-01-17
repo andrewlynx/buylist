@@ -12,12 +12,17 @@ list:
   last_update: 'Last update'
   name: Name
   share: 'Share List'
+  your_lists: 'Your lists'
+menu:
+  about: About
 task_item:
   add: 'Add Items'
   name: Name
   qty: Additional
 security:
+  login: Login
   or: or
   please: Please
   register: register
+  registration: Registration
   sign_in: 'sign in'

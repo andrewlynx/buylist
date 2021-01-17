@@ -13,6 +13,6 @@ class DashboardControllerTest extends WebTestCase
         $client->request('GET', static::$container->get('router')->generate('index'));
 
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
-        $this->assertSame('/en/login', $client->getResponse()->headers->get('Location'));
+        $this->assertSame('/en/welcome', $client->getResponse()->headers->get('Location'));
     }
 }

@@ -22,6 +22,6 @@ class DashboardController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        return $this->redirectToRoute('task_list_index', ['_locale' => $request->getLocale() ?? 'en']);
+        return $this->redirectToRoute('welcome', ['_locale' => $request->getLocale() ?? 'en']);
     }
 }

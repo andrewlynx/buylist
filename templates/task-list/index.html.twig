@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Welcome!{% endblock %}
+{% block title %}{{ 'list.your_lists'|trans }}{% endblock %}
 
 {% block body %}
     <a href="{{ path('task_list_create') }}" class="btn btn-default">{{ 'list.create_new'|trans }}</a>

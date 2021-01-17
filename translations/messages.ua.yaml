@@ -12,12 +12,17 @@ list:
   last_update: 'Останнє оновлення'
   name: Назва
   share: 'Надати доступ'
+  your_lists: 'Вашi списки'
+menu:
+  about: Про сайт
 task_item:
   add: 'Додати елементи'
   name: Назва
   qty: Додатково
 security:
+  login: Вхiд
   or: або
   please: Будь ласка
-  register: зареэструйтесь
+  register: зареєструйтесь
+  registration: Реєстрацiя
   sign_in: зайдiть

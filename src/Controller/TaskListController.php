@@ -17,6 +17,7 @@ use App\UseCase\TaskList\TaskListHandler;
 use DateTime;
 use Exception;
 use RuntimeException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +28,8 @@ use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
  * @Route("/{_locale}/task-list", name="task_list_")
+ *
+ * @IsGranted("IS_AUTHENTICATED_FULLY")
  */
 class TaskListController extends AbstractController
 {

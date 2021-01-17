@@ -12,7 +12,7 @@
             <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     </head>
     <body>
-    {% include 'parts/private/header.html.twig' %}
+    {% include 'parts/public/header.html.twig' %}
     <div class="container">
         {% for label, messages in app.flashes %}
             {% for message in messages %}

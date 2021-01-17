@@ -13,6 +13,7 @@ use App\UseCase\TaskItem\TaskItemHandler;
 use DateTime;
 use Exception;
 use RuntimeException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +24,8 @@ use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
  * @Route("/{_locale}/task-item", name="task_item_")
+ *
+ * @IsGranted("IS_AUTHENTICATED_FULLY")
  */
 class TaskItemController extends AbstractController
 {

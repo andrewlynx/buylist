@@ -1,0 +1,24 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a href="{{ path('index') }}"><h4>Listiq</h4></a>
+        </div>
+        <ul class="nav navbar-nav navbar-left">
+            <li><a href="{{ path('app_login') }}">{{ 'security.login'|trans }}</a></li>
+            <li><a href="{{ path('app_register') }}">{{ 'security.registration'|trans }}</a></li>
+            <li><a href="{{ path('about') }}">{{ 'menu.about'|trans }}</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ app.request.locale }}<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    {% for lang in locales|split('|') %}
+                        {% if lang != app.request.locale %}
+                            <a class="dropdown-item btn btn-block" href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': lang})) }}">{{ lang }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
