@@ -17,14 +17,19 @@ class TaskItemCreateType extends AbstractType
         $taskList = $options['data']['taskList'];
 
         $builder
-            ->add('name')
+            ->add('name', null, [
+                'label' => 'task_item.name'
+            ])
             ->add('qty', null, [
                 'required' => false,
+                'label' => 'task_item.qty'
             ])
             ->add('list_id', HiddenType::class, [
                 'data' => $taskList->getId()
             ])
-            ->add('add', SubmitType::class)
+            ->add('add', SubmitType::class, [
+                'label' => 'form.add'
+            ])
         ;
     }
 }

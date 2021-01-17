@@ -12,8 +12,12 @@ class ShareListEmailType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email', EmailType::class)
-            ->add('add', SubmitType::class)
+            ->add('email', EmailType::class, [
+                'label' => 'list.email'
+            ])
+            ->add('add', SubmitType::class, [
+                'label' => 'form.add'
+            ])
         ;
     }
 }

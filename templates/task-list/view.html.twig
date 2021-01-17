@@ -7,7 +7,7 @@
         <div class="col-sm-8">
             {{ form(form) }}
             <hr>
-            <h3>Add items</h3>
+            <h3>{{ 'task_item.add'|trans }}</h3>
             {{ form(create_item_form) }}
             <div id="list-items">
                 {% for taskItem in task_list.taskItems %}
@@ -19,10 +19,10 @@
             {% if app.user != task_list.creator %}
                 <div>List created by <b>{{ task_list.creator.email }}</b></div>
             {% endif %}
-            <div>Created: {{ task_list.createdAt|date }}</div>
-            <div>Last Update: {{ task_list.updatedAt|date }}</div>
+            <div>{{ 'list.created'|trans }}: {{ task_list.createdAt|date }}</div>
+            <div>{{ 'list.last_update'|trans }}: {{ task_list.updatedAt|date }}</div>
             <hr>
-            <h3>Share list</h3>
+            <h3>{{ 'list.share'|trans }}</h3>
             {{ form(task_list_share) }}
             <div id="shared-users">
                 {% for user in task_list.shared %}

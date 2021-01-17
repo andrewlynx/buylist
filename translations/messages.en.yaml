@@ -1,6 +1,21 @@
+form:
+  add: Add
+  save: Save
 header:
   hello: Hello
   logout: Logout
+list:
+  create_new: 'Create new Task List'
+  created: Created
+  description: Description
+  email: Email
+  last_update: 'Last update'
+  name: Name
+  share: 'Share List'
+task_item:
+  add: 'Add Items'
+  name: Name
+  qty: Additional
 security:
   or: or
   please: Please

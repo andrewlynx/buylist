@@ -1,6 +1,21 @@
+form:
+  add: Додати
+  save: Зберегти
 header:
   hello: Вiтаю
   logout: Вийти
+list:
+  create_new: 'Створити новий список'
+  created: Created
+  description: Деталi
+  email: Email
+  last_update: 'Останнє оновлення'
+  name: Назва
+  share: 'Надати доступ'
+task_item:
+  add: 'Додати елементи'
+  name: Назва
+  qty: Додатково
 security:
   or: або
   please: Будь ласка

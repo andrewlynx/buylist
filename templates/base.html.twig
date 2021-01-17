@@ -17,14 +17,14 @@
             <div class="navbar-header">
                 <a href="{{ path('index') }}"><h4>Listiq</h4></a>
             </div>
-            <div class="dropdown pull-right">
+            <div class="dropdown pull-right navbar-btn">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="localeSwitch" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ app.request.locale }}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="localeSwitch">
                     {% for lang in locales|split('|') %}
                         {% if lang != app.request.locale %}
-                            <a href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': lang})) }}">{{ lang }}</a>
+                            <a class="dropdown-item" href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': lang})) }}">{{ lang }}</a>
                         {% endif %}
                     {% endfor %}
                 </div>

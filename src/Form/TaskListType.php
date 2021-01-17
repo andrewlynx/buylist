@@ -12,11 +12,16 @@ class TaskListType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
+            ->add('name', null, [
+                'label' => 'list.name',
+            ])
             ->add('description', TextareaType::class, [
                 'required' => false,
+                'label' => 'list.description',
             ])
-            ->add('save', SubmitType::class)
+            ->add('save', SubmitType::class, [
+                'label' => 'form.save'
+            ])
         ;
     }
 }
