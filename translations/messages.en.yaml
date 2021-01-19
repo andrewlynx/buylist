@@ -1,6 +1,7 @@
 form:
   add: Add
   save: Save
+  send: Send
 header:
   hello: Hello
   logout: Logout
@@ -8,7 +9,6 @@ list:
   create_new: 'Create new Task List'
   created: Created
   description: Description
-  email: Email
   last_update: 'Last update'
   name: Name
   share: 'Share List'
@@ -23,6 +23,11 @@ security:
   login: Login
   or: or
   please: Please
+  pw_restoration: Password Restoration
   register: register
   registration: Registration
+  restore_pw: Restore Password
   sign_in: 'sign in'
+user:
+  email: Email
+  password: Password

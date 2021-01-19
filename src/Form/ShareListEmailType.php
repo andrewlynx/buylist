@@ -13,7 +13,7 @@ class ShareListEmailType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'list.email'
+                'label' => 'user.email'
             ])
             ->add('add', SubmitType::class, [
                 'label' => 'form.add'

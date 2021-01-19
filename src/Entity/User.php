@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -34,6 +35,7 @@ class User implements UserInterface
 
     /**
      * @var string The hashed password
+     *
      * @ORM\Column(type="string")
      */
     private $password;
@@ -81,7 +83,7 @@ class User implements UserInterface
     /**
      * @param string $email
      *
-     * @return User
+     * @return $this
      */
     public function setEmail(string $email): self
     {
@@ -115,7 +117,7 @@ class User implements UserInterface
     /**
      * @param array $roles
      *
-     * @return User
+     * @return $this
      */
     public function setRoles(array $roles): self
     {
@@ -135,7 +137,7 @@ class User implements UserInterface
     /**
      * @param string $password
      *
-     * @return User
+     * @return $this
      */
     public function setPassword(string $password): self
     {
@@ -172,7 +174,7 @@ class User implements UserInterface
     /**
      * @param bool $isVerified
      *
-     * @return User
+     * @return $this
      */
     public function setIsVerified(bool $isVerified): self
     {
@@ -192,7 +194,7 @@ class User implements UserInterface
     /**
      * @param TaskList $shared
      *
-     * @return User
+     * @return $this
      */
     public function addShared(TaskList $shared): self
     {
@@ -207,7 +209,7 @@ class User implements UserInterface
     /**
      * @param TaskList $shared
      *
-     * @return User
+     * @return $this
      */
     public function removeShared(TaskList $shared): self
     {
@@ -232,7 +234,7 @@ class User implements UserInterface
     /**
      * @param TaskList $taskList
      *
-     * @return User
+     * @return $this
      */
     public function addTaskList(TaskList $taskList): self
     {
@@ -247,7 +249,7 @@ class User implements UserInterface
     /**
      * @param TaskList $taskList
      *
-     * @return User
+     * @return $this
      */
     public function removeTaskList(TaskList $taskList): self
     {

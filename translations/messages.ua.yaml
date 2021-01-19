@@ -1,6 +1,7 @@
 form:
   add: Додати
   save: Зберегти
+  send: Відправити
 header:
   hello: Вiтаю
   logout: Вийти
@@ -8,11 +9,10 @@ list:
   create_new: 'Створити новий список'
   created: Created
   description: Деталi
-  email: Email
   last_update: 'Останнє оновлення'
   name: Назва
   share: 'Надати доступ'
-  your_lists: 'Вашi списки'
+  your_lists: 'Ваші списки'
 menu:
   about: Про сайт
 task_item:
@@ -23,6 +23,11 @@ security:
   login: Вхiд
   or: або
   please: Будь ласка
+  pw_restoration: Відновлення пароля
   register: зареєструйтесь
   registration: Реєстрацiя
+  restore_pw: Відновлення пароля
   sign_in: зайдiть
+user:
+  email: Email
+  password: Пароль
