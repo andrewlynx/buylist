@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\DTO\User\Registration;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
-use App\Security\EmailVerifier;
 use App\Security\AppAuthenticator;
+use App\UseCase\Email\RegistrationEmailHandler;
 use App\UseCase\User\RegistrationHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,17 +17,6 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
-    private $emailVerifier;
-
-    /**
-     * RegistrationController constructor.
-     * @param EmailVerifier $emailVerifier
-     */
-    public function __construct(EmailVerifier $emailVerifier)
-    {
-        $this->emailVerifier = $emailVerifier;
-    }
-
     /**
      * @Route("/{_locale}/register", name="app_register")
      *
@@ -35,6 +24,7 @@ class RegistrationController extends AbstractController
      * @param GuardAuthenticatorHandler $guardHandler
      * @param AppAuthenticator          $authenticator
      * @param RegistrationHandler       $registrationHandler
+     * @param RegistrationEmailHandler  $emailHandler
      *
      * @return Response
      */
@@ -42,7 +32,8 @@ class RegistrationController extends AbstractController
         Request $request,
         GuardAuthenticatorHandler $guardHandler,
         AppAuthenticator $authenticator,
-        RegistrationHandler $registrationHandler
+        RegistrationHandler $registrationHandler,
+        RegistrationEmailHandler $emailHandler
     ): Response
     {
         if ($this->getUser()) {
@@ -57,6 +48,8 @@ class RegistrationController extends AbstractController
             $registrationData->email = $form->get('email')->getData();
             $registrationData->plainPassword = $form->get('plainPassword')->getData();
             $user = $registrationHandler->register($user, $registrationData);
+
+            $emailHandler->sendConfirmationEmail($user);
 
             return $guardHandler->authenticateUserAndHandleSuccess(
                 $user,
@@ -74,24 +67,23 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/verify/email", name="app_verify_email")
      *
-     * @param Request $request
+     * @param Request                  $request
+     * @param RegistrationEmailHandler $emailHandler
      *
      * @return Response
      */
-    public function verifyUserEmail(Request $request): Response
+    public function verifyUserEmail(Request $request, RegistrationEmailHandler $emailHandler): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        // validate email confirmation link, sets User::isVerified=true and persists
         try {
-            $this->emailVerifier->handleEmailConfirmation($request, $this->getUser());
+            $emailHandler->handleEmailConfirmation($request, $this->getUser());
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $exception->getReason());
 
             return $this->redirectToRoute('app_register');
         }
 
-        // @TODO Change the redirect on success and handle or remove the flash message in your templates
         $this->addFlash('success', 'Your email address has been verified.');
 
         return $this->redirectToRoute('app_register');

@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\Exception\ValidatorException;
+use Throwable;
 
 /**
  * @Route("/{_locale}/task-list", name="task_list_")
@@ -146,13 +147,17 @@ class TaskListController extends AbstractController
     /**
      * @Route("/share/{id}", name="share", methods={"POST"})
      *
-     * @param TaskList        $taskList
-     * @param Request         $request
+     * @param TaskList $taskList
+     * @param Request $request
      * @param TaskListHandler $taskListHandler
      *
      * @return Response
      */
-    public function taskListShare(TaskList $taskList, Request $request, TaskListHandler $taskListHandler): Response
+    public function taskListShare(
+        TaskList $taskList,
+        Request $request,
+        TaskListHandler $taskListHandler
+    ): Response
     {
         try {
             $dataArray = json_decode($request->getContent(), true);
@@ -176,7 +181,7 @@ class TaskListController extends AbstractController
                 )
             );
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return new JsonError(
                 $e->getMessage()
             );

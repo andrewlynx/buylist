@@ -6,9 +6,11 @@ use App\DTO\TaskList\TaskListShare;
 use App\Entity\EmailInvitation;
 use App\Entity\TaskList;
 use App\Entity\User;
+use App\UseCase\Email\InvitationEmailHandler;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class TaskListHandler
 {
@@ -18,11 +20,18 @@ class TaskListHandler
     private $em;
 
     /**
-     * @param EntityManagerInterface $em
+     * @var InvitationEmailHandler
      */
-    public function __construct(EntityManagerInterface $em)
+    private $emailHandler;
+
+    /**
+     * @param EntityManagerInterface $em
+     * @param InvitationEmailHandler $emailHandler
+     */
+    public function __construct(EntityManagerInterface $em, InvitationEmailHandler $emailHandler)
     {
         $this->em = $em;
+        $this->emailHandler = $emailHandler;
     }
 
     /**
@@ -53,6 +62,7 @@ class TaskListHandler
      * @return User
      *
      * @throws Exception
+     * @throws TransportExceptionInterface
      */
     public function share(TaskList $taskList, TaskListShare $dto): User
     {
@@ -73,7 +83,9 @@ class TaskListHandler
                 ->setTaskList($taskList);
             $this->em->persist($invitation);
             $this->em->flush();
-            // @todo send invitation email
+
+            $this->emailHandler->sendInvitationEmail($taskList->getCreator(), $dto);
+
             throw new Exception('User not found. The registration invitation was send on this email');
         }
     }

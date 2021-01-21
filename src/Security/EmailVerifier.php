@@ -16,6 +16,11 @@ class EmailVerifier
     private $mailer;
     private $entityManager;
 
+    /**
+     * @param VerifyEmailHelperInterface $helper
+     * @param MailerInterface $mailer
+     * @param EntityManagerInterface $manager
+     */
     public function __construct(VerifyEmailHelperInterface $helper, MailerInterface $mailer, EntityManagerInterface $manager)
     {
         $this->verifyEmailHelper = $helper;
@@ -23,6 +28,13 @@ class EmailVerifier
         $this->entityManager = $manager;
     }
 
+    /**
+     * @param string $verifyEmailRouteName
+     * @param UserInterface $user
+     * @param TemplatedEmail $email
+     *
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     */
     public function sendEmailConfirmation(string $verifyEmailRouteName, UserInterface $user, TemplatedEmail $email): void
     {
         $signatureComponents = $this->verifyEmailHelper->generateSignature(
@@ -42,6 +54,9 @@ class EmailVerifier
     }
 
     /**
+     * @param Request $request
+     * @param UserInterface $user
+     *
      * @throws VerifyEmailExceptionInterface
      */
     public function handleEmailConfirmation(Request $request, UserInterface $user): void

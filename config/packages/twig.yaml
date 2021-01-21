@@ -4,3 +4,5 @@ twig:
 
     globals:
         locales: '%locales%'
+        site_name: '%env(SITE_NAME)%'
+        site_link: '%env(SITE_LINK)%'

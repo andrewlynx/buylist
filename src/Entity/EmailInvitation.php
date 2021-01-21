@@ -24,7 +24,7 @@ class EmailInvitation
     private $email;
 
     /**
-     * @ORM\ManyToOne(targetEntity=TaskList::class, inversedBy="emailInvitations", cascade={"remove", "persist"})
+     * @ORM\ManyToOne(targetEntity=TaskList::class, inversedBy="emailInvitations", cascade={"persist"})
      */
     private $taskList;
 
