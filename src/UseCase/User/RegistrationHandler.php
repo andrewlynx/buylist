@@ -58,7 +58,6 @@ class RegistrationHandler
             $taskList = $invitation->getTaskList()->addShared($user);
             $this->em->persist($taskList);
             $this->em->remove($invitation);
-            //dd($taskList);
         }
 
         $this->em->flush();

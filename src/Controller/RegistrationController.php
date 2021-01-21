@@ -49,7 +49,8 @@ class RegistrationController extends AbstractController
             $registrationData->plainPassword = $form->get('plainPassword')->getData();
             $user = $registrationHandler->register($user, $registrationData);
 
-            $emailHandler->sendConfirmationEmail($user);
+            // Confirmation email is commented until this functionality is required
+            //$emailHandler->sendConfirmationEmail($user);
 
             return $guardHandler->authenticateUserAndHandleSuccess(
                 $user,
