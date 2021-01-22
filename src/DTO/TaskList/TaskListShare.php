@@ -19,11 +19,11 @@ class TaskListShare
     public $email;
 
     /**
-     * @param array $dataArray
+     * @param array|null $dataArray
      */
-    public function __construct(array $dataArray)
+    public function __construct(array $dataArray = null)
     {
-        $this->token = $dataArray[self::FIELD_TOKEN];
-        $this->email = $dataArray[self::FIELD_EMAIL];
+        $this->token = $dataArray[self::FIELD_TOKEN] ?? null;
+        $this->email = $dataArray[self::FIELD_EMAIL] ?? null;
     }
 }

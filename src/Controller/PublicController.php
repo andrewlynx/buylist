@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Form\PasswordRestoreType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,30 +56,6 @@ class PublicController extends AbstractController
     }
 
     /**
-     * @Route("/{_locale}/restore-passwordaa", name="restore_passwordaa")
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function restorePassword(Request $request): Response
-    {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('task_list_index');
-        }
-
-        $form = $this->createForm(PasswordRestoreType::class)
-            ->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
-        }
-
-        return $this->render('public/restore-password.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
      * @param string $template
      * @param string $locale
      *
@@ -99,12 +74,11 @@ class PublicController extends AbstractController
      */
     private function renderLocalizedTemplate(string $template, string $locale): Response
     {
+        // Try to find localized template or load default
         return $this->render(
-            $this->twig->getLoader()->exists(
-                $this->getPublicUrl($template, $locale)
-            )
-                ? $this->getPublicUrl($template, $locale)
-                : $this->getPublicUrl($template)
+            $this->twig->getLoader()->exists($this->getPublicUrl($template, $locale))
+            ? $this->getPublicUrl($template, $locale)
+            : $this->getPublicUrl($template)
         );
     }
 }

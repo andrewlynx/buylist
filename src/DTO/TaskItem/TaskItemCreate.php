@@ -31,13 +31,13 @@ class TaskItemCreate
     public $listId;
 
     /**
-     * @param array $dataArray
+     * @param array|null $dataArray
      */
-    public function __construct(array $dataArray)
+    public function __construct(array $dataArray = null)
     {
-        $this->token = $dataArray[self::FIELD_TOKEN];
-        $this->name = $dataArray[self::FIELD_NAME];
-        $this->qty = $dataArray[self::FIELD_QTY];
-        $this->listId = $dataArray[self::FIELD_LIST_ID];
+        $this->token = $dataArray[self::FIELD_TOKEN] ?? null;
+        $this->name = $dataArray[self::FIELD_NAME] ?? null;
+        $this->qty = $dataArray[self::FIELD_QTY] ?? null;
+        $this->listId = $dataArray[self::FIELD_LIST_ID] ?? null;
     }
 }

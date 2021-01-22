@@ -12,6 +12,8 @@ use Symfony\Component\Serializer\Annotation\Ignore;
  */
 class TaskItem
 {
+    public const DEFAULT_NAME = 'To Do';
+
     /**
      * @var int
      *

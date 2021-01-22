@@ -25,12 +25,12 @@ class TaskItemComplete
     public $id;
 
     /**
-     * @param array $dataArray
+     * @param array|null $dataArray
      */
-    public function __construct(array $dataArray)
+    public function __construct(array $dataArray = null)
     {
-        $this->token = $dataArray[self::FIELD_TOKEN];
+        $this->token = $dataArray[self::FIELD_TOKEN] ?? null;
         $this->completed = (bool) ($dataArray[self::FIELD_COMPLETED] ?? 0);
-        $this->id = $dataArray[self::FIELD_ID];
+        $this->id = $dataArray[self::FIELD_ID] ?? null;
     }
 }

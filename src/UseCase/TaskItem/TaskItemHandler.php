@@ -47,7 +47,7 @@ class TaskItemHandler
         }
 
         $taskItem = (new TaskItem())
-            ->setName($dto->name)
+            ->setName($dto->name ?? TaskItem::DEFAULT_NAME)
             ->setQty($dto->qty)
             ->setTaskList($taskList->setUpdatedAt(new DateTime()));
 
@@ -60,8 +60,6 @@ class TaskItemHandler
     /**
      * @param TaskItemComplete $dto
      * @return TaskItem
-     * @throws ORMException
-     * @throws OptimisticLockException
      */
     public function complete(TaskItemComplete $dto): TaskItem
     {

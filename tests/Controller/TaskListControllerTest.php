@@ -173,6 +173,27 @@ class TaskListControllerTest extends WebTestCase
         $this->assertTrue($taskList->getShared()->contains($testUser));
     }
 
+    public function testTaskListShareAuthor()
+    {
+        $client = static::createClient();
+        $client = $this->logInUser($client);
+
+        $client->request(
+            'POST',
+            $this->generateRoute('task_list_share', 1),
+            [],
+            [],
+            [],
+            json_encode([
+                'share_list_email[_token]' => $this->getToken(TaskListShare::FORM_NAME),
+                'share_list_email[email]' => 'user1@example.com'
+            ])
+        );
+        $responseArray = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
+        $this->assertEquals($responseArray['data'], 'This user is this List author');
+    }
+
     private function logInUser(KernelBrowser $client, $email = 'user1@example.com'): KernelBrowser
     {
         /** @var UserRepository $userRepository */
