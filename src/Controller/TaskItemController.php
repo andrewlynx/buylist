@@ -2,32 +2,30 @@
 
 namespace App\Controller;
 
+use App\Controller\Extendable\TranslatableController;
 use App\DTO\TaskItem\TaskItemComplete;
 use App\DTO\TaskItem\TaskItemCreate;
 use App\Entity\JsonResponse\JsonError;
 use App\Entity\JsonResponse\JsonSuccess;
-use App\Entity\TaskItem;
-use App\Entity\TaskList;
 use App\Form\TaskItemCompleteType;
 use App\UseCase\TaskItem\TaskItemHandler;
-use DateTime;
 use Exception;
 use RuntimeException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Exception\ValidatorException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/{_locale}/task-item", name="task_item_")
  *
  * @IsGranted("IS_AUTHENTICATED_FULLY")
  */
-class TaskItemController extends AbstractController
+class TaskItemController extends TranslatableController
 {
     /**
      * @Route("/create", name="create", methods={"POST"})
@@ -42,12 +40,16 @@ class TaskItemController extends AbstractController
         try {
             $dataArray = json_decode($request->getContent(), true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new RuntimeException(sprintf('Failed to decode request: %s', json_last_error_msg()));
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new RuntimeException(
+                        $this->translator->trans('validation.invalid_json_request', ['error' => json_last_error_msg()])
+                    );
+                }
             }
 
             $taskItemCreateData = new TaskItemCreate($dataArray);
             if (!$this->isCsrfTokenValid(TaskItemCreate::FORM_NAME, $taskItemCreateData->token)) {
-                throw new ValidatorException('Invalid CSRF token');
+                throw new ValidatorException('validation.invalid_csrf');
             }
 
             $taskItem = $taskItemHandler->create($taskItemCreateData, $this->getUser());
@@ -69,7 +71,7 @@ class TaskItemController extends AbstractController
             );
         } catch (Exception $e) {
             return new JsonError(
-                $e->getMessage()
+                $this->translator->trans($e->getMessage())
             );
         }
     }
@@ -85,17 +87,23 @@ class TaskItemController extends AbstractController
      *
      * @throws Exception
      */
-    public function complete(Request $request, SerializerInterface $serializer, TaskItemHandler $taskItemHandler): Response
+    public function complete(
+        Request $request,
+        SerializerInterface $serializer,
+        TaskItemHandler $taskItemHandler
+    ): Response
     {
         try {
             $dataArray = json_decode($request->getContent(), true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new RuntimeException(sprintf('Failed to decode request: %s', json_last_error_msg()));
+                throw new RuntimeException(
+                    $this->translator->trans('validation.invalid_json_request', ['error' => json_last_error_msg()])
+                );
             }
 
             $taskItemCompleteData = new TaskItemComplete($dataArray);
             if (!$this->isCsrfTokenValid(TaskItemComplete::FORM_NAME, $taskItemCompleteData->token)) {
-                throw new ValidatorException('Invalid CSRF token');
+                throw new ValidatorException('validation.invalid_csrf');
             }
             $taskItem = $taskItemHandler->complete($taskItemCompleteData);
 
@@ -104,7 +112,7 @@ class TaskItemController extends AbstractController
             );
         } catch (Exception $e) {
             return new JsonError(
-                $e->getMessage()
+                $this->translator->trans($e->getMessage())
             );
         }
     }

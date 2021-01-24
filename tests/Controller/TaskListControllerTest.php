@@ -7,7 +7,6 @@ use App\DTO\TaskList\TaskListShare;
 use App\Entity\TaskList;
 use App\Repository\TaskListRepository;
 use App\Repository\UserRepository;
-use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -66,8 +65,11 @@ class TaskListControllerTest extends WebTestCase
         $client->catchExceptions(false);
 
         $client = $this->logInUser($client);
-        $this->expectExceptionMessage('Invalid CSRF token');
         $client->request('GET', $this->generateRoute('task_list_delete', 1));
+
+        /** @var TaskList $taskList */
+        $taskList = static::$container->get(TaskListRepository::class)->find(1);
+        $this->assertEquals(1, $taskList->getId());
     }
 
     public function testDeleteAccessDenied()
@@ -192,6 +194,27 @@ class TaskListControllerTest extends WebTestCase
         $responseArray = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
         $this->assertEquals($responseArray['data'], 'This user is this List author');
+    }
+
+    public function testTaskListInviteUser()
+    {
+        $client = static::createClient();
+        $client = $this->logInUser($client);
+
+        $client->request(
+            'POST',
+            $this->generateRoute('task_list_share', 1),
+            [],
+            [],
+            [],
+            json_encode([
+                'share_list_email[_token]' => $this->getToken(TaskListShare::FORM_NAME),
+                'share_list_email[email]' => 'non-existing-user@example.com'
+            ])
+        );
+        $responseArray = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
+        $this->assertEquals($responseArray['data'], 'User not found. The registration invitation was send on this email');
     }
 
     private function logInUser(KernelBrowser $client, $email = 'user1@example.com'): KernelBrowser

@@ -11,12 +11,12 @@ list:
   description: Деталi
   last_update: 'Останнє оновлення'
   name: Назва
-  share: 'Надати доступ'
   your_lists: 'Ваші списки'
 menu:
   about: Про сайт
 task_item:
   add: 'Додати елементи'
+  error_assign_to_list: 'Помилка додавання нового пункту до списку'
   name: Назва
   qty: Додатково
 security:
@@ -28,6 +28,15 @@ security:
   registration: Реєстрацiя
   restore_pw: Відновлення пароля
   sign_in: зайдiть
+share_list:
+  share: 'Надати доступ'
+  user_is_list_author: 'Цей користувач - автор списку'
+  user_not_found: 'Користувача не знайдено. Було надіслано листа з запрошенням на цей email'
+validation:
+  email_not_found: 'Email не знайдено'
+  incorrect_email: 'Невірний email'
+  invalid_csrf: 'Недійсний токен CSRF'
+  invalid_json_request: 'Невірний формат данних: %error%'
 user:
   email: Email
   password: Пароль

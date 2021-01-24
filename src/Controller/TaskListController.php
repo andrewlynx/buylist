@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Controller\Extendable\TranslatableController;
 use App\DTO\TaskList\TaskListShare;
 use App\Entity\JsonResponse\JsonError;
 use App\Entity\JsonResponse\JsonSuccess;
@@ -25,6 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\Exception\ValidatorException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
 /**
@@ -32,7 +34,7 @@ use Throwable;
  *
  * @IsGranted("IS_AUTHENTICATED_FULLY")
  */
-class TaskListController extends AbstractController
+class TaskListController extends TranslatableController
 {
     /**
      * @Route("/", name="index")
@@ -141,7 +143,8 @@ class TaskListController extends AbstractController
             return $this->redirectToRoute('task_list_index');
         }
 
-        throw new Exception('Invalid CSRF token');
+        $this->addFlash('danger', 'validation.invalid_csrf');
+        return $this->redirectToRoute('task_list_index');
     }
 
     /**
@@ -162,12 +165,14 @@ class TaskListController extends AbstractController
         try {
             $dataArray = json_decode($request->getContent(), true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new RuntimeException(sprintf('Failed to decode request: %s', json_last_error_msg()));
+                throw new RuntimeException(
+                    $this->translator->trans('validation.invalid_json_request', ['error' => json_last_error_msg()])
+                );
             }
 
             $taskListShareData = new TaskListShare($dataArray);
             if (!$this->isCsrfTokenValid(TaskListShare::FORM_NAME, $taskListShareData->token)) {
-                throw new ValidatorException('Invalid CSRF token');
+                throw new ValidatorException('validation.invalid_csrf');
             }
 
             $user = $taskListHandler->share($taskList, $taskListShareData);
@@ -183,7 +188,7 @@ class TaskListController extends AbstractController
 
         } catch (Throwable $e) {
             return new JsonError(
-                $e->getMessage()
+                $this->translator->trans($e->getMessage())
             );
         }
     }

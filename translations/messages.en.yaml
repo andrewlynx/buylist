@@ -11,12 +11,12 @@ list:
   description: Description
   last_update: 'Last update'
   name: Name
-  share: 'Share List'
   your_lists: 'Your lists'
 menu:
   about: About
 task_item:
   add: 'Add Items'
+  error_assign_to_list: 'Error assigning new Item to List'
   name: Name
   qty: Additional
 security:
@@ -28,6 +28,15 @@ security:
   registration: Registration
   restore_pw: Restore Password
   sign_in: 'sign in'
+share_list:
+  share: 'Share List'
+  user_is_list_author: 'This user is this List author'
+  user_not_found: 'User not found. The registration invitation was send on this email'
+validation:
+  email_not_found: 'Email could not be found'
+  incorrect_email: 'Incorrect Email'
+  invalid_csrf: 'Invalid CSRF token'
+  invalid_json_request: 'Incorrect data format: %error%'
 user:
   email: Email
   password: Password

@@ -22,7 +22,7 @@
             <div>{{ 'list.created'|trans }}: {{ task_list.createdAt|date }}</div>
             <div>{{ 'list.last_update'|trans }}: {{ task_list.updatedAt|date }}</div>
             <hr>
-            <h3>{{ 'list.share'|trans }}</h3>
+            <h3>{{ 'share_list.share'|trans }}</h3>
             {{ form(task_list_share) }}
             <div id="shared-users">
                 {% for user in task_list.shared %}

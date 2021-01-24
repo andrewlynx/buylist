@@ -75,7 +75,7 @@ class TaskListHandler
 
             return $user;
         } elseif ($user === $taskList->getCreator()) {
-            throw new Exception('This user is this List author');
+            throw new Exception('share_list.user_is_list_author');
         } else {
             $invitation = (new EmailInvitation())
                 ->setEmail($dto->email)
@@ -86,7 +86,7 @@ class TaskListHandler
 
             $this->emailHandler->sendInvitationEmail($taskList->getCreator(), $dto);
 
-            throw new Exception('User not found. The registration invitation was send on this email');
+            throw new Exception('share_list.user_not_found');
         }
     }
 }

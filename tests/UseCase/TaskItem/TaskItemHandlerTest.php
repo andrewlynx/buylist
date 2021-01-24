@@ -4,11 +4,9 @@ namespace App\Tests\UseCase\TaskItem;
 
 use App\DTO\TaskItem\TaskItemComplete;
 use App\DTO\TaskItem\TaskItemCreate;
-use App\Entity\TaskItem;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\UseCase\TaskItem\TaskItemHandler;
-use Doctrine\ORM\EntityManager;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

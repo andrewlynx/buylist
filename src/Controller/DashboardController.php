@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Controller\Extendable\TranslatableController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/")
  */
-class DashboardController extends AbstractController
+class DashboardController extends TranslatableController
 {
     /**
      * @Route("/", name="index")

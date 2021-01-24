@@ -39,15 +39,14 @@ class RegistrationController extends AbstractController
         if ($this->getUser()) {
             return $this->redirectToRoute('index');
         }
-        $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form = $this->createForm(RegistrationFormType::class, new User());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $registrationData = new Registration();
             $registrationData->email = $form->get('email')->getData();
             $registrationData->plainPassword = $form->get('plainPassword')->getData();
-            $user = $registrationHandler->register($user, $registrationData);
+            $user = $registrationHandler->register($registrationData);
 
             // Confirmation email is commented until this functionality is required
             //$emailHandler->sendConfirmationEmail($user);

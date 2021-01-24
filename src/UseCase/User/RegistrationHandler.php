@@ -4,6 +4,7 @@ namespace App\UseCase\User;
 
 use App\DTO\User\Registration;
 use App\Entity\EmailInvitation;
+use App\Entity\Object\Email;
 use App\Entity\User;
 use App\Repository\EmailInvitationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,20 +33,21 @@ class RegistrationHandler
     }
 
     /**
-     * @param User         $user
      * @param Registration $dto
      *
      * @return User
      */
-    public function register(User $user, Registration $dto): User
+    public function register(Registration $dto): User
     {
+        $user = new User();
+        $email = new Email($dto->email);
         $user->setPassword(
                 $this->passwordEncoder->encodePassword(
                     $user,
                     $dto->plainPassword
                 )
             )
-            ->setEmail($dto->email);
+            ->setEmail($email->getValue());
 
         $this->em->persist($user);
 
