@@ -46,13 +46,30 @@ class TaskListController extends TranslatableController
     public function index(TaskListRepository $taskListRepository): Response
     {
         $taskLists = $taskListRepository->getUsersTasks($this->getUser());
-        $sharedLists = $taskListRepository->getSharedTasks($this->getUser());
 
         return $this->render(
             'task-list/index.html.twig',
             [
                 'task_lists' => $taskLists,
-                'shared_lists' => $sharedLists,
+            ]
+        );
+    }
+
+    /**
+     * @Route("/shared", name="index_shared")
+     *
+     * @param TaskListRepository $taskListRepository
+     *
+     * @return Response
+     */
+    public function indexShared(TaskListRepository $taskListRepository): Response
+    {
+        $taskLists = $taskListRepository->getSharedTasks($this->getUser());
+
+        return $this->render(
+            'task-list/index-shared.html.twig',
+            [
+                'task_lists' => $taskLists,
             ]
         );
     }

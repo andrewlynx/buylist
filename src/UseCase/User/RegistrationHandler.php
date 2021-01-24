@@ -3,10 +3,12 @@
 namespace App\UseCase\User;
 
 use App\DTO\User\Registration;
+use App\DTO\User\Settings;
 use App\Entity\EmailInvitation;
 use App\Entity\Object\Email;
 use App\Entity\User;
 use App\Repository\EmailInvitationRepository;
+use App\Validator\Locale;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -47,7 +49,8 @@ class RegistrationHandler
                     $dto->plainPassword
                 )
             )
-            ->setEmail($email->getValue());
+            ->setEmail($email->getValue())
+            ->setLocale($dto->locale);
 
         $this->em->persist($user);
 
@@ -63,6 +66,23 @@ class RegistrationHandler
         }
 
         $this->em->flush();
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     * @param Settings $dto
+     *
+     * @return User
+     */
+    public function updateSettings(User $user, Settings $dto): User
+    {
+        $locale = $dto->locale;
+        if (Locale::validateLocale($locale, true)) {
+            $user->setLocale($locale);
+            $this->em->flush($user);
+        }
 
         return $user;
     }

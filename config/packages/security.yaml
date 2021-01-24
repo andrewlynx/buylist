@@ -42,4 +42,5 @@ security:
         - { path: ^/(%locales%)/login, role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
         - { path: ^/(%locales%)/register, role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET,POST] }
         - { path: ^/logout, role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
-        - { path: ^/task.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ] }
+        - { path: ^/(%locales%)/task.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ] }
+        - { path: ^/(%locales%)/user.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ] }

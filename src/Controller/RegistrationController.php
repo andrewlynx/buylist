@@ -46,6 +46,8 @@ class RegistrationController extends AbstractController
             $registrationData = new Registration();
             $registrationData->email = $form->get('email')->getData();
             $registrationData->plainPassword = $form->get('plainPassword')->getData();
+            $registrationData->locale = $request->getLocale();
+
             $user = $registrationHandler->register($registrationData);
 
             // Confirmation email is commented until this functionality is required

@@ -13,7 +13,10 @@ list:
   name: Назва
   your_lists: 'Ваші списки'
 menu:
-  about: Про сайт
+  about: 'Про сайт'
+  lists: 'Мої списки'
+  lists_shared: 'Спільні списки'
+  settings: Налаштування
 task_item:
   add: 'Додати елементи'
   error_assign_to_list: 'Помилка додавання нового пункту до списку'
@@ -22,11 +25,11 @@ task_item:
 security:
   login: Вхiд
   or: або
-  please: Будь ласка
-  pw_restoration: Відновлення пароля
+  please: 'Будь ласка'
+  pw_restoration: 'Відновлення пароля'
   register: зареєструйтесь
   registration: Реєстрацiя
-  restore_pw: Відновлення пароля
+  restore_pw: 'Відновлення пароля'
   sign_in: зайдiть
 share_list:
   share: 'Надати доступ'
@@ -39,4 +42,5 @@ validation:
   invalid_json_request: 'Невірний формат данних: %error%'
 user:
   email: Email
+  language: Мова
   password: Пароль

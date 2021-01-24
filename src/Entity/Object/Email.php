@@ -3,7 +3,6 @@
 namespace App\Entity\Object;
 
 use InvalidArgumentException;
-use Webmozart\Assert\Assert;
 
 class Email
 {
@@ -17,7 +16,6 @@ class Email
      */
     public function __construct(string $value)
     {
-        Assert::notEmpty($value);
         if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException('validation.incorrect_email');
         }

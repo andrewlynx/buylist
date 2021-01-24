@@ -13,15 +13,24 @@
     </head>
     <body>
     {% include 'parts/private/header.html.twig' %}
-    <div class="container">
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alert alert-{{ label }}">
-                    {{ message|raw|trans }}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 menu">
+                {{ knp_menu_render('main_menu', {'currentClass': 'open', 'ancestorClass': 'open'}) }}
+            </div>
+            <div class="col-md-9 main-content">
+                <div class="container">
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ label }}">
+                                {{ message|raw|trans }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% block body %}{% endblock %}
                 </div>
-            {% endfor %}
-        {% endfor %}
-        {% block body %}{% endblock %}
+            </div>
+        </div>
     </div>
     <footer class="bd-footer">
         <div class="container-fluid p-3 p-md-5 text-right">

@@ -56,6 +56,11 @@ class User implements UserInterface
     private $taskLists;
 
     /**
+     * @ORM\Column(type="string", length=2, nullable=true)
+     */
+    private $locale;
+
+    /**
      *
      */
     public function __construct()
@@ -256,6 +261,26 @@ class User implements UserInterface
         if ($this->taskLists->removeElement($taskList)) {
             $taskList->removeShared($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLocale(): ?string
+    {
+        return $this->locale;
+    }
+
+    /**
+     * @param string $locale
+     *
+     * @return $this
+     */
+    public function setLocale(string $locale): self
+    {
+        $this->locale = $locale;
 
         return $this;
     }

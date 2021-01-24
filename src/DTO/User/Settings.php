@@ -2,17 +2,17 @@
 
 namespace App\DTO\User;
 
-class Registration
+class Settings
 {
     /**
      * @var string
      */
-    public $plainPassword;
+    public $oldPassword;
 
     /**
      * @var string
      */
-    public $email;
+    public $newPassword;
 
     /**
      * @var string

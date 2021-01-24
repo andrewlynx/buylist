@@ -14,6 +14,9 @@ list:
   your_lists: 'Your lists'
 menu:
   about: About
+  lists: 'My Lists'
+  lists_shared: 'Shared Lists'
+  settings: Settings
 task_item:
   add: 'Add Items'
   error_assign_to_list: 'Error assigning new Item to List'
@@ -23,10 +26,10 @@ security:
   login: Login
   or: or
   please: Please
-  pw_restoration: Password Restoration
+  pw_restoration: 'Password Restoration'
   register: register
   registration: Registration
-  restore_pw: Restore Password
+  restore_pw: 'Restore Password'
   sign_in: 'sign in'
 share_list:
   share: 'Share List'
@@ -35,8 +38,10 @@ share_list:
 validation:
   email_not_found: 'Email could not be found'
   incorrect_email: 'Incorrect Email'
+  incorrect_locale: 'Invalid language'
   invalid_csrf: 'Invalid CSRF token'
   invalid_json_request: 'Incorrect data format: %error%'
 user:
   email: Email
+  language: Language
   password: Password

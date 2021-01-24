@@ -2,10 +2,13 @@
 
 namespace App\EventListener;
 
+use App\Constant\AppConstant;
+use App\Validator\Locale;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
-class LocaleListener implements EventSubscriberInterface
+final class LocaleListener implements EventSubscriberInterface
 {
     /**
      * @var string
@@ -26,7 +29,7 @@ class LocaleListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            RequestEvent::class => 'onKernelRequest'
+            RequestEvent::class => 'onKernelRequest',
         ];
     }
 
@@ -40,8 +43,11 @@ class LocaleListener implements EventSubscriberInterface
             return;
         }
 
-        if ($locale = $request->attributes->get('_locale')) {
-            $request->getSession()->set('_locale', $locale);
+        $requestLocale = $request->query->get('_locale') ?: $request->attributes->get('_locale');
+
+        if ($requestLocale && Locale::validateLocale($requestLocale)) {
+            $request->getSession()->set('_locale', $requestLocale);
+            $request->setLocale($requestLocale);
         } else {
             $request->setLocale($request->getSession()->get('_locale', $this->defaultLocale));
         }

@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardController extends TranslatableController
 {
     /**
-     * @Route("/", name="index")
+     * @Route("", name="index")
      *
      * @param Request $request
      *
@@ -21,6 +21,7 @@ class DashboardController extends TranslatableController
      */
     public function index(Request $request): Response
     {
-        return $this->redirectToRoute('welcome', ['_locale' => $request->getLocale() ?? 'en']);
+
+        return $this->redirectToRoute('welcome', ['_locale' => $request->getLocale() ?? $request->getDefaultLocale()]);
     }
 }
