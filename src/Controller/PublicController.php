@@ -8,6 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 
+/**
+ * @Route("/{_locale}", requirements={"_locale": "[a-z]{2}"})
+ */
 class PublicController extends AbstractController
 {
     /**
@@ -24,7 +27,7 @@ class PublicController extends AbstractController
     }
 
     /**
-     * @Route("/{_locale}/welcome", name="welcome")
+     * @Route("/welcome", name="welcome")
      *
      * @param Request $request
      *
@@ -40,7 +43,7 @@ class PublicController extends AbstractController
     }
 
     /**
-     * @Route("/{_locale}/about", name="about")
+     * @Route("/about", name="about")
      *
      * @param Request $request
      *

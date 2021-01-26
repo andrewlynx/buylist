@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * @Route("/{_locale}/task-item", name="task_item_")
+ * @Route("/{_locale}/task-item", name="task_item_", requirements={"_locale": "[a-z]{2}"})
  *
  * @IsGranted("IS_AUTHENTICATED_FULLY")
  */

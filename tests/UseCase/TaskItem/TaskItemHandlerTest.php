@@ -40,7 +40,7 @@ class TaskItemHandlerTest extends WebTestCase
         $taskItemHandler = static::$container->get(TaskItemHandler::class);
         $taskItem = $taskItemHandler->create($dto, $testUser);
 
-        $this->assertEquals(1, $taskItem->getId());
+        $this->assertEquals(2, $taskItem->getId());
         $this->assertEquals('some_name', $taskItem->getName());
         $this->assertEquals('some_qty', $taskItem->getQty());
         $this->assertEquals($testUser, $taskItem->getTaskList()->getCreator());

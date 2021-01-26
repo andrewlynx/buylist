@@ -274,11 +274,11 @@ class User implements UserInterface
     }
 
     /**
-     * @param string $locale
+     * @param string|null $locale
      *
      * @return $this
      */
-    public function setLocale(string $locale): self
+    public function setLocale(?string $locale): self
     {
         $this->locale = $locale;
 
