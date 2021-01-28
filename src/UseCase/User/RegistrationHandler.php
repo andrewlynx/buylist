@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Repository\EmailInvitationRepository;
 use App\Validator\Locale;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationHandler
@@ -75,14 +76,27 @@ class RegistrationHandler
      * @param Settings $dto
      *
      * @return User
+     *
+     * @throws Exception
      */
     public function updateSettings(User $user, Settings $dto): User
     {
         $locale = $dto->locale;
         if (Locale::validateLocale($locale, true)) {
             $user->setLocale($locale);
-            $this->em->flush($user);
         }
+        if ($this->passwordEncoder->isPasswordValid($user, $dto->oldPassword)) {
+            $user->setPassword(
+                $this->passwordEncoder->encodePassword(
+                    $user,
+                    $dto->newPassword
+                )
+            );
+        } else {
+            throw new Exception('user.incorrect_current_password');
+        }
+
+        $this->em->flush();
 
         return $user;
     }

@@ -2,6 +2,7 @@
 
 namespace App\UseCase\TaskList;
 
+use App\DTO\TaskList\TaskListArchive;
 use App\DTO\TaskList\TaskListShare;
 use App\Entity\EmailInvitation;
 use App\Entity\TaskList;
@@ -88,5 +89,19 @@ class TaskListHandler
 
             throw new Exception('share_list.user_not_found');
         }
+    }
+
+    /**
+     * @param TaskList $taskList
+     * @param bool $status
+     *
+     * @return TaskList
+     */
+    public function archive(TaskList $taskList, bool $status): TaskList
+    {
+        $taskList->setArchived(!$status);
+        $this->em->flush();
+
+        return $taskList;
     }
 }

@@ -6,6 +6,8 @@ header:
   hello: Вiтаю
   logout: Вийти
 list:
+  archive: Архівувати
+  archived: Список Архівовано
   create_new: 'Створити новий список'
   created: Created
   description: Деталi
@@ -14,6 +16,7 @@ list:
   your_lists: 'Ваші списки'
 menu:
   about: 'Про сайт'
+  archive: Архів
   lists: 'Мої списки'
   lists_shared: 'Спільні списки'
   settings: Налаштування
@@ -38,9 +41,13 @@ share_list:
 validation:
   email_not_found: 'Email не знайдено'
   incorrect_email: 'Невірний email'
+  incorrect_locale: 'Невірна мова'
   invalid_csrf: 'Недійсний токен CSRF'
   invalid_json_request: 'Невірний формат данних: %error%'
 user:
   email: Email
+  incorrect_current_password: 'Невірний поточний пароль'
   language: Мова
+  new_password: Новий Пароль
   password: Пароль
+  password_change_help: 'Заповніть це поле, лише якщо ви хочете змінити пароль'

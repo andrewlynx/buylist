@@ -87,6 +87,13 @@ class TaskList
     private $emailInvitations;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $archived = false;
+
+    /**
      *
      */
     public function __construct()
@@ -293,6 +300,44 @@ class TaskList
                 $taskItem->setTaskList(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmailInvitations()
+    {
+        return $this->emailInvitations;
+    }
+
+    /**
+     * @param mixed $emailInvitations
+     * @return TaskList
+     */
+    public function setEmailInvitations($emailInvitations)
+    {
+        $this->emailInvitations = $emailInvitations;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isArchived(): bool
+    {
+        return $this->archived;
+    }
+
+    /**
+     * @param bool $archived
+     *
+     * @return $this
+     */
+    public function setArchived(bool $archived): self
+    {
+        $this->archived = $archived;
 
         return $this;
     }

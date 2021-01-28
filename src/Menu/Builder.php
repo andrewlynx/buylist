@@ -32,6 +32,7 @@ final class Builder implements ContainerAwareInterface
 
         $menu->addChild('menu.lists', ['route' => 'task_list_index']);
         $menu->addChild('menu.lists_shared', ['route' => 'task_list_index_shared']);
+        $menu->addChild('menu.archive', ['route' => 'task_list_archive']);
         $menu->addChild('menu.settings', ['route' => 'user_settings']);
 
         return $menu;

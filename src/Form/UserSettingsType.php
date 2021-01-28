@@ -20,6 +20,13 @@ class UserSettingsType extends AbstractType
                 'label' => 'user.password',
                 'mapped' => false,
                 'required' => false,
+                'help' => 'user.password_change_help',
+            ])
+            ->add('new_password', PasswordType::class, [
+                'label' => 'user.new_password',
+                'mapped' => false,
+                'required' => false,
+                'help' => 'user.password_change_help',
             ])
             ->add('locale', ChoiceType::class, [
                 'label' => 'user.language',

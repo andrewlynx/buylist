@@ -22,6 +22,10 @@
             <div>{{ 'list.created'|trans }}: {{ task_list.createdAt|date }}</div>
             <div>{{ 'list.last_update'|trans }}: {{ task_list.updatedAt|date }}</div>
             <hr>
+            {% if app.user == task_list.creator %}
+                {{ form(task_list_archive) }}
+                <hr>
+            {% endif %}
             <h3>{{ 'share_list.share'|trans }}</h3>
             {{ form(task_list_share) }}
             <div id="shared-users">

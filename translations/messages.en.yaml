@@ -6,6 +6,8 @@ header:
   hello: Hello
   logout: Logout
 list:
+  archive: Archive
+  archived: List arhived
   create_new: 'Create new Task List'
   created: Created
   description: Description
@@ -14,6 +16,7 @@ list:
   your_lists: 'Your lists'
 menu:
   about: About
+  archive: Archive
   lists: 'My Lists'
   lists_shared: 'Shared Lists'
   settings: Settings
@@ -43,5 +46,8 @@ validation:
   invalid_json_request: 'Incorrect data format: %error%'
 user:
   email: Email
+  incorrect_current_password: 'Incorrect Current Password'
   language: Language
+  new_password: New Password
   password: Password
+  password_change_help: 'Fill this field only if you want to change your password'

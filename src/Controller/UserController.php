@@ -36,6 +36,8 @@ class UserController extends TranslatableController
             try {
                 $settingData = new Settings();
                 $settingData->locale = $form->get('locale')->getData();
+                $settingData->oldPassword = $form->get('current_password')->getData();
+                $settingData->newPassword = $form->get('new_password')->getData();
 
                 $user = $registrationHandler->updateSettings($user, $settingData);
 

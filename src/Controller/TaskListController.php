@@ -10,6 +10,7 @@ use App\Entity\TaskItem;
 use App\Entity\TaskList;
 use App\Entity\User;
 use App\Form\ShareListEmailType;
+use App\Form\ListArchiveType;
 use App\Form\TaskItemCompleteType;
 use App\Form\TaskItemCreateType;
 use App\Form\TaskListType;
@@ -73,6 +74,25 @@ class TaskListController extends TranslatableController
     }
 
     /**
+     * @Route("/archive", name="archive")
+     *
+     * @param TaskListRepository $taskListRepository
+     *
+     * @return Response
+     */
+    public function archive(TaskListRepository $taskListRepository): Response
+    {
+        $taskLists = $taskListRepository->getArchivedUsersTasks($this->getUser());
+
+        return $this->render(
+            'task-list/index.html.twig',
+            [
+                'task_lists' => $taskLists,
+            ]
+        );
+    }
+
+    /**
      * @Route("/create", name="create")
      *
      * @param TaskListHandler $taskListHandler
@@ -123,11 +143,14 @@ class TaskListController extends TranslatableController
             ['action' => $this->generateUrl('task_list_share', ['id' => $taskList->getId()])]
         );
 
+        $archiveForm = $this->getArchiveListForm($taskList);
+
         return $this->render(
             'task-list/view.html.twig',
             [
                 'task_list' => $taskList,
                 'form' => $form->createView(),
+                'task_list_archive' => $archiveForm->createView(),
                 'create_item_form' => $createItemForm->createView(),
                 'task_list_share' => $shareListForm->createView(),
                 'complete_item_forms' => $this->getCompleteItemFormsViews($taskList->getTaskItems()),
@@ -209,6 +232,40 @@ class TaskListController extends TranslatableController
     }
 
     /**
+     * @Route("/{id}/archive-list", name="archive_list")
+     *
+     * @param TaskList $taskList
+     * @param Request $request
+     * @param TaskListHandler $taskListHandler
+     *
+     * @return Response
+     */
+    public function archiveList(
+        TaskList $taskList,
+        Request $request,
+        TaskListHandler $taskListHandler
+    ): Response
+    {
+        $this->checkCreatorAccess($taskList, $this->getUser());
+
+        $archiveForm = $this->getArchiveListForm($taskList)->handleRequest($request);
+
+        if ($archiveForm->isSubmitted() && $archiveForm->isValid()) {
+            $taskListHandler->archive(
+                $taskList,
+                $request->request->get('status') ?? false
+            );
+
+            $this->addFlash('success', 'list.archived');
+            return $this->redirectToRoute('task_list_index');
+        }
+
+        $this->addFlash('danger', 'validation.invalid_csrf');
+
+        return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
+    }
+
+    /**
      * @param TaskItem $taskItem
      *
      * @return FormInterface
@@ -218,6 +275,20 @@ class TaskListController extends TranslatableController
         return $this->createForm(TaskItemCompleteType::class, $taskItem, [
             'action' => $this->generateUrl('task_item_complete'),
         ]);
+    }
+
+    /**
+     * @param TaskList $taskList
+     *
+     * @return FormInterface
+     */
+    private function getArchiveListForm(TaskList $taskList): FormInterface
+    {
+        return $this->createForm(
+            ListArchiveType::class,
+            ['status' => false],
+            ['action' => $this->generateUrl('task_list_archive_list', ['id' => $taskList->getId()])]
+        );
     }
 
     /**
