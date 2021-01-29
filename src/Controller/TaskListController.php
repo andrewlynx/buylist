@@ -50,6 +50,7 @@ class TaskListController extends TranslatableController
             'task-list/index.html.twig',
             [
                 'task_lists' => $taskLists,
+                'archive_item_forms' => $this->getArchiveListFormsViews($taskLists),
             ]
         );
     }
@@ -66,7 +67,7 @@ class TaskListController extends TranslatableController
         $taskLists = $taskListRepository->getSharedTasks($this->getUser());
 
         return $this->render(
-            'task-list/index-shared.html.twig',
+            'task-list/shared-index.html.twig',
             [
                 'task_lists' => $taskLists,
             ]
@@ -85,9 +86,10 @@ class TaskListController extends TranslatableController
         $taskLists = $taskListRepository->getArchivedUsersTasks($this->getUser());
 
         return $this->render(
-            'task-list/index.html.twig',
+            'task-list/archive-index.html.twig',
             [
                 'task_lists' => $taskLists,
+                'archive_item_forms' => $this->getArchiveListFormsViews($taskLists),
             ]
         );
     }
@@ -126,9 +128,15 @@ class TaskListController extends TranslatableController
             ->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $taskList->setUpdatedAt(new DateTime());
-            $this->getDoctrine()->getManager()->flush();
-            $this->addFlash('success', sprintf('%s updated', $taskList->getName()));
+            if (!$taskList->isArchived()) {
+                $taskList->setUpdatedAt(new DateTime());
+                $this->getDoctrine()->getManager()->flush();
+                $this->addFlash('success', 'list.updated');
+            } else {
+                $this->addFlash('warning', 'list.activate_list_to_edit');
+            }
+
+            return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
         }
 
         $createItemForm = $this->createForm(
@@ -201,6 +209,12 @@ class TaskListController extends TranslatableController
     ): Response
     {
         try {
+            if ($taskList->isArchived()) {
+                throw new RuntimeException(
+                    $this->translator->trans('list.activate_list_to_edit')
+                );
+            }
+
             $dataArray = json_decode($request->getContent(), true);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new RuntimeException(
@@ -217,7 +231,7 @@ class TaskListController extends TranslatableController
 
             return new JsonSuccess(
                 $this->renderView(
-                    'task-list/shared-user.html.twig',
+                    'parts/private/list/shared-user.html.twig',
                     [
                         'user' => $user,
                     ]
@@ -253,10 +267,13 @@ class TaskListController extends TranslatableController
         if ($archiveForm->isSubmitted() && $archiveForm->isValid()) {
             $taskListHandler->archive(
                 $taskList,
-                $request->request->get('status') ?? false
+                (bool) $request->request->get('list_archive')['status'] ?? false
             );
 
-            $this->addFlash('success', 'list.archived');
+            $this->addFlash(
+                'success',
+                $taskList->isArchived() ? 'list.archived' : 'list.restored'
+            );
             return $this->redirectToRoute('task_list_index');
         }
 
@@ -278,20 +295,6 @@ class TaskListController extends TranslatableController
     }
 
     /**
-     * @param TaskList $taskList
-     *
-     * @return FormInterface
-     */
-    private function getArchiveListForm(TaskList $taskList): FormInterface
-    {
-        return $this->createForm(
-            ListArchiveType::class,
-            ['status' => false],
-            ['action' => $this->generateUrl('task_list_archive_list', ['id' => $taskList->getId()])]
-        );
-    }
-
-    /**
      * @param iterable $taskItems
      *
      * @return array
@@ -301,6 +304,35 @@ class TaskListController extends TranslatableController
         $views = [];
         foreach ($taskItems as $taskItem) {
             $views[$taskItem->getId()] = $this->getCompleteItemForm($taskItem)->createView();
+        }
+
+        return $views;
+    }
+
+    /**
+     * @param TaskList $taskList
+     *
+     * @return FormInterface
+     */
+    private function getArchiveListForm(TaskList $taskList): FormInterface
+    {
+        return $this->createForm(
+            ListArchiveType::class,
+            ['status' => $taskList->isArchived()],
+            ['action' => $this->generateUrl('task_list_archive_list', ['id' => $taskList->getId()])]
+        );
+    }
+
+    /**
+     * @param iterable $taskItems
+     *
+     * @return array
+     */
+    private function getArchiveListFormsViews(iterable $taskItems): array
+    {
+        $views = [];
+        foreach ($taskItems as $taskItem) {
+            $views[$taskItem->getId()] = $this->getArchiveListForm($taskItem)->createView();
         }
 
         return $views;

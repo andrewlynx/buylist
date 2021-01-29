@@ -1,18 +1,23 @@
 form:
   add: Add
+  delete: Delete
   save: Save
   send: Send
 header:
   hello: Hello
   logout: Logout
 list:
+  activate_list_to_edit: 'This list is archived. Activate the list to make changes'
   archive: Archive
-  archived: List arhived
+  archived: 'List archived'
   create_new: 'Create new Task List'
   created: Created
   description: Description
   last_update: 'Last update'
   name: Name
+  restore: Restore
+  restored: 'List restored'
+  updated: 'List updated'
   your_lists: 'Your lists'
 menu:
   about: About
@@ -48,6 +53,6 @@ user:
   email: Email
   incorrect_current_password: 'Incorrect Current Password'
   language: Language
-  new_password: New Password
+  new_password: 'New Password'
   password: Password
   password_change_help: 'Fill this field only if you want to change your password'

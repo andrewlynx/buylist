@@ -42,8 +42,11 @@ class TaskItemHandler
         /** @var TaskList $taskList */
         $taskList = $taskListRepo->find($dto->listId);
 
+        if ($taskList->isArchived()) {
+            throw new Exception('list.activate_list_to_edit');
+        }
         if (!$taskList || $taskList->getCreator() !== $user) {
-            throw new Exception('Error assigning new Item to List');
+            throw new Exception('error_assign_to_list');
         }
 
         $taskItem = (new TaskItem())

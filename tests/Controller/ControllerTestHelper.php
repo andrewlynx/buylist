@@ -18,9 +18,14 @@ class ControllerTestHelper extends WebTestCase
         return $client;
     }
 
-    public static function generateRoute(string $route, int $id, string $locale = 'en'): string
+    public static function generateRoute(string $route, ?int $id = null, string $locale = 'en'): string
     {
-        return static::$container->get('router')->generate($route, ['id' => $id, '_locale' => $locale]);
+        if ($id !== null) {
+            $params = ['id' => $id, '_locale' => $locale];
+        } else {
+            $params = ['_locale' => $locale];
+        }
+        return static::$container->get('router')->generate($route, $params);
     }
 
     public static function getToken(string $name): string

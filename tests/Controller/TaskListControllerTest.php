@@ -9,6 +9,7 @@ use App\Repository\TaskListRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DomCrawler\Crawler;
 
 class TaskListControllerTest extends WebTestCase
 {
@@ -228,5 +229,51 @@ class TaskListControllerTest extends WebTestCase
         $responseArray = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
         $this->assertEquals($responseArray['data'], 'User not found. The registration invitation was send on this email');
+    }
+
+    public function testEditList()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+
+        $crawler = $client->request('GET', ControllerTestHelper::generateRoute('task_list_view', 1));
+        $form = $crawler->filter('form[name="task_list"]')->form();
+        $form->setValues([
+            'task_list[name]' => 'New Name',
+            'task_list[description]' => 'New Description',
+        ]);
+
+        $client->submit($form);
+        $client->followRedirect();
+
+        $this->assertContains(
+            'List updated',
+            $client->getResponse()->getContent()
+        );
+    }
+
+    public function testArchiveList()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+
+        /** @var TaskList $taskList */
+        $taskList = static::$container->get(TaskListRepository::class)->find(1);
+        $this->assertFalse($taskList->isArchived());
+
+        $crawler = $client->request('GET', ControllerTestHelper::generateRoute('task_list_view', 1));
+        $form = $crawler->filter('form[name="list_archive"]')->form();
+
+        $client->submit($form);
+        $client->followRedirect();
+
+        $this->assertContains(
+            'List archived',
+            $client->getResponse()->getContent()
+        );
+
+        /** @var TaskList $taskList */
+        $taskList = static::$container->get(TaskListRepository::class)->find(1);
+        $this->assertTrue($taskList->isArchived());
     }
 }

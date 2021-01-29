@@ -27,7 +27,7 @@ class TaskItemHandlerTest extends WebTestCase
         /** @var TaskItemHandler $taskItemHandler */
         $taskItemHandler = static::$container->get(TaskItemHandler::class);
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Error assigning new Item to List');
+        $this->expectExceptionMessage('error_assign_to_list');
         $taskItemHandler->create($dto, $testUser);
     }
 

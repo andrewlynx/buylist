@@ -16,6 +16,11 @@
             </div>
         </div>
         <div class="col-sm-4">
+            {% if task_list.isArchived %}
+                <div class="alert alert-warning">
+                    {{ 'list.activate_list_to_edit'|trans }}
+                </div>
+            {% endif %}
             {% if app.user != task_list.creator %}
                 <div>List created by <b>{{ task_list.creator.email }}</b></div>
             {% endif %}
@@ -30,7 +35,7 @@
             {{ form(task_list_share) }}
             <div id="shared-users">
                 {% for user in task_list.shared %}
-                    {% include 'task-list/shared-user.html.twig' with {'user': user} %}
+                    {% include 'parts/private/list/shared-user.html.twig' with {'user': user} %}
                 {% endfor %}
             </div>
         </div>

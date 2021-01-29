@@ -1,19 +1,24 @@
 form:
   add: Додати
+  delete: Видалити
   save: Зберегти
   send: Відправити
 header:
   hello: Вiтаю
   logout: Вийти
 list:
+  activate_list_to_edit: 'Цей список заархівовано. Активуйте список, щоб внести зміни'
   archive: Архівувати
-  archived: Список Архівовано
+  archived: 'Список Архівовано'
   create_new: 'Створити новий список'
   created: Created
   description: Деталi
   last_update: 'Останнє оновлення'
   name: Назва
+  restore: Відновити
+  restored: 'Список Відновлено'
   your_lists: 'Ваші списки'
+  updated: 'Список оновлено'
 menu:
   about: 'Про сайт'
   archive: Архів

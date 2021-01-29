@@ -13,12 +13,13 @@ class ListArchiveType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $status = $options['data']['status'];
         $builder
             ->add('status', HiddenType::class, [
-                'data' => $options['data']['status'],
+                'data' => $status,
             ])
             ->add('archive', SubmitType::class, [
-                'label' => 'list.archive'
+                'label' => $status ? 'list.restore' : 'list.archive'
             ])
         ;
     }

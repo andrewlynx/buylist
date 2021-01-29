@@ -1,0 +1,17 @@
+<div class="row">
+    <div class="col-md-8">
+        <a href="{{ path('task_list_view', {'id': task_list.id}) }}">
+            <h4>{{ task_list.name }}
+                {% if task_list.shared|length > 0 %}
+                    (shared)
+                {% endif %}
+            </h4>
+        </a>
+    </div>
+    <div class="col-md-2">
+        {{ form(archive_item_forms[task_list.id]) }}
+    </div>
+    <div class="col-md-2">
+        {% include 'common/_delete_form.html.twig' with {'item': task_list, 'path': 'task_list_delete'} %}
+    </div>
+</div>
