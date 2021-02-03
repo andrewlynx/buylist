@@ -1,3 +1,5 @@
+event:
+  invalid_event: 'Некоректна подія'
 form:
   add: Додати
   delete: Видалити
@@ -17,6 +19,8 @@ list:
   name: Назва
   restore: Відновити
   restored: 'Список Відновлено'
+  unsubscribe: Відписатися
+  unsubscribed: 'Ви успішно скасували підписку на list'
   your_lists: 'Ваші списки'
   updated: 'Список оновлено'
 menu:
@@ -24,7 +28,13 @@ menu:
   archive: Архів
   lists: 'Мої списки'
   lists_shared: 'Спільні списки'
+  notifications: Повідомлення
   settings: Налаштування
+notification:
+  invitation: 'Користувач %user% запросив вас у список %list%'
+  not_found: 'Щось сталося не так, вибачте. Ми виправляємо.'
+  welcome: 'Вітаємо у %app%'
+  your_notifications: 'Ваші повідомлення'
 task_item:
   add: 'Додати елементи'
   error_assign_to_list: 'Помилка додавання нового пункту до списку'
@@ -49,6 +59,7 @@ validation:
   incorrect_locale: 'Невірна мова'
   invalid_csrf: 'Недійсний токен CSRF'
   invalid_json_request: 'Невірний формат данних: %error%'
+  invalid_submission: 'Невірні данні'
 user:
   email: Email
   incorrect_current_password: 'Невірний поточний пароль'

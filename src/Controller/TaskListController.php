@@ -14,6 +14,7 @@ use App\Form\ListArchiveType;
 use App\Form\TaskItemCompleteType;
 use App\Form\TaskItemCreateType;
 use App\Form\TaskListType;
+use App\Form\UnsubscribeType;
 use App\Repository\TaskListRepository;
 use App\UseCase\TaskList\TaskListHandler;
 use DateTime;
@@ -65,11 +66,13 @@ class TaskListController extends TranslatableController
     public function indexShared(TaskListRepository $taskListRepository): Response
     {
         $taskLists = $taskListRepository->getSharedTasks($this->getUser());
+        $unsubscribeForms = $this->getUnsubscribeFormsViews($taskLists);
 
         return $this->render(
             'task-list/shared-index.html.twig',
             [
                 'task_lists' => $taskLists,
+                'unsubscribe_forms' => $unsubscribeForms,
             ]
         );
     }
@@ -188,8 +191,8 @@ class TaskListController extends TranslatableController
 
             return $this->redirectToRoute('task_list_index');
         }
+        $this->addFlash('danger', 'validation.invalid_submission');
 
-        $this->addFlash('danger', 'validation.invalid_csrf');
         return $this->redirectToRoute('task_list_index');
     }
 
@@ -276,10 +279,51 @@ class TaskListController extends TranslatableController
             );
             return $this->redirectToRoute('task_list_index');
         }
-
-        $this->addFlash('danger', 'validation.invalid_csrf');
+        $this->addFlash('danger', 'validation.invalid_submission');
 
         return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
+    }
+
+    /**
+     * @Route("/{id}/unsubscribe", name="unsubscribe")
+     *
+     * @param TaskList $taskList
+     * @param Request $request
+     * @param TaskListHandler $taskListHandler
+     *
+     * @return Response
+     */
+    public function unsubscribe(
+        TaskList $taskList,
+        Request $request,
+        TaskListHandler $taskListHandler
+    ): Response
+    {
+        $this->checkSharedAccess($taskList, $this->getUser());
+
+        $unsubscribeForm = $this->getUnsubscribeForm($taskList)->handleRequest($request);
+
+        if ($unsubscribeForm->isSubmitted() && $unsubscribeForm->isValid()) {
+            $taskListHandler->unsubscribe(
+                $taskList,
+                $this->getUser()
+            );
+
+            $this->addFlash(
+                'success',
+                $this->translator->trans(
+                    'list.unsubscribed',
+                    [
+                        'list' => $taskList->getName(),
+                    ]
+                )
+            );
+
+            return $this->redirectToRoute('task_list_index_shared');
+        }
+        $this->addFlash('danger', 'validation.invalid_submission');
+
+        return $this->redirectToRoute('task_list_index_shared');
     }
 
     /**
@@ -333,6 +377,35 @@ class TaskListController extends TranslatableController
         $views = [];
         foreach ($taskItems as $taskItem) {
             $views[$taskItem->getId()] = $this->getArchiveListForm($taskItem)->createView();
+        }
+
+        return $views;
+    }
+
+    /**
+     * @param TaskList $taskList
+     *
+     * @return FormInterface
+     */
+    private function getUnsubscribeForm(TaskList $taskList): FormInterface
+    {
+        return $this->createForm(
+            UnsubscribeType::class,
+            ['task_list' => $taskList],
+            ['action' => $this->generateUrl('task_list_unsubscribe', ['id' => $taskList->getId()])]
+        );
+    }
+
+    /**
+     * @param iterable $taskItems
+     *
+     * @return array
+     */
+    private function getUnsubscribeFormsViews(iterable $taskItems): array
+    {
+        $views = [];
+        foreach ($taskItems as $taskItem) {
+            $views[$taskItem->getId()] = $this->getUnsubscribeForm($taskItem)->createView();
         }
 
         return $views;

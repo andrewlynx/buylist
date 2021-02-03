@@ -2,11 +2,12 @@
 
 namespace App\UseCase\TaskList;
 
-use App\DTO\TaskList\TaskListArchive;
 use App\DTO\TaskList\TaskListShare;
 use App\Entity\EmailInvitation;
 use App\Entity\TaskList;
 use App\Entity\User;
+use App\Service\Notification\NotificationFactory;
+use App\Service\Notification\NotificationService;
 use App\UseCase\Email\InvitationEmailHandler;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -70,9 +71,15 @@ class TaskListHandler
         /** @var User $user */
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => $dto->email]);
         if ($user && $user !== $taskList->getCreator()) {
+            $notification = NotificationFactory::make(
+                NotificationService::EVENT_INVITED,
+                $user,
+                $taskList,
+                $taskList->getCreator()
+            );
             $taskList->addShared($user);
+            $this->em->persist($notification);
             $this->em->flush();
-            // @todo send notification email
 
             return $user;
         } elseif ($user === $taskList->getCreator()) {
@@ -100,6 +107,20 @@ class TaskListHandler
     public function archive(TaskList $taskList, bool $status): TaskList
     {
         $taskList->setArchived(!$status);
+        $this->em->flush();
+
+        return $taskList;
+    }
+
+    /**
+     * @param TaskList $taskList
+     * @param User $user
+     *
+     * @return TaskList
+     */
+    public function unsubscribe(TaskList $taskList, User $user): TaskList
+    {
+        $taskList->removeShared($user);
         $this->em->flush();
 
         return $taskList;

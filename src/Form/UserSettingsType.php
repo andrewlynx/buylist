@@ -35,6 +35,7 @@ class UserSettingsType extends AbstractType
                     return strtoupper($key);
                 },
                 'required' => false,
+                'choice_translation_domain' => false,
             ])
             ->add('add', SubmitType::class, [
                 'label' => 'form.save'

@@ -3,6 +3,7 @@ twig:
     form_themes: ['form/form_theme.html.twig']
 
     globals:
-        locales: '%locales%'
-        site_name: '%env(SITE_NAME)%'
-        site_link: '%env(SITE_LINK)%'
+        _locales: '%locales%'
+        _site_name: '%env(SITE_NAME)%'
+        _site_link: '%env(SITE_LINK)%'
+        _notifications: '@App\Service\Notification\NotificationService'

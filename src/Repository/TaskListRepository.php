@@ -54,7 +54,7 @@ class TaskListRepository extends ServiceEntityRepository
             ->andWhere('t.archived = 0')
             ->setParameter('email', $user->getEmail())
             ->orderBy('t.creator' )
-            ->addOrderBy('t.createdAt')
+            ->addOrderBy('t.createdAt', 'DESC')
         ;
 
         return $qb->getQuery()->getResult();
@@ -66,7 +66,9 @@ class TaskListRepository extends ServiceEntityRepository
             ->Where('t.creator = :user')
             ->andWhere('t.archived = :archived')
             ->setParameter('user', $user)
-            ->setParameter('archived', intval($archived));
+            ->setParameter('archived', intval($archived))
+            ->orderBy('t.id', 'DESC')
+        ;
 
         return $qb->getQuery()->getResult();
     }

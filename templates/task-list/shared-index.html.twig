@@ -11,8 +11,8 @@
                 <h5>By {{ task_list.creator.email }}</h5>
             {% endif %}
             <div class="row">
-                <div class="col-md-9"><a href="{{ path('task_list_view', {'id': task_list.id}) }}"><h4>{{ task_list.name }}</h4></a></div>
-                <div class="col-md-3">Remove</div>
+                <div class="col-md-10"><a href="{{ path('task_list_view', {'id': task_list.id}) }}"><h4>{{ task_list.name }}</h4></a></div>
+                <div class="col-md-2">{{ form(unsubscribe_forms[task_list.id]) }}</div>
             </div>
         {% endfor %}
     {% else %}

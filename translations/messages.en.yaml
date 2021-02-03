@@ -1,3 +1,5 @@
+event:
+  invalid_event: 'Invalid event'
 form:
   add: Add
   delete: Delete
@@ -17,6 +19,8 @@ list:
   name: Name
   restore: Restore
   restored: 'List restored'
+  unsubscribe: Unsubscribe
+  unsubscribed: 'You successfully unsubscribed from list'
   updated: 'List updated'
   your_lists: 'Your lists'
 menu:
@@ -24,7 +28,13 @@ menu:
   archive: Archive
   lists: 'My Lists'
   lists_shared: 'Shared Lists'
+  notifications: Notifications
   settings: Settings
+notification:
+  invitation: 'User %user% invited you to list %list%'
+  not_found: 'Something got wrong, sorry. We are fixing.'
+  welcome: 'Welcome to %app%'
+  your_notifications: 'Your notifications'
 task_item:
   add: 'Add Items'
   error_assign_to_list: 'Error assigning new Item to List'
@@ -49,6 +59,7 @@ validation:
   incorrect_locale: 'Invalid language'
   invalid_csrf: 'Invalid CSRF token'
   invalid_json_request: 'Incorrect data format: %error%'
+  invalid_submission: 'Invalid form data'
 user:
   email: Email
   incorrect_current_password: 'Incorrect Current Password'

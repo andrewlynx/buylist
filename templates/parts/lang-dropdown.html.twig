@@ -4,11 +4,11 @@
         <span class="caret"></span>
     </a>
     <ul class="dropdown-menu">
-        {% for lang in locales|split('|') %}
+        {% for lang in _locales|split('|') %}
             {% if lang != app.request.locale %}
-                <a class="dropdown-item btn btn-block" href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': lang})) }}">
+                <li><a class="dropdown-item btn btn-block" href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': lang})) }}">
                     {{ lang }}
-                </a>
+                </a></li>
             {% endif %}
         {% endfor %}
     </ul>

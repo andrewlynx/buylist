@@ -19,7 +19,7 @@
                 {{ knp_menu_render('main_menu', {'currentClass': 'open', 'ancestorClass': 'open'}) }}
             </div>
             <div class="col-md-9 main-content">
-                <div class="container">
+                <div class="container-fluid">
                     {% for label, messages in app.flashes %}
                         {% for message in messages %}
                             <div class="alert alert-{{ label }}">

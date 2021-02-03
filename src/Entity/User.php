@@ -61,12 +61,27 @@ class User implements UserInterface
     private $locale;
 
     /**
+     * @var DateTimeInterface
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastLogin;
+
+    /**
+     * @var Collection|Notification[]
+     *
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $notifications;
+
+    /**
      *
      */
     public function __construct()
     {
         $this->shared = new ArrayCollection();
         $this->taskLists = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     /**
@@ -283,5 +298,33 @@ class User implements UserInterface
         $this->locale = $locale;
 
         return $this;
+    }
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getLastLogin(): ?DateTimeInterface
+    {
+        return $this->lastLogin;
+    }
+
+    /**
+     * @param DateTimeInterface $lastLogin
+     *
+     * @return $this
+     */
+    public function setLastLogin(DateTimeInterface $lastLogin): self
+    {
+        $this->lastLogin = $lastLogin;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Notification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
     }
 }

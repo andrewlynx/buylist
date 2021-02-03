@@ -7,9 +7,7 @@ use App\DTO\TaskList\TaskListShare;
 use App\Entity\TaskList;
 use App\Repository\TaskListRepository;
 use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\DomCrawler\Crawler;
 
 class TaskListControllerTest extends WebTestCase
 {

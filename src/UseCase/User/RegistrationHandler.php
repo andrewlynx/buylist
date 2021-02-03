@@ -9,6 +9,7 @@ use App\Entity\Object\Email;
 use App\Entity\User;
 use App\Repository\EmailInvitationRepository;
 use App\Validator\Locale;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -85,17 +86,34 @@ class RegistrationHandler
         if (Locale::validateLocale($locale, true)) {
             $user->setLocale($locale);
         }
-        if ($this->passwordEncoder->isPasswordValid($user, $dto->oldPassword)) {
-            $user->setPassword(
-                $this->passwordEncoder->encodePassword(
-                    $user,
-                    $dto->newPassword
-                )
-            );
-        } else {
-            throw new Exception('user.incorrect_current_password');
+
+        if ($dto->oldPassword !== null) {
+            if ($this->passwordEncoder->isPasswordValid($user, $dto->oldPassword)) {
+                $user->setPassword(
+                    $this->passwordEncoder->encodePassword(
+                        $user,
+                        $dto->newPassword
+                    )
+                );
+            } else {
+                throw new Exception('user.incorrect_current_password');
+            }
         }
 
+        $this->em->flush();
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     * @return User
+     *
+     * @throws Exception
+     */
+    public function login(User $user): User
+    {
+        $user->setLastLogin(new DateTime());
         $this->em->flush();
 
         return $user;

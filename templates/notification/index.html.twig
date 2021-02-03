@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'notification.your_notifications'|trans }}{% endblock %}
+
+{% block body %}
+    {% if notifications %}
+        <div class="row">
+        {% for notification in notifications %}
+            <div class="card">
+                {% if notification.taskList %}
+                    <a href="{{ path('task_list_view', {'id': notification.taskList.id}) }}">
+                        {{ notification.getDescription()|trans({
+                            '%app%': _site_name,
+                            '%user%': notification.userInvolved.email,
+                            '%list%': notification.taskList.name
+                        }) }}
+                    </a>
+                {% else %}
+                    <a href="#" onclick="return">
+                        {{ notification.getDescription()|trans({
+                            '%app%': _site_name,
+                        }) }}
+                    </a>
+                {% endif %}
+                <small class="text-muted">{{ notification.date|date }}</small>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        {% include 'common/no-result.html.twig' only %}
+    {% endif %}
+{% endblock %}

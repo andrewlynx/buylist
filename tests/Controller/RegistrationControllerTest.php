@@ -12,7 +12,6 @@ class RegistrationControllerTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request(
             'GET',
-            //static::$container->get('router')->generate('app_register')
             ControllerTestHelper::generateRoute('app_register')
         );
         $this->assertResponseIsSuccessful();
@@ -44,7 +43,6 @@ class RegistrationControllerTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request(
             'GET',
-            //static::$container->get('router')->generate('app_register')
             ControllerTestHelper::generateRoute('app_register')
         );
 

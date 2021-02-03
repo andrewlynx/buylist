@@ -5,6 +5,7 @@
         </div>
 
         <ul class="nav navbar-nav navbar-right">
+            {% include 'parts/private/notifications/notifications-dropdown.html.twig' %}
             {% include 'parts/lang-dropdown.html.twig' %}
             {% if app.user %}
                 <li class="dropdown">

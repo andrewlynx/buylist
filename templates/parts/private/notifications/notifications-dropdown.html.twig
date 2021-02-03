@@ -1,0 +1,39 @@
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+        <span id="unread-notifications">{{ _notifications.countUnread() }}</span>
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        {% for notification in _notifications.getUnread() %}
+            <li>
+                {% if notification.taskList %}
+                    <a href="{{ path('task_list_view', {'id': notification.taskList.id}) }}">
+                        {{ notification.getDescription()|trans({
+                            '%app%': _site_name,
+                            '%user%': notification.userInvolved.email,
+                            '%list%': notification.taskList.name
+                        }) }}
+                    </a>
+                {% else %}
+                    <a href="#" onclick="return">
+                        {{ notification.getDescription()|trans({
+                            '%app%': _site_name,
+                        }) }}
+                    </a>
+                {% endif %}
+                {% if notification.seen == false %}
+                    <form name="notification_read" method="post" action="{{ path('notification_read', {'id': notification.id}) }}">
+                        <input type="hidden" name="_method" value="POST">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ notification.id) }}">
+                        <button class="btn">X</button>
+                    </form>
+                {% endif %}
+                <small class="text-muted">{{ notification.date|date }}</small>
+            </li>
+        {% endfor %}
+        <hr>
+        <li>
+            <a href="{{ path('notification_index') }}">{{ 'menu.notifications'|trans }}</a>
+        </li>
+    </ul>
+</li>

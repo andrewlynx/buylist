@@ -36,13 +36,21 @@ $( document ).ready(function() {
     window.taskItemCreateSuccess = function(msg, form){
         $('#list-items').append(msg.data);
         form.find("input[type=text], textarea").val('');
-    }
+    };
 
     // Process success result of share_list_email call
     window.shareListByEmailSuccess = function(msg, form){
         $('#shared-users').append(msg.data);
         form.find("input[type=text], textarea").val('');
-    }
+    };
+
+    // Process success result of notification_read call
+    window.readNotification = function(msg, form){
+        $('#unread-notifications').text(
+            parseInt($('#unread-notifications').text()) - 1
+        );
+        form.closest('li').remove();
+    };
 
     // Create task item call handler
     $('form[name="task_item_create"]').on('submit', function(e){
@@ -52,6 +60,11 @@ $( document ).ready(function() {
     // Share list by email call handler
     $('form[name="share_list_email"]').on('submit', function(e){
         msg = ajaxSendForm(e, 'shareListByEmailSuccess');
+    });
+
+    // Share list by email call handler
+    $('form[name="notification_read"]').on('submit', function(e){
+        msg = ajaxSendForm(e, 'readNotification');
     });
 
     // Task item completion call handler
