@@ -31,7 +31,7 @@
                 <small class="text-muted">{{ notification.date|date }}</small>
             </li>
         {% endfor %}
-        <hr>
+        <li role="separator" class="divider"></li>
         <li>
             <a href="{{ path('notification_index') }}">{{ 'menu.notifications'|trans }}</a>
         </li>

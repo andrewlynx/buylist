@@ -3,7 +3,10 @@
 namespace App\Service\Notification;
 
 use App\Entity\Notification;
+use App\Entity\TaskList;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class NotificationService
@@ -29,8 +32,16 @@ class NotificationService
      */
     private $em;
 
+    /**
+     * @var TokenStorageInterface
+     */
     private $tokenStorage;
 
+    /**
+     * NotificationService constructor.
+     * @param EntityManagerInterface $entityManager
+     * @param TokenStorageInterface $tokenStorage
+     */
     public function __construct(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage)
     {
         $this->em = $entityManager;
@@ -42,9 +53,7 @@ class NotificationService
      */
     public function getUnread(): array
     {
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        return $this->em->getRepository(Notification::class)->getUnread($user);
+        return $this->em->getRepository(Notification::class)->getUnread($this->getUser());
     }
 
     /**
@@ -52,9 +61,68 @@ class NotificationService
      */
     public function countUnread(): int
     {
-        $user = $this->tokenStorage->getToken()->getUser();
+        return $this->em->getRepository(Notification::class)->countUnread($this->getUser());
+    }
 
-        return $this->em->getRepository(Notification::class)->countUnread($user);
+    /**
+     * @param int $event
+     * @param User $user
+     * @param TaskList|null $taskList
+     * @param User|null $userInvolved
+     *
+     * @return Notification
+     *
+     * @throws Exception
+     */
+    public function createOrUpdate(
+        int $event,
+        User $user,
+        ?TaskList $taskList = null,
+        ?User $userInvolved = null
+    ): Notification
+    {
+        $notification = $this->getOrCreate(
+            $event,
+            $user,
+            $taskList,
+            $userInvolved
+        );
+
+        $this->em->persist($notification);
+        $this->em->flush();
+
+        return $notification;
+    }
+
+    /**
+     * @param int $event
+     * @param array $users
+     * @param TaskList|null $taskList
+     * @param User|null $userInvolved
+     *
+     * @throws Exception
+     */
+    public function createForManyUsers(
+        int $event,
+        array $users,
+        ?TaskList $taskList = null,
+        ?User $userInvolved = null
+    )
+    {
+        foreach ($users as $user) {
+            // do not add notification for current user
+            if ($user === $this->getUser()) {
+                continue;
+            }
+            $notification = $this->getOrCreate(
+                $event,
+                $user,
+                $taskList,
+                $userInvolved
+            );
+            $this->em->persist($notification);
+        }
+        $this->em->flush();
     }
 
     /**
@@ -70,9 +138,61 @@ class NotificationService
                 break;
             case self::EVENT_INVITED:
                 return 'notification.invitation';
+            case self::EVENT_LIST_CHANGED:
+                return 'notification.list_changed';
+            case self::EVENT_LIST_ARCHIVED:
+                return 'notification.list_archived';
 
             default:
                 return 'notification.not_found';
         }
+    }
+
+    /**
+     * @param int           $event
+     * @param User          $user
+     * @param TaskList|null $taskList
+     * @param User|null     $userInvolved
+     *
+     * @return Notification
+     *
+     * @throws \Exception
+     */
+    private function getOrCreate(
+        int $event,
+        User $user,
+        ?TaskList $taskList = null,
+        ?User $userInvolved = null
+    ): Notification
+    {
+        $notification = $this->em->getRepository(Notification::class)->findOneBy([
+            'event' => $event,
+            'user' => $user->getId(),
+            'taskList' => $taskList->getId(),
+            'userInvolved' => $userInvolved,
+            'seen' => false
+        ]);
+        if (!$notification) {
+            $notification = NotificationFactory::make(
+                $event,
+                $user,
+                $taskList,
+                $userInvolved
+            );
+        }
+
+        return $notification;
+    }
+
+    /**
+     * @return User|null
+     */
+    private function getUser(): ?User
+    {
+        if ($this->tokenStorage->getToken()) {
+            return $this->tokenStorage->getToken()->getUser();
+        }
+
+        return null;
     }
 }

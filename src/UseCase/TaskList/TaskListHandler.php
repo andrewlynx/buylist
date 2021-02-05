@@ -27,13 +27,24 @@ class TaskListHandler
     private $emailHandler;
 
     /**
+     * @var NotificationService
+     */
+    private $notificationService;
+
+    /**
      * @param EntityManagerInterface $em
      * @param InvitationEmailHandler $emailHandler
+     * @param NotificationService    $notificationService
      */
-    public function __construct(EntityManagerInterface $em, InvitationEmailHandler $emailHandler)
+    public function __construct(
+        EntityManagerInterface $em,
+        InvitationEmailHandler $emailHandler,
+        NotificationService $notificationService
+    )
     {
         $this->em = $em;
         $this->emailHandler = $emailHandler;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -71,15 +82,14 @@ class TaskListHandler
         /** @var User $user */
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => $dto->email]);
         if ($user && $user !== $taskList->getCreator()) {
-            $notification = NotificationFactory::make(
+
+            $taskList->addShared($user);
+            $this->notificationService->createOrUpdate(
                 NotificationService::EVENT_INVITED,
                 $user,
                 $taskList,
                 $taskList->getCreator()
             );
-            $taskList->addShared($user);
-            $this->em->persist($notification);
-            $this->em->flush();
 
             return $user;
         } elseif ($user === $taskList->getCreator()) {
@@ -103,11 +113,20 @@ class TaskListHandler
      * @param bool $status
      *
      * @return TaskList
+     *
+     * @throws Exception
      */
     public function archive(TaskList $taskList, bool $status): TaskList
     {
         $taskList->setArchived(!$status);
         $this->em->flush();
+
+        $this->notificationService->createForManyUsers(
+            NotificationService::EVENT_LIST_ARCHIVED,
+            $taskList->getShared()->toArray(),
+            $taskList,
+            $taskList->getCreator()
+        );
 
         return $taskList;
     }

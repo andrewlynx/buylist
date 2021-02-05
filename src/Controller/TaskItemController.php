@@ -105,7 +105,7 @@ class TaskItemController extends TranslatableController
             if (!$this->isCsrfTokenValid(TaskItemComplete::FORM_NAME, $taskItemCompleteData->token)) {
                 throw new ValidatorException('validation.invalid_csrf');
             }
-            $taskItem = $taskItemHandler->complete($taskItemCompleteData);
+            $taskItem = $taskItemHandler->complete($taskItemCompleteData, $this->getUser());
 
             return new JsonSuccess(
                 $serializer->serialize($taskItem, 'json', [AbstractNormalizer::ATTRIBUTES => ['id', 'completed']])

@@ -31,7 +31,9 @@ menu:
   notifications: Повідомлення
   settings: Налаштування
 notification:
-  invitation: 'Користувач %user% запросив вас у список %list%'
+  invitation: '%user% запросив вас у список %list%'
+  list_archived: '%user% архівував список %list%'
+  list_changed: '%user% вніс зміни у список %list%'
   not_found: 'Щось сталося не так, вибачте. Ми виправляємо.'
   welcome: 'Вітаємо у %app%'
   your_notifications: 'Ваші повідомлення'

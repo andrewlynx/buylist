@@ -64,7 +64,7 @@ class TaskItemHandlerTest extends WebTestCase
         ];
 
         $dto = new TaskItemComplete($dataArray);
-        $taskItemHandler->complete($dto);
+        $taskItemHandler->complete($dto, $testUser);
         $this->assertTrue($taskItem->isCompleted());
     }
 

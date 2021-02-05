@@ -6,7 +6,7 @@
     {% if notifications %}
         <div class="row">
         {% for notification in notifications %}
-            <div class="card">
+            <div class="well">
                 {% if notification.taskList %}
                     <a href="{{ path('task_list_view', {'id': notification.taskList.id}) }}">
                         {{ notification.getDescription()|trans({

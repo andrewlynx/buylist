@@ -31,7 +31,9 @@ menu:
   notifications: Notifications
   settings: Settings
 notification:
-  invitation: 'User %user% invited you to list %list%'
+  invitation: '%user% invited you to list %list%'
+  list_archived: '%user% archived list %list%'
+  list_changed: '%user% made changes in list %list%'
   not_found: 'Something got wrong, sorry. We are fixing.'
   welcome: 'Welcome to %app%'
   your_notifications: 'Your notifications'
