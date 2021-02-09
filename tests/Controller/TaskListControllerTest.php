@@ -17,12 +17,18 @@ class TaskListControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('GET', $client->getContainer()->get('router')->generate('task_list_index', ['_locale' => 'en']));
+        $client->request(
+            'GET',
+            $client->getContainer()->get('router')->generate('task_list_index', ['_locale' => 'en'])
+        );
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $this->assertSame('/en/login', $client->getResponse()->headers->get('Location'));
 
         $client = ControllerTestHelper::logInUser($client);
-        $client->request('GET', $client->getContainer()->get('router')->generate('task_list_index', ['_locale' => 'en']));
+        $client->request(
+            'GET',
+            $client->getContainer()->get('router')->generate('task_list_index', ['_locale' => 'en'])
+        );
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 
@@ -30,12 +36,18 @@ class TaskListControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('GET', $client->getContainer()->get('router')->generate('task_list_index_shared', ['_locale' => 'en']));
+        $client->request(
+            'GET',
+            $client->getContainer()->get('router')->generate('task_list_index_shared', ['_locale' => 'en'])
+        );
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $this->assertSame('/en/login', $client->getResponse()->headers->get('Location'));
 
         $client = ControllerTestHelper::logInUser($client);
-        $client->request('GET', $client->getContainer()->get('router')->generate('task_list_index_shared', ['_locale' => 'en']));
+        $client->request(
+            'GET',
+            $client->getContainer()->get('router')->generate('task_list_index_shared', ['_locale' => 'en'])
+        );
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 
@@ -230,7 +242,10 @@ class TaskListControllerTest extends WebTestCase
         );
         $responseArray = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
-        $this->assertEquals($responseArray['data'], 'User not found. The registration invitation was send on this email');
+        $this->assertEquals(
+            $responseArray['data'],
+            'User not found. The registration invitation was send on this email'
+        );
     }
 
     public function testEditList()

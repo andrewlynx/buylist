@@ -209,8 +209,7 @@ class TaskListController extends TranslatableController
         TaskList $taskList,
         Request $request,
         TaskListHandler $taskListHandler
-    ): Response
-    {
+    ): Response {
         try {
             if ($taskList->isArchived()) {
                 throw new RuntimeException(
@@ -240,7 +239,6 @@ class TaskListController extends TranslatableController
                     ]
                 )
             );
-
         } catch (Throwable $e) {
             return new JsonError(
                 $this->translator->trans($e->getMessage())
@@ -263,8 +261,7 @@ class TaskListController extends TranslatableController
         TaskList $taskList,
         Request $request,
         TaskListHandler $taskListHandler
-    ): Response
-    {
+    ): Response {
         $this->checkCreatorAccess($taskList, $this->getUser());
 
         $archiveForm = $this->getArchiveListForm($taskList)->handleRequest($request);
@@ -301,8 +298,7 @@ class TaskListController extends TranslatableController
         TaskList $taskList,
         Request $request,
         TaskListHandler $taskListHandler
-    ): Response
-    {
+    ): Response {
         $this->checkSharedAccess($taskList, $this->getUser());
 
         $unsubscribeForm = $this->getUnsubscribeForm($taskList)->handleRequest($request);

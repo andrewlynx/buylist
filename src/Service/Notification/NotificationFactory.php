@@ -26,8 +26,7 @@ class NotificationFactory
         User $user,
         ?TaskList $taskList = null,
         ?User $userInvolved = null
-    ): Notification
-    {
+    ): Notification {
         $notification = (new Notification())
             ->setEvent($event)
             ->setUser($user)

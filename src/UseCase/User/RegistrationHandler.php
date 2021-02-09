@@ -46,11 +46,11 @@ class RegistrationHandler
         $user = new User();
         $email = new Email($dto->email);
         $user->setPassword(
-                $this->passwordEncoder->encodePassword(
-                    $user,
-                    $dto->plainPassword
-                )
+            $this->passwordEncoder->encodePassword(
+                $user,
+                $dto->plainPassword
             )
+        )
             ->setEmail($email->getValue())
             ->setLocale($dto->locale)
             ->setNickName($dto->nickName);

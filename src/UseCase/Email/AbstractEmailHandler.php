@@ -25,8 +25,7 @@ abstract class AbstractEmailHandler
     public function __construct(
         SessionInterface $session,
         MailerInterface $mailer
-    )
-    {
+    ) {
         $this->session = $session;
         $this->mailer = $mailer;
     }

@@ -54,8 +54,11 @@ class NotificationController extends TranslatableController
      *
      * @throws Exception
      */
-    public function read(Notification $notification, Request $request, NotificationHandler $notificationHandler): Response
-    {
+    public function read(
+        Notification $notification,
+        Request $request,
+        NotificationHandler $notificationHandler
+    ): Response {
         try {
             if ($notification->getUser() !== $this->getUser()) {
                 throw new ValidatorException('validation.invalid_submission');
@@ -77,7 +80,6 @@ class NotificationController extends TranslatableController
             return new JsonSuccess(
                 'read'
             );
-
         } catch (Throwable $e) {
             return new JsonError(
                 $this->translator->trans($e->getMessage())

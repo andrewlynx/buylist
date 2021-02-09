@@ -91,8 +91,7 @@ class TaskItemController extends TranslatableController
         Request $request,
         SerializerInterface $serializer,
         TaskItemHandler $taskItemHandler
-    ): Response
-    {
+    ): Response {
         try {
             $dataArray = json_decode($request->getContent(), true);
             if (json_last_error() !== JSON_ERROR_NONE) {

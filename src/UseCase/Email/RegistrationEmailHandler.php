@@ -29,8 +29,7 @@ class RegistrationEmailHandler extends AbstractEmailHandler
         EmailVerifier $emailVerifier,
         SessionInterface $session,
         MailerInterface $mailer
-    )
-    {
+    ) {
         parent::__construct($this->session = $session, $this->mailer = $mailer);
         $this->emailVerifier = $emailVerifier;
     }
@@ -41,7 +40,9 @@ class RegistrationEmailHandler extends AbstractEmailHandler
     public function sendConfirmationEmail(User $user)
     {
         try {
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+            $this->emailVerifier->sendEmailConfirmation(
+                'app_verify_email',
+                $user,
                 (new TemplatedEmail())
                     ->to($user->getEmail())
                     ->subject('Please Confirm your Email')

@@ -69,7 +69,7 @@ user:
   incorrect_current_password: 'Невірний поточний пароль'
   language: Мова
   new_password: Новий Пароль
-  nickname: "Відображуване ім\'я"
+  nickname: "Відображуване ім'я"
   nickname_help: 'Якщо не вказано, відображатиметься перша частина email'
   password: Пароль
   password_change_help: 'Заповніть це поле, лише якщо ви хочете змінити пароль'

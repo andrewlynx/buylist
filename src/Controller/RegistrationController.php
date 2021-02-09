@@ -35,8 +35,7 @@ class RegistrationController extends TranslatableController
         AppAuthenticator $authenticator,
         RegistrationHandler $registrationHandler,
         RegistrationEmailHandler $emailHandler
-    ): Response
-    {
+    ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('index');
         }

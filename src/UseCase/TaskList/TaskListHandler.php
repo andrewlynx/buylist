@@ -40,8 +40,7 @@ class TaskListHandler
         EntityManagerInterface $em,
         InvitationEmailHandler $emailHandler,
         NotificationService $notificationService
-    )
-    {
+    ) {
         $this->em = $em;
         $this->emailHandler = $emailHandler;
         $this->notificationService = $notificationService;
@@ -82,7 +81,6 @@ class TaskListHandler
         /** @var User $user */
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => $dto->email]);
         if ($user && $user !== $taskList->getCreator()) {
-
             $taskList->addShared($user);
             $this->notificationService->createOrUpdate(
                 NotificationService::EVENT_INVITED,

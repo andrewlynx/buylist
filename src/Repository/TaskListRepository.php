@@ -53,7 +53,7 @@ class TaskListRepository extends ServiceEntityRepository
             ->innerJoin('t.shared', 'u', 'WITH', 'u.email = :email')
             ->andWhere('t.archived = 0')
             ->setParameter('email', $user->getEmail())
-            ->orderBy('t.creator' )
+            ->orderBy('t.creator')
             ->addOrderBy('t.createdAt', 'DESC')
         ;
 

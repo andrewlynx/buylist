@@ -85,8 +85,11 @@ class ResetPasswordController extends AbstractController
      *
      * @return Response
      */
-    public function reset(Request $request, UserPasswordEncoderInterface $passwordEncoder, string $token = null): Response
-    {
+    public function reset(
+        Request $request,
+        UserPasswordEncoderInterface $passwordEncoder,
+        string $token = null
+    ): Response {
         if ($token) {
             // We store the token in session and remove it from the URL, to avoid the URL being
             // loaded in a browser and potentially leaking the token to 3rd party JavaScript.
@@ -145,8 +148,10 @@ class ResetPasswordController extends AbstractController
      *
      * @return RedirectResponse
      */
-    private function processSendingPasswordResetEmail(string $emailFormData, RegistrationEmailHandler $emailHandler): RedirectResponse
-    {
+    private function processSendingPasswordResetEmail(
+        string $emailFormData,
+        RegistrationEmailHandler $emailHandler
+    ): RedirectResponse {
         $user = $this->getDoctrine()->getRepository(User::class)->findOneBy([
             'email' => $emailFormData,
         ]);
@@ -166,8 +171,8 @@ class ResetPasswordController extends AbstractController
             $this->addFlash('success', 'Success, please login with your new password');
         } catch (\Throwable $e) {
             $this->addFlash('danger', sprintf(
-             'There was a problem handling your password reset request: %s',
-             $e->getMessage()
+                'There was a problem handling your password reset request: %s',
+                $e->getMessage()
             ));
 
             return $this->redirectToRoute('app_check_email');

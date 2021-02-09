@@ -44,8 +44,7 @@ class NotificationService
     public function __construct(
         EntityManagerInterface $entityManager,
         TokenStorageInterface $tokenStorage
-    )
-    {
+    ) {
         $this->em = $entityManager;
         $this->tokenStorage = $tokenStorage;
     }
@@ -81,8 +80,7 @@ class NotificationService
         User $user,
         ?TaskList $taskList = null,
         ?User $userInvolved = null
-    ): Notification
-    {
+    ): Notification {
         $notification = $this->getOrCreate(
             $event,
             $user,
@@ -109,8 +107,7 @@ class NotificationService
         array $users,
         ?TaskList $taskList = null,
         ?User $userInvolved = null
-    )
-    {
+    ) {
         foreach ($users as $user) {
             // do not add notification for current user
             if ($user === $this->getUser()) {
@@ -194,8 +191,7 @@ class NotificationService
         User $user,
         ?TaskList $taskList = null,
         ?User $userInvolved = null
-    ): Notification
-    {
+    ): Notification {
         $notification = $this->em->getRepository(Notification::class)->findOneBy([
             'event' => $event,
             'user' => $user->getId(),
