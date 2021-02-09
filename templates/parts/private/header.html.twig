@@ -9,7 +9,7 @@
             {% include 'parts/lang-dropdown.html.twig' %}
             {% if app.user %}
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ app.user.username }}<span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ app.user.nickname }}<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <a class="dropdown-item btn btn-block" href="{{ path('app_logout') }}">{{ "header.logout"|trans }}</a>
                     </ul>

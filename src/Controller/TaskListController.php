@@ -172,20 +172,20 @@ class TaskListController extends TranslatableController
     /**
      * @Route("/delete/{id}", name="delete")
      *
-     * @param TaskList $taskList
-     * @param Request $request
+     * @param TaskList        $taskList
+     * @param Request         $request
+     * @param TaskListHandler $taskListHandler
      *
      * @return Response
      *
      * @throws Exception
      */
-    public function delete(TaskList $taskList, Request $request): Response
+    public function delete(TaskList $taskList, Request $request, TaskListHandler $taskListHandler): Response
     {
         $this->checkCreatorAccess($taskList, $this->getUser());
 
         if ($this->isCsrfTokenValid('delete'.$taskList->getId(), $request->request->get('_token'))) {
-            $this->getDoctrine()->getManager()->remove($taskList);
-            $this->getDoctrine()->getManager()->flush();
+            $taskListHandler->delete($taskList);
 
             $this->addFlash('success', sprintf('%s deleted', $taskList->getName()));
 
@@ -256,6 +256,8 @@ class TaskListController extends TranslatableController
      * @param TaskListHandler $taskListHandler
      *
      * @return Response
+     *
+     * @throws Exception
      */
     public function archiveList(
         TaskList $taskList,
@@ -292,6 +294,8 @@ class TaskListController extends TranslatableController
      * @param TaskListHandler $taskListHandler
      *
      * @return Response
+     *
+     * @throws Exception
      */
     public function unsubscribe(
         TaskList $taskList,

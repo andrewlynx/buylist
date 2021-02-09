@@ -43,6 +43,7 @@ class RegistrationHandlerTest extends WebTestCase
         $dto = new Registration();
         $dto->email = 'some_valid@email.com';
         $dto->plainPassword = 'some_password';
+        $dto->nickName = 'nick_name';
 
         $taskListShareData = new TaskListShare();
         $taskListShareData->email = 'some_valid@email.com';

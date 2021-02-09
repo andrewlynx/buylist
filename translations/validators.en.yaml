@@ -1,0 +1,5 @@
+user:
+  email_exists: 'There is already an account with this email'
+  enter_password: 'Enter password'
+  nickname_in_use: 'This nickname is in use, please choose another one'
+  password_limit: 'Your password should be at least {{ limit }} characters'

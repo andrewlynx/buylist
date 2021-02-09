@@ -136,12 +136,39 @@ class TaskListHandler
      * @param User $user
      *
      * @return TaskList
+     *
+     * @throws Exception
      */
     public function unsubscribe(TaskList $taskList, User $user): TaskList
     {
         $taskList->removeShared($user);
         $this->em->flush();
 
+        $this->notificationService->createOrUpdate(
+            NotificationService::EVENT_UNSUBSCRIBED,
+            $taskList->getCreator(),
+            $taskList,
+            $user
+        );
+
         return $taskList;
+    }
+
+    /**
+     * @param TaskList $taskList
+     *
+     * @throws Exception
+     */
+    public function delete(TaskList $taskList)
+    {
+        $this->em->remove($taskList);
+        $this->em->flush();
+
+        $this->notificationService->createForManyUsers(
+            NotificationService::EVENT_UNSUBSCRIBED,
+            $taskList->getShared()->toArray(),
+            $taskList,
+            $taskList->getCreator()
+        );
     }
 }

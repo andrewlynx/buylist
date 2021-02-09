@@ -20,7 +20,7 @@ class Notification
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=false)
      */
     private $event;
 
@@ -34,6 +34,11 @@ class Notification
      * @ORM\ManyToOne(targetEntity=TaskList::class)
      */
     private $taskList;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $text;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
@@ -119,6 +124,26 @@ class Notification
     }
 
     /**
+     * @return mixed
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    /**
+     * @param string|null $text
+     *
+     * @return $this
+     */
+    public function setText($text): ?string
+    {
+        $this->text = $text;
+
+        return $this;
+    }
+
+    /**
      * @return User|null
      */
     public function getUserInvolved(): ?User
@@ -179,10 +204,22 @@ class Notification
     }
 
     /**
+     * Returns translation string to display on a page
+     *
      * @return string
      */
     public function getDescription(): string
     {
         return NotificationService::getDescription($this);
+    }
+
+    /**
+     * Returns url to wrap the notification on a page o null of it's not required
+     *
+     * @return array|null
+     */
+    public function getUrlParams(): ?array
+    {
+        return NotificationService::getUrlParams($this);
     }
 }

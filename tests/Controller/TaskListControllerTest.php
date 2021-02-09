@@ -5,8 +5,10 @@ namespace App\Tests\Controller;
 use App\Constant\AppConstant;
 use App\DTO\TaskList\TaskListShare;
 use App\Entity\TaskList;
+use App\Repository\NotificationRepository;
 use App\Repository\TaskListRepository;
 use App\Repository\UserRepository;
+use App\Service\Notification\NotificationService;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskListControllerTest extends WebTestCase
@@ -185,6 +187,8 @@ class TaskListControllerTest extends WebTestCase
         /** @var TaskList $taskList */
         $taskList = static::$container->get(TaskListRepository::class)->find(1);
         $this->assertTrue($taskList->getShared()->contains($testUser));
+
+        return $client;
     }
 
     public function testTaskListShareAuthor()
@@ -250,9 +254,9 @@ class TaskListControllerTest extends WebTestCase
         );
     }
 
-    public function testArchiveList()
+    public function testArchiveListAndNotifications()
     {
-        $client = static::createClient();
+        $client = $this->testTaskListShareExistingUser();
         $client = ControllerTestHelper::logInUser($client);
 
         /** @var TaskList $taskList */
@@ -273,5 +277,43 @@ class TaskListControllerTest extends WebTestCase
         /** @var TaskList $taskList */
         $taskList = static::$container->get(TaskListRepository::class)->find(1);
         $this->assertTrue($taskList->isArchived());
+
+        $client = ControllerTestHelper::logInUser($client, 'user2@example.com');
+        $crawler = $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('task_list_index')
+        );
+        $this->assertContains(
+            'user1@example.com archived list New Task List',
+            $client->getResponse()->getContent()
+        );
+
+        /** @var TaskList $taskList */
+        $taskList = static::$container->get(NotificationRepository::class)->findOneBy([
+            'event' => NotificationService::EVENT_LIST_ARCHIVED
+        ]);
+
+        $client->request(
+            'POST',
+            ControllerTestHelper::generateRoute('notification_read', 3),
+            [],
+            [],
+            [],
+            json_encode([
+                '_token' => ControllerTestHelper::getToken('read_notification3'),
+            ])
+        );
+
+        $responseArray = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_SUCCESS);
+
+        $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('task_list_index')
+        );
+        $this->assertNotContains(
+            'user1@example.com archived list New Task List',
+            $client->getResponse()->getContent()
+        );
     }
 }

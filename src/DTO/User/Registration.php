@@ -17,5 +17,10 @@ class Registration
     /**
      * @var string
      */
+    public $nickName;
+
+    /**
+     * @var string
+     */
     public $locale;
 }

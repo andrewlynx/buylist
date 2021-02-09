@@ -22,7 +22,7 @@
                 </div>
             {% endif %}
             {% if app.user != task_list.creator %}
-                <div>List created by <b>{{ task_list.creator.email }}</b></div>
+                <div>List created by <b>{{ task_list.creator.nickname }}</b></div>
             {% endif %}
             <div>{{ 'list.created'|trans }}: {{ task_list.createdAt|date }}</div>
             <div>{{ 'list.last_update'|trans }}: {{ task_list.updatedAt|date }}</div>

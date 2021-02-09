@@ -1,0 +1,5 @@
+user:
+  email_exists: 'Уже є обліковий запис із цим email'
+  enter_password: 'Введіть пароль'
+  nickname_in_use: 'Цей псевдонім використовується, будь ласка, виберіть інший'
+  password_limit: 'Your password should be at least {{ limit }} characters'

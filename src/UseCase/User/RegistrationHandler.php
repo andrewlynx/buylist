@@ -52,7 +52,8 @@ class RegistrationHandler
                 )
             )
             ->setEmail($email->getValue())
-            ->setLocale($dto->locale);
+            ->setLocale($dto->locale)
+            ->setNickName($dto->nickName);
 
         $this->em->persist($user);
 

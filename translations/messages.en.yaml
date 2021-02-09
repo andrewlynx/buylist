@@ -34,7 +34,9 @@ notification:
   invitation: '%user% invited you to list %list%'
   list_archived: '%user% archived list %list%'
   list_changed: '%user% made changes in list %list%'
+  list_removed: '%user% removed list %list%'
   not_found: 'Something got wrong, sorry. We are fixing.'
+  unsubscribed: '%user% unsubscribed from list %list%'
   welcome: 'Welcome to %app%'
   your_notifications: 'Your notifications'
 task_item:
@@ -67,5 +69,8 @@ user:
   incorrect_current_password: 'Incorrect Current Password'
   language: Language
   new_password: 'New Password'
+  nickname: 'Display name'
+  nickname_help: 'If not set, first part of email will be displayed'
   password: Password
   password_change_help: 'Fill this field only if you want to change your password'
+  register: Register

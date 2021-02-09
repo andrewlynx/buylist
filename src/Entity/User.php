@@ -12,7 +12,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ * @UniqueEntity(fields={"email"}, message="user.email_exists")
+ * @UniqueEntity(fields={"nickName"}, message="user.nickname_in_use")
  */
 class User implements UserInterface
 {
@@ -73,6 +74,13 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="user", orphanRemoval=true)
      */
     private $notifications;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=32, nullable=true, unique=true)
+     */
+    private $nickName;
 
     /**
      *
@@ -326,5 +334,25 @@ class User implements UserInterface
     public function getNotifications(): Collection
     {
         return $this->notifications;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNickName(): string
+    {
+        return $this->nickName ?? substr($this->email, 0, strpos($this->email, '@'));
+    }
+
+    /**
+     * @param string $nickName
+     *
+     * @return User
+     */
+    public function setNickName(string $nickName): User
+    {
+        $this->nickName = $nickName;
+
+        return $this;
     }
 }

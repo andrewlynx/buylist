@@ -68,7 +68,7 @@ class NotificationController extends TranslatableController
                 );
             }
 
-            if (!$this->isCsrfTokenValid('delete'.$notification->getId(), $dataArray['_token'])) {
+            if (!$this->isCsrfTokenValid('read_notification'.$notification->getId(), $dataArray['_token'])) {
                 throw new ValidatorException('validation.invalid_csrf');
             }
 

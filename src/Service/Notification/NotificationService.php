@@ -38,11 +38,13 @@ class NotificationService
     private $tokenStorage;
 
     /**
-     * NotificationService constructor.
      * @param EntityManagerInterface $entityManager
      * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage)
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        TokenStorageInterface $tokenStorage
+    )
     {
         $this->em = $entityManager;
         $this->tokenStorage = $tokenStorage;
@@ -126,6 +128,8 @@ class NotificationService
     }
 
     /**
+     * Returns translation string to display on a page
+     *
      * @param Notification $notification
      *
      * @return string
@@ -142,9 +146,36 @@ class NotificationService
                 return 'notification.list_changed';
             case self::EVENT_LIST_ARCHIVED:
                 return 'notification.list_archived';
+            case self::EVENT_LIST_REMOVED:
+                return 'notification.list_removed';
+            case self::EVENT_UNSUBSCRIBED:
+                return 'notification.unsubscribed';
 
             default:
                 return 'notification.not_found';
+        }
+    }
+
+    /**
+     * Returns url to wrap the notification on a page o null of it's not required
+     *
+     * @param Notification $notification
+     *
+     * @return array|null
+     */
+    public static function getUrlParams(Notification $notification): ?array
+    {
+        switch ($notification->getEvent()) {
+            case self::EVENT_INVITED:
+            case self::EVENT_LIST_CHANGED:
+            case self::EVENT_LIST_ARCHIVED:
+                return [
+                    'page' => 'task_list_view',
+                    'id' => $notification->getTaskList()->getId(),
+                ];
+
+            default:
+                return null;
         }
     }
 

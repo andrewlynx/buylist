@@ -6,25 +6,22 @@
     <ul class="dropdown-menu">
         {% for notification in _notifications.getUnread() %}
             <li>
-                {% if notification.taskList %}
-                    <a href="{{ path('task_list_view', {'id': notification.taskList.id}) }}">
+                {% if notification.getUrlParams is not null %}
+                    <a href="{{ path(notification.getUrlParams['page'], {'id': notification.getUrlParams['id']}) }}">
+                {% else %}
+                    <a href="#" onclick="return">
+                {% endif %}
                         {{ notification.getDescription()|trans({
                             '%app%': _site_name,
                             '%user%': notification.userInvolved.email,
                             '%list%': notification.taskList.name
                         }) }}
                     </a>
-                {% else %}
-                    <a href="#" onclick="return">
-                        {{ notification.getDescription()|trans({
-                            '%app%': _site_name,
-                        }) }}
-                    </a>
-                {% endif %}
+
                 {% if notification.seen == false %}
                     <form name="notification_read" method="post" action="{{ path('notification_read', {'id': notification.id}) }}">
                         <input type="hidden" name="_method" value="POST">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ notification.id) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('read_notification' ~ notification.id) }}">
                         <button class="btn">X</button>
                     </form>
                 {% endif %}

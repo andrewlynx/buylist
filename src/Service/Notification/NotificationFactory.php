@@ -40,6 +40,7 @@ class NotificationFactory
             case NotificationService::EVENT_LIST_CHANGED:
             case NotificationService::EVENT_LIST_ARCHIVED:
             case NotificationService::EVENT_LIST_REMOVED:
+            case NotificationService::EVENT_UNSUBSCRIBED:
                 self::validate($taskList, TaskList::class);
                 self::validate($userInvolved, User::class);
                 $notification

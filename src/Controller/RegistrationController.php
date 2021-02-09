@@ -48,6 +48,7 @@ class RegistrationController extends TranslatableController
                 $registrationData = new Registration();
                 $registrationData->email = $form->get('email')->getData();
                 $registrationData->plainPassword = $form->get('plainPassword')->getData();
+                $registrationData->nickName = $form->get('nickName')->getData();
                 $registrationData->locale = $request->getLocale();
 
                 $user = $registrationHandler->register($registrationData);

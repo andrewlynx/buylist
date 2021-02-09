@@ -6,9 +6,9 @@
     {% if task_lists %}
         {% set author = '' %}
         {% for task_list in task_lists %}
-            {% if task_list.creator.email != author %}
-                {% set author = task_list.creator.email %}
-                <h5>By {{ task_list.creator.email }}</h5>
+            {% if task_list.creator.nickname != author %}
+                {% set author = task_list.creator.nickname %}
+                <h5>By {{ author }} ({{ task_list.creator.email }})</h5>
             {% endif %}
             <div class="row">
                 <div class="col-md-10"><a href="{{ path('task_list_view', {'id': task_list.id}) }}">
