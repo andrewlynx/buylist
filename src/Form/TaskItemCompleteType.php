@@ -9,7 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class TaskItemCompleteType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var TaskItem $taskItem */
         $taskItem = $options['data'];

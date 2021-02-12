@@ -1,0 +1,67 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Property App\\\\Entity\\\\ResetPasswordRequest\\:\\:\\$user type mapping mismatch\\: property can contain object but database expects App\\\\Entity\\\\User\\.$#"
+			count: 1
+			path: src/Entity/ResetPasswordRequest.php
+
+		-
+			message: "#^PHPDoc tag @return with type mixed is not subtype of native type array\\.$#"
+			count: 2
+			path: src/Repository/TaskListRepository.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\SessionInterface\\:\\:getFlashBag\\(\\)\\.$#"
+			count: 1
+			path: src/UseCase/Email/RegistrationEmailHandler.php
+
+		-
+			message: "#^Method App\\\\Utils\\\\CircularReferenceHandler\\:\\:__invoke\\(\\) has parameter \\$object with no typehint specified\\.$#"
+			count: 1
+			path: src/Utils/CircularReferenceHandler.php
+
+		-
+			message: "#^PHPDoc tag @param has invalid value \\(\\$object\\)\\: Unexpected token \"\\$object\", expected type at offset 18$#"
+			count: 1
+			path: src/Utils/CircularReferenceHandler.php
+
+		-
+			message: "#^Method App\\\\Tests\\\\Controller\\\\ControllerTestHelper\\:\\:logInUser\\(\\) has parameter \\$email with no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/ControllerTestHelper.php
+
+		-
+			message: "#^Call to an undefined method App\\\\Repository\\\\UserRepository\\:\\:findOneByEmail\\(\\)\\.$#"
+			count: 1
+			path: tests/Controller/ControllerTestHelper.php
+
+		-
+			message: "#^Call to an undefined method App\\\\Repository\\\\UserRepository\\:\\:findOneByEmail\\(\\)\\.$#"
+			count: 1
+			path: tests/Controller/RegistrationControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
+			count: 6
+			path: tests/Controller/TaskItemControllerTest.php
+
+		-
+			message: "#^Parameter \\#6 \\$content of method Symfony\\\\Component\\\\BrowserKit\\\\AbstractBrowser\\:\\:request\\(\\) expects string\\|null, string\\|false given\\.$#"
+			count: 4
+			path: tests/Controller/TaskItemControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
+			count: 6
+			path: tests/Controller/TaskListControllerTest.php
+
+		-
+			message: "#^Parameter \\#6 \\$content of method Symfony\\\\Component\\\\BrowserKit\\\\AbstractBrowser\\:\\:request\\(\\) expects string\\|null, string\\|false given\\.$#"
+			count: 5
+			path: tests/Controller/TaskListControllerTest.php
+
+		-
+			message: "#^Call to an undefined method App\\\\Repository\\\\UserRepository\\:\\:findOneByEmail\\(\\)\\.$#"
+			count: 1
+			path: tests/Controller/TaskListControllerTest.php
+

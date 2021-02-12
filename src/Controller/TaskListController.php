@@ -45,7 +45,9 @@ class TaskListController extends TranslatableController
      */
     public function index(TaskListRepository $taskListRepository): Response
     {
-        $taskLists = $taskListRepository->getUsersTasks($this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+        $taskLists = $taskListRepository->getUsersTasks($user);
 
         return $this->render(
             'task-list/index.html.twig',
@@ -65,7 +67,9 @@ class TaskListController extends TranslatableController
      */
     public function indexShared(TaskListRepository $taskListRepository): Response
     {
-        $taskLists = $taskListRepository->getSharedTasks($this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+        $taskLists = $taskListRepository->getSharedTasks($user);
         $unsubscribeForms = $this->getUnsubscribeFormsViews($taskLists);
 
         return $this->render(
@@ -86,7 +90,9 @@ class TaskListController extends TranslatableController
      */
     public function archive(TaskListRepository $taskListRepository): Response
     {
-        $taskLists = $taskListRepository->getArchivedUsersTasks($this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+        $taskLists = $taskListRepository->getArchivedUsersTasks($user);
 
         return $this->render(
             'task-list/archive-index.html.twig',
@@ -108,7 +114,9 @@ class TaskListController extends TranslatableController
      */
     public function create(TaskListHandler $taskListHandler): Response
     {
-        $taskList = $taskListHandler->create($this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+        $taskList = $taskListHandler->create($user);
 
         return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
     }
@@ -125,7 +133,9 @@ class TaskListController extends TranslatableController
      */
     public function view(TaskList $taskList, Request $request): Response
     {
-        $this->checkSharedAccess($taskList, $this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+        $this->checkSharedAccess($taskList, $user);
 
         $form = $this->createForm(TaskListType::class, $taskList)
             ->handleRequest($request);
@@ -182,7 +192,9 @@ class TaskListController extends TranslatableController
      */
     public function delete(TaskList $taskList, Request $request, TaskListHandler $taskListHandler): Response
     {
-        $this->checkCreatorAccess($taskList, $this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+        $this->checkCreatorAccess($taskList, $user);
 
         if ($this->isCsrfTokenValid('delete'.$taskList->getId(), $request->request->get('_token'))) {
             $taskListHandler->delete($taskList);
@@ -262,7 +274,9 @@ class TaskListController extends TranslatableController
         Request $request,
         TaskListHandler $taskListHandler
     ): Response {
-        $this->checkCreatorAccess($taskList, $this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+        $this->checkCreatorAccess($taskList, $user);
 
         $archiveForm = $this->getArchiveListForm($taskList)->handleRequest($request);
 
@@ -299,14 +313,16 @@ class TaskListController extends TranslatableController
         Request $request,
         TaskListHandler $taskListHandler
     ): Response {
-        $this->checkSharedAccess($taskList, $this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+        $this->checkSharedAccess($taskList, $user);
 
         $unsubscribeForm = $this->getUnsubscribeForm($taskList)->handleRequest($request);
 
         if ($unsubscribeForm->isSubmitted() && $unsubscribeForm->isValid()) {
             $taskListHandler->unsubscribe(
                 $taskList,
-                $this->getUser()
+                $user
             );
 
             $this->addFlash(

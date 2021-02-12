@@ -26,7 +26,7 @@ final class LocaleListener implements EventSubscriberInterface
     /**
      * @return array
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             RequestEvent::class => 'onKernelRequest',
@@ -36,7 +36,7 @@ final class LocaleListener implements EventSubscriberInterface
     /**
      * @param RequestEvent $event
      */
-    public function onKernelRequest(RequestEvent $event)
+    public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
         if (!$request->hasPreviousSession()) {

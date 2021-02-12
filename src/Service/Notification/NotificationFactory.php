@@ -54,7 +54,7 @@ class NotificationFactory
     }
 
     /**
-     * @param $argument
+     * @param mixed $argument
      * @param string $class
      */
     private static function validate($argument, string $class): void

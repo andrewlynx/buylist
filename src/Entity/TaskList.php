@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 class TaskList
 {
     /**
-     * @var int
+     * @var int|null
      *
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -30,14 +30,14 @@ class TaskList
     private $name;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $description;
 
     /**
-     * @var DateTimeInterface
+     * @var DateTimeInterface|null
      *
      * @ORM\Column(type="date", nullable=true)
      */
@@ -52,7 +52,7 @@ class TaskList
     private $creator;
 
     /**
-     * @var User[]
+     * @var Collection<User>
      *
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="shared")
      */
@@ -73,14 +73,14 @@ class TaskList
     private $updatedAt;
 
     /**
-     * @var TaskItem[]
+     * @var Collection<TaskItem>
      *
      * @ORM\OneToMany(targetEntity=TaskItem::class, mappedBy="taskList", orphanRemoval=true, cascade={"persist"})
      */
     private $taskItems;
 
     /**
-     * var EmailInvitation[]
+     * @var Collection<EmailInvitation>
      *
      * @ORM\OneToMany(targetEntity=EmailInvitation::class, mappedBy="taskList")
      */

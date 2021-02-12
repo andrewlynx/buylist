@@ -84,7 +84,9 @@ class RegistrationController extends TranslatableController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         try {
-            $emailHandler->handleEmailConfirmation($request, $this->getUser());
+            /** @var User $user */
+            $user = $this->getUser();
+            $emailHandler->handleEmailConfirmation($request, $user);
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('danger', $exception->getReason());
 

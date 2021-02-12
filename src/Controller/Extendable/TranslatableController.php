@@ -7,6 +7,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TranslatableController extends AbstractController
 {
+    /**
+     * @var TranslatorInterface
+     */
     protected $translator;
 
     public function __construct(TranslatorInterface $translator)

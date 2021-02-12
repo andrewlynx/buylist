@@ -11,6 +11,9 @@ final class Builder implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
+    /**
+     * @var FactoryInterface
+     */
     private $factory;
 
     /**

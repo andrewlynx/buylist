@@ -21,16 +21,22 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *
+     * @var int
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     *
+     * @var string
      */
     private $email;
 
     /**
      * @ORM\Column(type="json")
+     *
+     * @var array
      */
     private $roles = [];
 
@@ -43,40 +49,48 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="boolean")
+     *
+     * @var bool
      */
     private $isVerified = false;
 
     /**
      * @ORM\ManyToMany(targetEntity=TaskList::class, mappedBy="shared", orphanRemoval=true)
+     *
+     * @var Collection<TaskList>
      */
     private $shared;
 
     /**
      * @ORM\OneToMany(targetEntity=TaskList::class, mappedBy="creator")
+     *
+     * @var Collection<TaskList>
      */
     private $taskLists;
 
     /**
      * @ORM\Column(type="string", length=2, nullable=true)
+     *
+     * @var string|null
      */
     private $locale;
 
     /**
-     * @var DateTimeInterface
+     * @var DateTimeInterface|null
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $lastLogin;
 
     /**
-     * @var Collection|Notification[]
+     * @var Collection<Notification>
      *
      * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="user", orphanRemoval=true)
      */
     private $notifications;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(type="string", length=32, nullable=true, unique=true)
      */
@@ -177,15 +191,16 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getSalt()
+    public function getSalt(): ?string
     {
         // not needed when using the "bcrypt" algorithm in security.yaml
+        return null;
     }
 
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
@@ -212,7 +227,7 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|TaskList[]
+     * @return Collection<TaskList>
      */
     public function getShared(): Collection
     {
@@ -252,7 +267,7 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|TaskList[]
+     * @return Collection<TaskList>
      */
     public function getTaskLists(): Collection
     {
@@ -329,7 +344,7 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|Notification[]
+     * @return Collection<Notification>
      */
     public function getNotifications(): Collection
     {
@@ -337,11 +352,11 @@ class User implements UserInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getNickName(): string
+    public function getNickName(): ?string
     {
-        return $this->nickName ?? substr($this->email, 0, strpos($this->email, '@'));
+        return $this->nickName ?? substr($this->email, 0, strpos($this->email, '@') ?: null);
     }
 
     /**

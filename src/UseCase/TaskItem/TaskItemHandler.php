@@ -47,7 +47,7 @@ class TaskItemHandler
     public function create(TaskItemCreate $dto, User $user): TaskItem
     {
         $taskListRepo = $this->em->getRepository(TaskList::class);
-        /** @var TaskList $taskList */
+        /** @var TaskList|null $taskList */
         $taskList = $taskListRepo->find($dto->listId);
 
         if ($taskList->isArchived()) {

@@ -15,7 +15,7 @@ class TaskItemComplete
     public $token;
 
     /**
-     * @var string
+     * @var bool
      */
     public $completed;
 

@@ -31,7 +31,7 @@ class TaskItem
     private $name;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(type="string", length=64, nullable=true)
      */

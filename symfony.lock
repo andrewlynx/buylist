@@ -132,6 +132,18 @@
     "php": {
         "version": "7.4"
     },
+    "phpstan/phpstan": {
+        "version": "0.12.74"
+    },
+    "phpstan/phpstan-doctrine": {
+        "version": "0.12.31"
+    },
+    "phpstan/phpstan-phpunit": {
+        "version": "0.12.17"
+    },
+    "phpstan/phpstan-symfony": {
+        "version": "0.12.16"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },

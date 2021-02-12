@@ -55,7 +55,7 @@ class TaskListControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        /** @var TaskListRepository $userRepository */
+        /** @var TaskListRepository $listRepository */
         $listRepository = static::$container->get(TaskListRepository::class);
 
         $this->assertCount(1, $listRepository->findAll());
@@ -128,7 +128,7 @@ class TaskListControllerTest extends WebTestCase
         );
         $this->assertResponseStatusCodeSame(302);
 
-        /** @var TaskListRepository $userRepository */
+        /** @var TaskListRepository $listRepository */
         $listRepository = static::$container->get(TaskListRepository::class);
         $this->assertCount(0, $listRepository->findAll());
     }

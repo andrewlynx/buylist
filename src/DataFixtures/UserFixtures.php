@@ -12,6 +12,9 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserFixtures extends Fixture
 {
+    /**
+     * @var UserPasswordEncoderInterface
+     */
     private $passwordEncoder;
 
     /**
@@ -27,7 +30,7 @@ class UserFixtures extends Fixture
      *
      * @throws Exception
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         for ($i = 1; $i < 5; $i++) {
             $name = 'user'.$i;

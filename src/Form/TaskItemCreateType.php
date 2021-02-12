@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class TaskItemCreateType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var TaskList $taskList */
         $taskList = $options['data']['taskList'];

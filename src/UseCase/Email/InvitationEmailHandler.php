@@ -14,7 +14,7 @@ class InvitationEmailHandler extends AbstractEmailHandler
      * @param TaskListShare $dto
      * @throws TransportExceptionInterface
      */
-    public function sendInvitationEmail(User $from, TaskListShare $dto)
+    public function sendInvitationEmail(User $from, TaskListShare $dto): void
     {
         $email = (new TemplatedEmail())
             ->to($dto->email)

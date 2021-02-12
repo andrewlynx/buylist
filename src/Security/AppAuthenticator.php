@@ -7,6 +7,7 @@ use App\UseCase\User\RegistrationHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -49,7 +50,7 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
     private $passwordEncoder;
 
     /**
-     * @var
+     * @var RegistrationHandler
      */
     private $registrationHandler;
 
@@ -74,12 +75,22 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
         $this->registrationHandler = $registrationHandler;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return bool
+     */
     public function supports(Request $request)
     {
         return self::LOGIN_ROUTE === $request->attributes->get('_route')
             && $request->isMethod('POST');
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return array|mixed
+     */
     public function getCredentials(Request $request)
     {
         $credentials = [
@@ -95,6 +106,12 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
         return $credentials;
     }
 
+    /**
+     * @param mixed $credentials
+     * @param UserProviderInterface $userProvider
+     *
+     * @return object|UserInterface|null
+     */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
@@ -112,6 +129,12 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
         return $user;
     }
 
+    /**
+     * @param mixed $credentials
+     * @param UserInterface $user
+     *
+     * @return bool
+     */
     public function checkCredentials($credentials, UserInterface $user)
     {
         return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
@@ -119,15 +142,30 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
 
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
+     *
+     * @param mixed $credentials
+     *
+     * @return string|null
      */
     public function getPassword($credentials): ?string
     {
         return $credentials['password'];
     }
 
+    /**
+     * @param Request $request
+     * @param TokenInterface $token
+     * @param string $providerKey
+     *
+     * @return RedirectResponse|Response|null
+     *
+     * @throws \Exception
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
-        $this->registrationHandler->login($token->getUser());
+        /** @var User $user */
+        $user = $token->getUser();
+        $this->registrationHandler->login($user);
 
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
@@ -136,11 +174,14 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
         return new RedirectResponse(
             $this->urlGenerator->generate(
                 'index',
-                ['_locale' => $token->getUser()->getLocale() ?? $request->getDefaultLocale()]
+                ['_locale' => $user->getLocale() ?? $request->getDefaultLocale()]
             )
         );
     }
 
+    /**
+     * @return string
+     */
     protected function getLoginUrl()
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);

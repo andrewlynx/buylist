@@ -50,7 +50,7 @@ class NotificationService
     }
 
     /**
-     * @return array
+     * @return array<Notification>
      */
     public function getUnread(): array
     {
@@ -96,7 +96,7 @@ class NotificationService
 
     /**
      * @param int $event
-     * @param array $users
+     * @param array<User> $users
      * @param TaskList|null $taskList
      * @param User|null $userInvolved
      *
@@ -107,7 +107,7 @@ class NotificationService
         array $users,
         ?TaskList $taskList = null,
         ?User $userInvolved = null
-    ) {
+    ): void {
         foreach ($users as $user) {
             // do not add notification for current user
             if ($user === $this->getUser()) {
@@ -136,7 +136,6 @@ class NotificationService
         switch ($notification->getEvent()) {
             case self::EVENT_WELCOME:
                 return 'notification.welcome';
-                break;
             case self::EVENT_INVITED:
                 return 'notification.invitation';
             case self::EVENT_LIST_CHANGED:
@@ -158,7 +157,7 @@ class NotificationService
      *
      * @param Notification $notification
      *
-     * @return array|null
+     * @return array<string, int|string>|null
      */
     public static function getUrlParams(Notification $notification): ?array
     {
@@ -168,7 +167,7 @@ class NotificationService
             case self::EVENT_LIST_ARCHIVED:
                 return [
                     'page' => 'task_list_view',
-                    'id' => $notification->getTaskList()->getId(),
+                    'id' => $notification->getTaskList()->getId() ?? 0,
                 ];
 
             default:
@@ -217,7 +216,9 @@ class NotificationService
     private function getUser(): ?User
     {
         if ($this->tokenStorage->getToken()) {
-            return $this->tokenStorage->getToken()->getUser();
+            /** @var User $user */
+            $user = $this->tokenStorage->getToken()->getUser();
+            return $user;
         }
 
         return null;

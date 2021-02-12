@@ -37,7 +37,7 @@ class RegistrationEmailHandler extends AbstractEmailHandler
     /**
      * @param User $user
      */
-    public function sendConfirmationEmail(User $user)
+    public function sendConfirmationEmail(User $user): void
     {
         try {
             $this->emailVerifier->sendEmailConfirmation(
@@ -59,7 +59,7 @@ class RegistrationEmailHandler extends AbstractEmailHandler
      *
      * @throws VerifyEmailExceptionInterface
      */
-    public function handleEmailConfirmation(Request $request, User $user)
+    public function handleEmailConfirmation(Request $request, User $user): void
     {
         $this->emailVerifier->handleEmailConfirmation($request, $user);
     }
@@ -70,7 +70,7 @@ class RegistrationEmailHandler extends AbstractEmailHandler
      *
      * @throws TransportExceptionInterface
      */
-    public function sendPasswordResetEmail(User $user, ResetPasswordToken $token)
+    public function sendPasswordResetEmail(User $user, ResetPasswordToken $token): void
     {
         $email = (new TemplatedEmail())
             ->to($user->getEmail())

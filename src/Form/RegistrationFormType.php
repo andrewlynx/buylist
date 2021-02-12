@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints\Unique;
 
 class RegistrationFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('email', null, [
@@ -50,7 +50,9 @@ class RegistrationFormType extends AbstractType
                 }
 
                 if (empty($user['nickName']) && !empty($user['email'])) {
-                    $user['nickName'] = substr($user['email'], 0, strpos($user['email'], '@')) ?? $user['email'];
+                    $user['nickName'] =
+                        substr($user['email'], 0, strpos($user['email'], '@') ?: null)
+                        ?? $user['email'];
                 }
                 $user['nickName'] = empty($user['nickName']) ? 'user'.rand(100000, 999999) : $user['nickName'];
 
@@ -59,7 +61,7 @@ class RegistrationFormType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,

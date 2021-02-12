@@ -78,7 +78,7 @@ class TaskListHandler
      */
     public function share(TaskList $taskList, TaskListShare $dto): User
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => $dto->email]);
         if ($user && $user !== $taskList->getCreator()) {
             $taskList->addShared($user);
@@ -157,7 +157,7 @@ class TaskListHandler
      *
      * @throws Exception
      */
-    public function delete(TaskList $taskList)
+    public function delete(TaskList $taskList):void
     {
         $this->em->remove($taskList);
         $this->em->flush();

@@ -1,0 +1,29 @@
+includes:
+    - 'vendor/phpstan/phpstan-doctrine/extension.neon'
+    - 'vendor/phpstan/phpstan-doctrine/rules.neon'
+    - 'vendor/phpstan/phpstan-phpunit/extension.neon'
+    - 'vendor/phpstan/phpstan-phpunit/rules.neon'
+    - 'vendor/phpstan/phpstan-symfony/extension.neon'
+    - 'vendor/phpstan/phpstan-symfony/rules.neon'
+    - phpstan-baseline.neon
+
+parameters:
+    ignoreErrors:
+        - '#Method App\\Tests\\[a-zA-Z0-9\\_]+::.+ has no return typehint specified.#'
+    symfony:
+        container_xml_path: var/cache/test/App_KernelTestDebugContainer.xml
+    doctrine:
+        objectManagerLoader: tests/manager.php
+    level: 7
+    paths:
+        - config
+        - public
+        - src
+        - tests
+    bootstrapFiles:
+        - bin/.phpunit/phpunit-8.3-0/vendor/autoload.php
+    parallel:
+        processTimeout: 150.0
+    tmpDir: .phpstan
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false

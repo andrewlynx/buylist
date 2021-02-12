@@ -42,7 +42,7 @@ class MailerListener implements EventSubscriberInterface
     /**
      * @param MessageEvent $event
      */
-    public function onMailerSend(MessageEvent $event)
+    public function onMailerSend(MessageEvent $event): void
     {
         $email = $event->getMessage();
         if (!$email instanceof Email) {

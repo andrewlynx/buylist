@@ -7,6 +7,7 @@ use App\DTO\TaskItem\TaskItemComplete;
 use App\DTO\TaskItem\TaskItemCreate;
 use App\Entity\JsonResponse\JsonError;
 use App\Entity\JsonResponse\JsonSuccess;
+use App\Entity\User;
 use App\Form\TaskItemCompleteType;
 use App\UseCase\TaskItem\TaskItemHandler;
 use Exception;
@@ -52,7 +53,9 @@ class TaskItemController extends TranslatableController
                 throw new ValidatorException('validation.invalid_csrf');
             }
 
-            $taskItem = $taskItemHandler->create($taskItemCreateData, $this->getUser());
+            /** @var User $user */
+            $user = $this->getUser();
+            $taskItem = $taskItemHandler->create($taskItemCreateData, $user);
 
             $completeForm = $this->createForm(TaskItemCompleteType::class, $taskItem, [
                 'action' => $this->generateUrl('task_item_complete'),
@@ -104,7 +107,9 @@ class TaskItemController extends TranslatableController
             if (!$this->isCsrfTokenValid(TaskItemComplete::FORM_NAME, $taskItemCompleteData->token)) {
                 throw new ValidatorException('validation.invalid_csrf');
             }
-            $taskItem = $taskItemHandler->complete($taskItemCompleteData, $this->getUser());
+            /** @var User $user */
+            $user = $this->getUser();
+            $taskItem = $taskItemHandler->complete($taskItemCompleteData, $user);
 
             return new JsonSuccess(
                 $serializer->serialize($taskItem, 'json', [AbstractNormalizer::ATTRIBUTES => ['id', 'completed']])

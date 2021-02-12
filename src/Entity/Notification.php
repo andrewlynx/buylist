@@ -16,42 +16,58 @@ class Notification
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *
+     * @var int|null
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer", nullable=false)
+     *
+     * @var int
      */
     private $event;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="notifications")
      * @ORM\JoinColumn(nullable=false)
+     *
+     * @var User
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=TaskList::class)
+     *
+     * @var TaskList|null
      */
     private $taskList;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @var string|null
      */
     private $text;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
+     *
+     * @var User|null
      */
     private $userInvolved;
 
     /**
      * @ORM\Column(type="datetime")
+     *
+     * @var DateTimeInterface
      */
     private $date;
 
     /**
      * @ORM\Column(type="boolean")
+     *
+     * @var bool
      */
     private $seen = false;
 
@@ -136,7 +152,7 @@ class Notification
      *
      * @return $this
      */
-    public function setText($text): ?string
+    public function setText($text): self
     {
         $this->text = $text;
 

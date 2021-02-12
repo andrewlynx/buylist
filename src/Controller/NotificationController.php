@@ -6,6 +6,7 @@ use App\Controller\Extendable\TranslatableController;
 use App\Entity\JsonResponse\JsonError;
 use App\Entity\JsonResponse\JsonSuccess;
 use App\Entity\Notification;
+use App\Entity\User;
 use App\Repository\NotificationRepository;
 use App\UseCase\Notification\NotificationHandler;
 use Exception;
@@ -33,7 +34,9 @@ class NotificationController extends TranslatableController
      */
     public function index(NotificationRepository $repository): Response
     {
-        $taskLists = $repository->getUsersNotifications($this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+        $taskLists = $repository->getUsersNotifications($user);
 
         return $this->render(
             'notification/index.html.twig',
