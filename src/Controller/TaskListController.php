@@ -20,7 +20,6 @@ use App\UseCase\TaskList\TaskListHandler;
 use DateTime;
 use Exception;
 use RuntimeException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,8 +30,6 @@ use Throwable;
 
 /**
  * @Route("/{_locale}/task-list", name="task_list_", requirements={"_locale": "[a-z]{2}"})
- *
- * @IsGranted("IS_AUTHENTICATED_FULLY")
  */
 class TaskListController extends TranslatableController
 {

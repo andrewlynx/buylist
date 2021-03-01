@@ -1,4 +1,6 @@
 security:
+    #enable_authenticator_manager: true
+
     encoders:
         App\Entity\User:
             algorithm: auto
@@ -29,6 +31,8 @@ security:
                 lifetime: 604800
                 path: /
 
+            #login_throttling: null
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
@@ -44,3 +48,4 @@ security:
         - { path: ^/logout, role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
         - { path: ^/(%locales%)/task.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ] }
         - { path: ^/(%locales%)/user.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ] }
+        - { path: ^/(%locales%)/notification.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ] }

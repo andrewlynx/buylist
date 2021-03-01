@@ -6,4 +6,5 @@ twig:
         _locales: '%locales%'
         _site_name: '%env(SITE_NAME)%'
         _site_link: '%env(SITE_LINK)%'
+        _email: '%env(MAILER_ADDRESS)%'
         _notifications: '@App\Service\Notification\NotificationService'

@@ -370,4 +370,10 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function getColor(): string
+    {
+        $colors = ['orange', 'green', 'purple'];
+        return $colors[array_rand($colors)];
+    }
 }

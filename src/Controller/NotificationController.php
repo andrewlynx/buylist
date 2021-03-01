@@ -11,7 +11,6 @@ use App\Repository\NotificationRepository;
 use App\UseCase\Notification\NotificationHandler;
 use Exception;
 use RuntimeException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,8 +19,6 @@ use Throwable;
 
 /**
  * @Route("/{_locale}/notification", name="notification_", requirements={"_locale": "[a-z]{2}"})
- *
- * @IsGranted("IS_AUTHENTICATED_FULLY")
  */
 class NotificationController extends TranslatableController
 {

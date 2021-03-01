@@ -1,0 +1,128 @@
+.navbar {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+.navbar-nav {
+  &>li {
+    margin-right: 20px;
+    &>a:not(.btn) {
+      color: #69696b;
+    }
+  }
+  .dropdown-menu {
+    left: auto;
+    right: 0;
+    padding: 10px;
+    border: none;
+    border-radius: 12px;
+    -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  }
+  .dropdown-toggle::after {
+    content: none;
+    display: none;
+  }
+  .icon-large {
+    font-size: 36px;
+    line-height: 56px;
+  }
+  .notifications {
+    display: inline-block;
+    position: relative;
+    vertical-align: baseline;
+    font-size: 48px;
+    #unread-notifications {
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 15px;
+      display: block;
+      width: 22px;
+      height: 22px;
+      border-radius: 13px;
+      color: #fff;
+      background-color: #fcbc6f;
+      text-align: center;
+    }
+  }
+  .welcome-box {
+    color: theme-color("link");
+    h3 {
+      font-weight: 600;
+      margin-bottom: 0;
+    }
+    h2 {
+      font-weight: 900;
+      font-size: 40px;
+    }
+  }
+  .btn {
+    font-weight: 500;
+    padding: 14px 30px;
+    border-radius: 12px;
+    span[class^="iconly"] {
+      font-size: 27px;
+      vertical-align: sub;
+      padding-right: 5px;
+    }
+  }
+  .nf-dropdown {
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 12px;
+    .nf {
+      font-size: 14px;
+      min-width: 396px;
+      padding: 20px;
+      border-radius: 12px;
+      color: #adafba;
+      position: relative;
+      a, .date {
+        color: #adafba;
+      }
+      .user-box {
+        width: 50px;
+        height: 50px;
+        margin-right: 20px;
+        line-height: 50px;
+        font-size: 22px;
+      }
+      u {
+        display: block;
+        font-size: 16px;
+        font-weight: bold;
+        color: theme-color("link");
+        text-decoration: none;
+      }
+      .nf-info {
+        margin-right: 40px;
+      }
+      l {
+        color: theme-color("link");
+      }
+      .close {
+        visibility: hidden;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        color: #fff;
+        padding: 0;
+      }
+      &:hover {
+        background-color: theme-color("primary");
+        color: #fff;
+        position: relative;
+        a, u, l, .date{
+          color: #fff;
+        }
+        .close {
+          visibility: visible;
+        }
+      }
+    }
+    .all-btn {
+      margin-top: 15px;
+    }
+  }
+}

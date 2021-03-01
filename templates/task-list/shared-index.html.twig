@@ -4,19 +4,12 @@
 
 {% block body %}
     {% if task_lists %}
-        {% set author = '' %}
-        {% for task_list in task_lists %}
-            {% if task_list.creator.nickname != author %}
-                {% set author = task_list.creator.nickname %}
-                <h5>By {{ author }} ({{ task_list.creator.email }})</h5>
-            {% endif %}
-            <div class="row">
-                <div class="col-md-10"><a href="{{ path('task_list_view', {'id': task_list.id}) }}">
-                        <h4>{{ task_list.name }}</h4>
-                    </a></div>
-                <div class="col-md-2">{{ form(unsubscribe_forms[task_list.id]) }}</div>
-            </div>
-        {% endfor %}
+        <div class="tls" id="tls">
+            {% include 'parts/private/list/shared-list.html.twig' with {
+                'task_lists': task_lists,
+                'unsubscribe_forms': unsubscribe_forms
+            } %}
+        </div>
     {% else %}
         {% include 'common/no-result.html.twig' only %}
     {% endif %}

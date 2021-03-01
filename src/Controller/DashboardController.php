@@ -21,7 +21,6 @@ class DashboardController extends TranslatableController
      */
     public function index(Request $request): Response
     {
-
         return $this->redirectToRoute('welcome', ['_locale' => $request->getLocale() ?? $request->getDefaultLocale()]);
     }
 }

@@ -1,20 +1,35 @@
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a href="{{ path('index') }}"><h4>Listiq</h4></a>
-        </div>
-
-        <ul class="nav navbar-nav navbar-right">
-            {% include 'parts/private/notifications/notifications-dropdown.html.twig' %}
+<nav class="navbar navbar-expand-lg">
+    <ul class="navbar-nav mr-auto">
+        <li class="welcome-box">
+            <h3>{{ 'header.hi'|trans }} {{ app.user.nickname }},</h3>
+            <h2>{{ 'header.welcome_back'|trans }}</h2>
+        </li>
+    </ul>
+    <ul class="navbar-nav">
+        <li class="dropdown">
             {% include 'parts/lang-dropdown.html.twig' %}
-            {% if app.user %}
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ app.user.nickname }}<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <a class="dropdown-item btn btn-block" href="{{ path('app_logout') }}">{{ "header.logout"|trans }}</a>
-                    </ul>
-                </li>
-            {% endif %}
-        </ul>
-    </div>
+        </li>
+        <li>
+            <a href="{{ path('task_list_create') }}" class="btn btn-primary btn-lg iconly-brokenPlus">
+                {{ 'list.create_new'|trans }}
+            </a>
+        </li>
+        <li class="dropdown notifications">
+            {% include 'parts/private/notifications/notifications-dropdown.html.twig' %}
+        </li>
+        {% if app.user %}
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle user-box {{ app.user.color }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ app.user.nickname|first|capitalize }}
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="btn btn-primary btn-md btn-block" href="{{ path('app_logout') }}">
+                            {{ "header.logout"|trans }}
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        {% endif %}
+    </ul>
 </nav>

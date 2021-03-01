@@ -1,0 +1,123 @@
+$theme-colors: (
+  "primary": #6c5dd3,
+  "link": #434345
+);
+$colors: (
+  'orange': #dc9948,
+  'green': #44ac30,
+  'purple': #ae61d0
+);
+
+@import "~bootstrap/scss/bootstrap-reboot";
+@import "~bootstrap/scss/bootstrap-grid";
+@import "~bootstrap/scss/_buttons";
+@import "~bootstrap/scss/_dropdown";
+@import "~bootstrap/scss/_forms";
+@import "~bootstrap/scss/_grid";
+@import "~bootstrap/scss/_nav";
+@import "~bootstrap/scss/_navbar";
+@import "~bootstrap/scss/_utilities";
+@import "fonts";
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  a {
+    &:hover {
+      text-decoration: none;
+      transition-duration: .3s;
+    }
+  }
+
+  .orange {
+    background-color: lighten(color('orange'), 40%);
+    color: color('orange') !important;
+    & > a {
+      color: color('orange');
+    }
+  }
+  .green {
+    background-color: lighten(color('green'), 50%);
+    color: color('green') !important;
+    & > a {
+      color: color('green');
+    }
+  }
+  .purple {
+    background-color: lighten(color('purple'), 30%);
+    color: color('purple') !important;
+    & > a {
+      color: color('purple');
+    }
+  }
+}
+.container-fluid.in-frame {
+  padding-left: 45px;
+  padding-right: 45px;
+}
+.sub-footer {
+  font-size: 14px;
+  color: #69696b;
+  a {
+    color: #69696b;
+  }
+  padding-left: 347px;
+}
+.footer {
+  background-color: theme-color("primary");
+  padding-top: 40px;
+  color: #fff;
+  padding-left: 347px;
+  a {
+    color: #fff;
+    &.about-us {
+      font-size: 18px;
+    }
+    &.email {
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+  .logo {
+    font-weight: 400;
+    font-size: 14px;
+    img {
+      height: 45px;
+      margin-bottom: 20px;
+    }
+    p {
+      margin-bottom: 0;
+    }
+  }
+  .patreon {
+    background-color: #fff;
+    border-radius: 12px;
+    color: theme-color("primary");
+    padding: 12px;
+    a {
+      padding: 12px 30px;
+      background-color: theme-color("primary");
+      border-radius: 12px;
+      display: inline-block;
+    }
+    p {
+      margin-bottom: 5px;
+    }
+  }
+  .second {
+    font-weight: 400;
+    font-size: 14px;
+    padding: 0 10px 10px 10px;
+    margin-top: 30px;
+    .stripe {
+      display: block;
+      height: 1px;
+      width: 100%;
+      background-color: #fff;
+      margin-bottom: 10px;
+    }
+  }
+  .top-padding {
+    padding-top: 30px;
+  }
+}

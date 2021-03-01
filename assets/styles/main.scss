@@ -1,0 +1,51 @@
+.tls {
+  .tl {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    .link {
+      display: flex;
+      color: theme-color("link");
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .form-group {
+      margin-bottom: 0;
+    }
+    button {
+      font-weight: 500;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 18px;
+      border: 1px solid theme-color("primary");
+      margin-left: 30px;
+    }
+  }
+}
+.sf {
+  position: relative;
+  input {
+    border-radius: 12px;
+    background-color: #fff;
+    padding: 12px 24px 12px 42px;
+    border: none;
+    margin-bottom: 30px;
+    width: 600px;
+    max-width: 100%;
+    &:focus{
+      outline: none;
+    }
+  }
+  &:before {
+    font-family: "Iconly-Broken";
+    content: "\e94d";
+    display: block;
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    color: theme-color("link");
+  }
+}

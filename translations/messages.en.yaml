@@ -1,18 +1,28 @@
 event:
   invalid_event: 'Invalid event'
+footer:
+  all_rights_reserved: 'All rights reserved'
+  design: 'Design and illustrations by Marina Melnyk'
+  idea: 'Idea and coding by Andrew Melnyk'
+  join_thousands_of_people: 'Join thousands of people who organize their life with %app% App'
+  still_have_questions: 'Still have questions? Write to'
+  support_us: 'Support us'
 form:
   add: Add
   delete: Delete
   save: Save
+  search: Search
   send: Send
 header:
   hello: Hello
+  hi: Hi
   logout: Logout
+  welcome_back: 'Welcome back'
 list:
   activate_list_to_edit: 'This list is archived. Activate the list to make changes'
   archive: Archive
   archived: 'List archived'
-  create_new: 'Create new Task List'
+  create_new: 'Create'
   created: Created
   description: Description
   last_update: 'Last update'
@@ -25,18 +35,20 @@ list:
   your_lists: 'Your lists'
 menu:
   about: About
+  about_us: 'About Us'
   archive: Archive
   lists: 'My Lists'
   lists_shared: 'Shared Lists'
   notifications: Notifications
+  privacy_policy: 'Privacy Policy'
   settings: Settings
 notification:
-  invitation: '%user% invited you to list %list%'
-  list_archived: '%user% archived list %list%'
-  list_changed: '%user% made changes in list %list%'
-  list_removed: '%user% removed list %list%'
+  invitation: '<u>%user%</u> invited you to list <l>%list%</l>'
+  list_archived: '<u>%user%</u> archived list <l>%list%</l>'
+  list_changed: '<u>%user%</u> made changes in list <l>%list%</l>'
+  list_removed: '<u>%user%</u> removed list <l>%list%</l>'
   not_found: 'Something got wrong, sorry. We are fixing.'
-  unsubscribed: '%user% unsubscribed from list %list%'
+  unsubscribed: '<u>%user%</u> unsubscribed from list <l>%list%</l>'
   welcome: 'Welcome to %app%'
   your_notifications: 'Your notifications'
 task_item:

@@ -1,9 +1,47 @@
-<footer class="bd-footer">
-    <div class="container-fluid">
-        <hr>
-        <p>All rights reserved</p>
-        <p>Idea and coding by Andrew Melnik</p>
-        <p>Design and illustrations by Marina Melnik 2021</p>
-        <p><a href="#">About us</a></p>
+<footer class="footer">
+    <div class="container-fluid in-frame">
+        <div class="row first">
+            <div class="col-md-3">
+                <div class="logo">
+                    <a href="{{ path('index') }}">
+                        <img class="img-fluid" src="{{ asset('img/logo.svg') }}" alt="{{ _site_name }}">
+                    </a>
+                    <p>{{ 'footer.join_thousands_of_people'|trans({'%app%': _site_name}) }}</p>
+                </div>
+            </div>
+            <div class="col-md-2 top-padding">
+                <a class="about-us" href="#">{{ 'menu.about_us'|trans }}</a>
+            </div>
+            <div class="col-md-3 text-center top-padding">
+                {{ 'footer.still_have_questions'|trans }}
+                <a class="email" href="#">{{ _email }}</a>
+            </div>
+            <div class="col-md-3 offset-md-1 text-center">
+                <div class="patreon">
+                    <p>{{ 'footer.support_us'|trans }}</p>
+                    <a class="patreon-link" href="#">Patreon</a>
+                </div>
+            </div>
+        </div>
+        <div class="row second">
+            <div class="col-md-10 offset-md-1">
+                <div class="stripe"></div>
+            </div>
+            <div class="text-right col-md-6">
+                {{ 'footer.idea'|trans }}
+            </div>
+            <div class="text-left col-md-6">
+                {{ 'footer.design'|trans }}
+            </div>
+        </div>
     </div>
 </footer>
+<div class="sub-footer">
+    <div class="container">
+        {% set year = 'now' | date('Y') %}
+        &copy; {{ year == 2021 ? year : '2021 - ' ~ year }} {{ _site_name }}, {{ 'footer.all_rights_reserved'|trans }}
+        <span class="float-right">
+            <a href="#">{{ 'menu.privacy_policy'|trans }}</a>
+        </span>
+    </div>
+</div>

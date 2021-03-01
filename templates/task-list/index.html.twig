@@ -3,15 +3,14 @@
 {% block title %}{{ 'list.your_lists'|trans }}{% endblock %}
 
 {% block body %}
-    <a href="{{ path('task_list_create') }}" class="btn btn-default">{{ 'list.create_new'|trans }}</a>
-    <hr>
+    {% include 'common/_search_form.html.twig' %}
     {% if task_lists %}
-        {% for task_list in task_lists %}
-            {% include 'parts/private/list/list-block.html.twig' with {
-                'task_list': task_list,
+        <div class="tls" id="tls">
+            {% include 'parts/private/list/list.html.twig' with {
+                'task_lists': task_lists,
                 'archive_item_forms': archive_item_forms
             } %}
-        {% endfor %}
+        </div>
     {% else %}
         {% include 'common/no-result.html.twig' only %}
     {% endif %}

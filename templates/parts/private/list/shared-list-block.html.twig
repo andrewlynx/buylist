@@ -1,0 +1,6 @@
+<div class="tl">
+    <a href="{{ path('task_list_view', {'id': task_list.id}) }}" class="link mr-auto">
+        {{ task_list.name }}
+    </a>
+    {{ form(unsubscribe_forms[task_list.id]) }}
+</div>

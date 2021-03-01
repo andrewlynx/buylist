@@ -4,9 +4,12 @@
 
 {% block body %}
     {% if task_lists %}
-        {% for task_list in task_lists %}
-            {% include 'parts/private/list/list-block.html.twig' with {'task_list': task_list} %}
-        {% endfor %}
+        <div class="tls" id="tls">
+            {% include 'parts/private/list/list.html.twig' with {
+                'task_lists': task_lists,
+                'archive_item_forms': archive_item_forms
+            } %}
+        </div>
     {% else %}
         {% include 'common/no-result.html.twig' only %}
     {% endif %}

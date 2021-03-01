@@ -1,18 +1,28 @@
 event:
   invalid_event: 'Некоректна подія'
+footer:
+  all_rights_reserved: 'Всі права захищені'
+  design: 'Дизайн та ілюстрації - Марина Мельник'
+  idea: 'Ідея та код - Андрій Мельник'
+  join_thousands_of_people: 'Приєднуйтесь до тисяч людей, які організовують життя з %app% App'
+  still_have_questions: 'Ще є питання? Пишіть на'
+  support_us: 'Підтримайте нас'
 form:
   add: Додати
   delete: Видалити
   save: Зберегти
+  search: Шукати
   send: Відправити
 header:
   hello: Вiтаю
+  hi: Вiтаю
   logout: Вийти
+  welcome_back: 'З поверненням'
 list:
   activate_list_to_edit: 'Цей список заархівовано. Активуйте список, щоб внести зміни'
   archive: Архівувати
   archived: 'Список Архівовано'
-  create_new: 'Створити новий список'
+  create_new: 'Створити'
   created: Created
   description: Деталi
   last_update: 'Останнє оновлення'
@@ -25,18 +35,20 @@ list:
   updated: 'Список оновлено'
 menu:
   about: 'Про сайт'
+  about_us: 'Про нас'
   archive: Архів
   lists: 'Мої списки'
   lists_shared: 'Спільні списки'
   notifications: Повідомлення
+  privacy_policy: 'Політика конфіденційності'
   settings: Налаштування
 notification:
-  invitation: '%user% запросив вас у список %list%'
-  list_archived: '%user% архівував список %list%'
-  list_changed: '%user% вніс зміни у список %list%'
-  list_removed: '%user% видалив список %list%'
+  invitation: '<u>%user%</u> запросив вас у список <l>%list%</l>'
+  list_archived: '<u>%user%</u> архівував список <l>%list%</l>'
+  list_changed: '<u>%user%</u> вніс зміни у список <l>%list%</l>'
+  list_removed: '<u>%user%</u> видалив список <l>%list%</l>'
   not_found: 'Щось сталося не так, вибачте. Ми виправляємо.'
-  unsubscribed: '%user% відписався від %list%'
+  unsubscribed: '<u>%user%</u> відписався від <l>%list%</l>'
   welcome: 'Вітаємо у %app%'
   your_notifications: 'Ваші повідомлення'
 task_item:

@@ -1,0 +1,11 @@
+{% set author = '' %}
+{% for task_list in task_lists %}
+    {% if task_list.creator.nickname != author %}
+        {% set author = task_list.creator.nickname %}
+        By {{ author }} ({{ task_list.creator.email }})
+    {% endif %}
+    {% include 'parts/private/list/shared-list-block.html.twig' with {
+        'task_list': task_list,
+        'unsubscribe_forms': unsubscribe_forms
+    } %}
+{% endfor %}

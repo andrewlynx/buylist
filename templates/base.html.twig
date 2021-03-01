@@ -4,33 +4,46 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
+            {{ encore_entry_link_tags('common') }}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
     </head>
     <body>
-    {% include 'parts/private/header.html.twig' %}
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-3 menu">
-                {{ knp_menu_render('main_menu', {'currentClass': 'open', 'ancestorClass': 'open'}) }}
-            </div>
-            <div class="col-md-9 main-content">
-                <div class="container-fluid">
-                    {% for label, messages in app.flashes %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ label }}">
-                                {{ message|raw|trans }}
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
-                    {% block body %}{% endblock %}
+        <div class="row wrapper">
+            <nav id="sidebar" class="sidebar-wrapper">
+                <div class="navbar-header">
+                    <div class="logo">
+                        <a href="{{ path('index') }}">
+                            <img class="img-fluid" src="{{ asset('img/logo.svg') }}" alt="{{ _site_name }}">
+                        </a>
+                    </div>
                 </div>
-            </div>
+                <div class="main-menu">
+                    {{ knp_menu_render('main_menu', {'currentClass': 'active', 'ancestorClass': 'active'}) }}
+                </div>
+            </nav>
+            <main class="page-content">
+                <div class="container-fluid in-frame pt-4">
+                    {% include 'parts/private/header.html.twig' %}
+                    <div class="container-fluid">
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label }}">
+                                    {{ message|raw|trans }}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        {% block body %}{% endblock %}
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
     {% include 'parts/footer.html.twig' %}
 
     {% block javascripts %}
+        {{ encore_entry_script_tags('common') }}
         {{ encore_entry_script_tags('app') }}
     {% endblock %}
     </body>

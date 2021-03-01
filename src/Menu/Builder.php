@@ -33,10 +33,18 @@ final class Builder implements ContainerAwareInterface
     {
         $menu = $this->factory->createItem('main_menu');
 
-        $menu->addChild('menu.lists', ['route' => 'task_list_index']);
-        $menu->addChild('menu.lists_shared', ['route' => 'task_list_index_shared']);
-        $menu->addChild('menu.archive', ['route' => 'task_list_archive']);
-        $menu->addChild('menu.settings', ['route' => 'user_settings']);
+        $menu
+            ->addChild('menu.lists', ['route' => 'task_list_index'])
+            ->setLinkAttribute('class', 'iconly-brokenDocument menu-item');
+        $menu
+            ->addChild('menu.lists_shared', ['route' => 'task_list_index_shared'])
+            ->setLinkAttribute('class', 'iconly-brokenPaper-Plus menu-item');
+        $menu
+            ->addChild('menu.archive', ['route' => 'task_list_archive'])
+            ->setLinkAttribute('class', 'iconly-brokenWork menu-item');
+        $menu
+            ->addChild('menu.settings', ['route' => 'user_settings'])
+            ->setLinkAttribute('class', 'iconly-brokenSetting menu-item');
 
         return $menu;
     }

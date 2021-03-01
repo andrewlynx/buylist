@@ -1,0 +1,4 @@
+<form class="sf" method="post" aa="path(search_path)" action="#">
+    <input type="hidden" name="_token" value="{{ csrf_token('search') }}">
+    <input type="text" minlength="3" placeholder="{{ "form.search"|trans }}">
+</form>

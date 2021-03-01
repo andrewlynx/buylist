@@ -12,19 +12,15 @@ use App\Form\TaskItemCompleteType;
 use App\UseCase\TaskItem\TaskItemHandler;
 use Exception;
 use RuntimeException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Exception\ValidatorException;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/{_locale}/task-item", name="task_item_", requirements={"_locale": "[a-z]{2}"})
- *
- * @IsGranted("IS_AUTHENTICATED_FULLY")
  */
 class TaskItemController extends TranslatableController
 {

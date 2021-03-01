@@ -1,0 +1,6 @@
+{% for task_list in task_lists %}
+    {% include 'parts/private/list/list-block.html.twig' with {
+        'task_list': task_list,
+        'archive_item_forms': archive_item_forms
+    } %}
+{% endfor %}
