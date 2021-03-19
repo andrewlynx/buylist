@@ -299,7 +299,7 @@ class TaskListControllerTest extends WebTestCase
             ControllerTestHelper::generateRoute('task_list_index')
         );
         $this->assertContains(
-            'user1@example.com archived list New Task List',
+            '<u>user1</u> archived list <l>New Task List</l>',
             $client->getResponse()->getContent()
         );
 

@@ -21,14 +21,16 @@ header:
 list:
   activate_list_to_edit: 'This list is archived. Activate the list to make changes'
   archive: Archive
-  archived: 'List archived'
+  archived: 'archived'
   create_new: 'Create'
   created: Created
   description: Description
   last_update: 'Last update'
+  list_archived: 'List archived'
+  list_restored: 'List restored'
   name: Name
   restore: Restore
-  restored: 'List restored'
+  shared: 'shared'
   unsubscribe: Unsubscribe
   unsubscribed: 'You successfully unsubscribed from list'
   updated: 'List updated'
@@ -56,6 +58,9 @@ task_item:
   error_assign_to_list: 'Error assigning new Item to List'
   name: Name
   qty: Additional
+search:
+  page: 'Search'
+  result: 'Search results for'
 security:
   login: Login
   or: or

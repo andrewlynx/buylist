@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\Table(indexes={@ORM\Index(columns={"email", "nick_name"}, flags={"fulltext"})})
  * @UniqueEntity(fields={"email"}, message="user.email_exists")
  * @UniqueEntity(fields={"nickName"}, message="user.nickname_in_use")
  */

@@ -30,6 +30,6 @@ final class Version20210207111435 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE notification DROP text');
         $this->addSql('ALTER TABLE user DROP nick_name');
-        //$this->addSql('DROP INDEX UNIQ_8D93D649A045A5E9 ON user');
+        $this->addSql('DROP INDEX UNIQ_8D93D649A045A5E9 ON user');
     }
 }

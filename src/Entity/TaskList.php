@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=TaskListRepository::class)
+ * @ORM\Table(indexes={@ORM\Index(columns={"name", "description"}, flags={"fulltext"})})
  */
 class TaskList
 {

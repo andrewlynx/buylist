@@ -285,7 +285,7 @@ class TaskListController extends TranslatableController
 
             $this->addFlash(
                 'success',
-                $taskList->isArchived() ? 'list.archived' : 'list.restored'
+                $taskList->isArchived() ? 'list.list_archived' : 'list.list_restored'
             );
             return $this->redirectToRoute('task_list_index');
         }

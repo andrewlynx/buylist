@@ -9,6 +9,7 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @ORM\Entity(repositoryClass=TaskItemRepository::class)
+ * @ORM\Table(indexes={@ORM\Index(columns={"name", "qty"}, flags={"fulltext"})})
  */
 class TaskItem
 {

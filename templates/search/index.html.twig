@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'search.page'|trans }}{% endblock %}
+
+{% block body %}
+    {% include 'common/_search_form.html.twig' %}
+    <h3>{{ 'search.result'|trans }} "{{ search_phrase }}"</h3>
+    {% if task_lists %}
+        <div class="tls" id="tls">
+            {% include 'parts/private/list/search-result.html.twig' %}
+        </div>
+    {% endif %}
+{% endblock %}

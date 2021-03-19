@@ -21,14 +21,16 @@ header:
 list:
   activate_list_to_edit: 'Цей список заархівовано. Активуйте список, щоб внести зміни'
   archive: Архівувати
-  archived: 'Список Архівовано'
+  archived: 'архів'
   create_new: 'Створити'
   created: Created
   description: Деталi
   last_update: 'Останнє оновлення'
+  list_archived: 'Список Архівовано'
+  list_restored: 'Список Відновлено'
   name: Назва
   restore: Відновити
-  restored: 'Список Відновлено'
+  shared: 'Спільний'
   unsubscribe: Відписатися
   unsubscribed: 'Ви успішно скасували підписку на list'
   your_lists: 'Ваші списки'
@@ -56,6 +58,9 @@ task_item:
   error_assign_to_list: 'Помилка додавання нового пункту до списку'
   name: Назва
   qty: Додатково
+search:
+  page: 'Пошук'
+  result: 'Результати пошуку для'
 security:
   login: Вхiд
   or: або
