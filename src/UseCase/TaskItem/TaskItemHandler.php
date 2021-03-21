@@ -4,6 +4,7 @@ namespace App\UseCase\TaskItem;
 
 use App\DTO\TaskItem\TaskItemComplete;
 use App\DTO\TaskItem\TaskItemCreate;
+use App\DTO\TaskItem\TaskItemEdit;
 use App\Entity\TaskItem;
 use App\Entity\TaskList;
 use App\Entity\User;
@@ -80,7 +81,7 @@ class TaskItemHandler
 
     /**
      * @param TaskItemComplete $dto
-     * @param User $user
+     * @param User             $user
      *
      * @return TaskItem
      *
@@ -92,6 +93,35 @@ class TaskItemHandler
         /** @var TaskItem $taskItem */
         $taskItem = $taskItemRepo->find($dto->id);
         $taskItem->setCompleted(!$dto->completed);
+        $taskList = $taskItem->getTaskList();
+
+        $notificationList = array_merge($taskList->getShared()->toArray(), [$taskList->getCreator()]);
+
+        $this->notificationService->createForManyUsers(
+            NotificationService::EVENT_LIST_CHANGED,
+            $notificationList,
+            $taskList,
+            $user
+        );
+
+        $this->em->flush();
+
+        return $taskItem;
+    }
+
+    /**
+     * @param TaskItemEdit $dto
+     * @param User         $user
+     *
+     * @return TaskItem
+     *
+     * @throws Exception
+     */
+    public function edit(TaskItemEdit $dto, User $user): TaskItem
+    {
+        $taskItem = $dto->taskItem;
+        $taskItem->setName($dto->name);
+        $taskItem->setQty($dto->qty);
         $taskList = $taskItem->getTaskList();
 
         $notificationList = array_merge($taskList->getShared()->toArray(), [$taskList->getCreator()]);

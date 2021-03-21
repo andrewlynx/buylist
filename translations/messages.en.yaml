@@ -21,6 +21,8 @@ header:
 list:
   activate_list_to_edit: 'This list is archived. Activate the list to make changes'
   archive: Archive
+  archive_clear: 'Remove all'
+  archive_cleared: 'Archive cleared successfully'
   archived: 'archived'
   create_new: 'Create'
   created: Created
@@ -75,6 +77,8 @@ share_list:
   user_is_list_author: 'This user is this List author'
   user_not_found: 'User not found. The registration invitation was send on this email'
 validation:
+  clear_archive: 'Are you sure you want to remove all archived lists?'
+  delete_prompt: 'Are you sure you want to delete this list?'
   email_not_found: 'Email could not be found'
   incorrect_email: 'Incorrect Email'
   incorrect_locale: 'Invalid language'

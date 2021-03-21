@@ -6,6 +6,7 @@ use App\DTO\TaskList\TaskListShare;
 use App\Entity\EmailInvitation;
 use App\Entity\TaskList;
 use App\Entity\User;
+use App\Repository\TaskListRepository;
 use App\Service\Notification\NotificationFactory;
 use App\Service\Notification\NotificationService;
 use App\UseCase\Email\InvitationEmailHandler;
@@ -157,7 +158,7 @@ class TaskListHandler
      *
      * @throws Exception
      */
-    public function delete(TaskList $taskList):void
+    public function delete(TaskList $taskList): void
     {
         $this->em->remove($taskList);
         $this->em->flush();
@@ -168,5 +169,20 @@ class TaskListHandler
             $taskList,
             $taskList->getCreator()
         );
+    }
+
+    /**
+     * @param User $user
+     */
+    public function clearArchive(User $user): void
+    {
+        /** @var TaskListRepository $taskListRepo */
+        $taskListRepo = $this->em->getRepository(TaskList::class);
+        $taskLists = $taskListRepo->getArchivedUsersTasks($user);
+
+        foreach ($taskLists as $taskList) {
+            $this->em->remove($taskList);
+        }
+        $this->em->flush();
     }
 }

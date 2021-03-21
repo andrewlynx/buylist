@@ -101,6 +101,32 @@ class TaskListController extends TranslatableController
     }
 
     /**
+     * @Route("/archive-clear", name="archive_clear")
+     *
+     * @param TaskListHandler $taskListHandler
+     * @param Request         $request
+     *
+     * @return Response
+     */
+    public function archiveClear(TaskListHandler $taskListHandler, Request $request): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($this->isCsrfTokenValid('clear_archive', $request->request->get('_token'))) {
+            $taskListHandler->clearArchive($user);
+
+            $this->addFlash('success', $this->translator->trans('list.archive_cleared'));
+
+            return $this->redirectToRoute('task_list_index');
+        }
+
+        $this->addFlash('danger', 'validation.invalid_submission');
+
+        return $this->redirectToRoute('task_list_archive');
+    }
+
+    /**
      * @Route("/create", name="create")
      *
      * @param TaskListHandler $taskListHandler

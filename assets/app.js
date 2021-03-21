@@ -43,6 +43,11 @@ $( document ).ready(function() {
         });
     }
 
+    function closeModal(){
+        $('#li-modal .data').html('');
+        $('#li-modal').removeClass('active');
+    }
+
     // Process success result of task_item_create call
     window.taskItemCreateSuccess = function(msg, form){
         $('#list-items').append(msg.data);
@@ -63,6 +68,13 @@ $( document ).ready(function() {
         form.closest('li').remove();
     };
 
+    // Process success result of notification_read call
+    window.editItem = function(msg, form){
+        var id = form.find('input[name="task_item_edit[id]"]').val();
+        $('#item-id-' + id).replaceWith(msg.data);
+        closeModal();
+    };
+
     // Create task item call handler
     $('form[name="task_item_create"]').on('submit', function(e){
         ajaxSendForm(e, 'taskItemCreateSuccess');
@@ -78,8 +90,13 @@ $( document ).ready(function() {
         ajaxSendForm(e, 'readNotification');
     });
 
+    // Edit task item call handler
+    $(document).on("submit", 'form[name="task_item_edit"]', function(e){
+        ajaxSendForm(e, 'editItem');
+    });
+
     // Task item completion call handler
-    $(document).on("click", '.task-item > .task-item-description', function(e){
+    $(document).on("click", '.ti > .tid', function(e){
         e.preventDefault();
         const classLoading = 'loading';
         if ($(this).hasClass(classLoading)) {
@@ -118,5 +135,19 @@ $( document ).ready(function() {
                 alert( msg.data );
             }
         });
+    });
+
+    // Task item edit call handler
+    $(document).on("click", '.ti > .ie', function(e){
+        $.get($(this).attr('data-url')).then(function(data){
+            //alert(data);
+            $('#li-modal').addClass('active');
+            $('#li-modal .data').html(data);
+        });
+    });
+
+    // Close modal window
+    $(document).on("click", '#li-modal .close', function(e){
+        closeModal();
     });
 });

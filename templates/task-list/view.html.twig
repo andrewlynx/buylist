@@ -14,6 +14,14 @@
                     {% include 'task-item/task-item.html.twig' with {'task_item': taskItem, 'complete_item_forms': complete_item_forms} %}
                 {% endfor %}
             </div>
+            <div id="li-modal">
+                <div class="w">
+                    <div class="close text-right">
+                        <span class="iconly-brokenClose-Square"></span>
+                    </div>
+                    <div class="data"></div>
+                </div>
+            </div>
         </div>
         <div class="col-sm-4">
             {% if task_list.isArchived %}

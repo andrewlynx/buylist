@@ -21,6 +21,8 @@ header:
 list:
   activate_list_to_edit: 'Цей список заархівовано. Активуйте список, щоб внести зміни'
   archive: Архівувати
+  archive_clear: 'Видалити все'
+  archive_cleared: 'Архів успішно очищено'
   archived: 'архів'
   create_new: 'Створити'
   created: Created
@@ -75,6 +77,8 @@ share_list:
   user_is_list_author: 'Цей користувач - автор списку'
   user_not_found: 'Користувача не знайдено. Було надіслано листа з запрошенням на цей email'
 validation:
+  clear_archive: 'Ви впевнені, що хочете видалити всі заархівовані списки?'
+  delete_prompt: 'Ви впевнені, що хочете видалити цей список?'
   email_not_found: 'Email не знайдено'
   incorrect_email: 'Невірний email'
   incorrect_locale: 'Невірна мова'
