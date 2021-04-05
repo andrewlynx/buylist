@@ -24,8 +24,21 @@
                 </div>
             </nav>
             <main class="page-content">
-                <div class="container-fluid in-frame pt-4">
-                    {% include 'parts/private/header.html.twig' %}
+                <div class="container-fluid in-frame pt-3">
+                    {% set page_title_upper %}
+                        {% block page_title_upper %}
+                            {{ 'header.hi'|trans }} {{ app.user.nickname }},
+                        {% endblock %}
+                    {% endset %}
+                    {% set page_title %}
+                        {% block page_title %}
+                            {{ 'header.welcome_back'|trans }}
+                        {% endblock %}
+                    {% endset %}
+                    {% embed 'parts/private/header.html.twig' with {
+                        'page_title': page_title, 'page_title_upper': page_title_upper
+                    } %}
+                    {% endembed %}
                     <div class="container-fluid">
                         {% for label, messages in app.flashes %}
                             {% for message in messages %}

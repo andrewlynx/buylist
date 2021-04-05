@@ -43,9 +43,21 @@ $( document ).ready(function() {
         });
     }
 
+    // Close modal window
     function closeModal(){
         $('#li-modal .data').html('');
         $('#li-modal').removeClass('active');
+    }
+
+    // Load more lists
+    function loadMore(){
+        console.log($('#loader').attr('data-url'));
+        $.ajax({
+            url: $('#loader').attr('data-url'),
+            method: 'GET'
+        }).done(function( msg ) {
+            $('#tls').append(msg);
+        });
     }
 
     // Process success result of task_item_create call
@@ -149,5 +161,25 @@ $( document ).ready(function() {
     // Close modal window
     $(document).on("click", '#li-modal .close', function(e){
         closeModal();
+    });
+
+    // Load more lists on scrolling down
+    $(window).on("scroll", function() {
+        if ($('#loader').length) {
+            var scrollHeight = $(document).height();
+            var scrollPos = $(window).height() + $(window).scrollTop();
+            var footerHeight = $('footer').height();
+            if (scrollHeight - scrollPos < (footerHeight + 50)) {
+                loadMore();
+                $('#loader').remove();
+                console.log("bottom!");
+            }
+        }
+    });
+
+    // Close modal window
+    $(document).on("click", '#loader button', function(e){
+        loadMore();
+        $('#loader').remove();
     });
 });

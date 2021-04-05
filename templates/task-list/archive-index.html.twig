@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'list.your_lists'|trans }}{% endblock %}
+{% block title %}{{ 'list.archive'|trans }}{% endblock %}
+
+{% block page_title_upper %}{% endblock %}
+{% block page_title %}{{ 'list.archive'|trans }}{% endblock %}
 
 {% block body %}
     {% if task_lists %}

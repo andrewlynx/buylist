@@ -30,6 +30,7 @@ list:
   last_update: 'Останнє оновлення'
   list_archived: 'Список Архівовано'
   list_restored: 'Список Відновлено'
+  load_more: 'Більше'
   name: Назва
   restore: Відновити
   shared: 'Спільний'

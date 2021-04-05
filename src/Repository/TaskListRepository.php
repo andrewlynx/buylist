@@ -17,6 +17,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class TaskListRepository extends ServiceEntityRepository
 {
+    public const PER_PAGE = 20;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TaskList::class);
@@ -24,22 +26,24 @@ class TaskListRepository extends ServiceEntityRepository
 
     /**
      * @param UserInterface $user
+     * @param int|null $startId
      *
-     * @return mixed
+     * @return array
      */
-    public function getUsersTasks(UserInterface $user): array
+    public function getUsersTasks(UserInterface $user, ?int $startId = null): array
     {
-        return $this->getTasks($user, false);
+        return $this->getTasks($user, false, $startId);
     }
 
     /**
      * @param UserInterface $user
+     * @param int|null $startId
      *
-     * @return mixed
+     * @return array
      */
-    public function getArchivedUsersTasks(UserInterface $user): array
+    public function getArchivedUsersTasks(UserInterface $user, ?int $startId = null): array
     {
-        return $this->getTasks($user, true);
+        return $this->getTasks($user, true, $startId);
     }
 
     /**
@@ -104,10 +108,11 @@ class TaskListRepository extends ServiceEntityRepository
     /**
      * @param UserInterface $user
      * @param bool $archived
+     * @param int|null $startId
      *
      * @return array
      */
-    private function getTasks(UserInterface $user, bool $archived): array
+    private function getTasks(UserInterface $user, bool $archived, ?int $startId): array
     {
         $qb = $this->createQueryBuilder('t')
             ->Where('t.creator = :user')
@@ -115,7 +120,14 @@ class TaskListRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->setParameter('archived', intval($archived))
             ->orderBy('t.id', 'DESC')
+            ->setMaxResults(self::PER_PAGE)
         ;
+
+        if ($startId !== null) {
+            $qb->andWhere('t.id < :start')
+                ->setParameter('start', intval($startId))
+            ;
+        }
 
         return $qb->getQuery()->getResult();
     }

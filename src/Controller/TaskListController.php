@@ -101,6 +101,29 @@ class TaskListController extends TranslatableController
     }
 
     /**
+     * @Route("/load-more/{id}", name="load_more")
+     *
+     * @param int $id
+     * @param TaskListRepository $taskListRepository
+     *
+     * @return Response
+     */
+    public function loadMore(int $id, TaskListRepository $taskListRepository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $taskLists = $taskListRepository->getUsersTasks($user, $id);
+
+        return $this->render(
+            'parts/private/list/list.html.twig',
+            [
+                'task_lists' => $taskLists,
+                'archive_item_forms' => $this->getArchiveListFormsViews($taskLists),
+            ]
+        );
+    }
+
+    /**
      * @Route("/archive-clear", name="archive_clear")
      *
      * @param TaskListHandler $taskListHandler

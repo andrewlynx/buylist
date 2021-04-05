@@ -30,6 +30,7 @@ list:
   last_update: 'Last update'
   list_archived: 'List archived'
   list_restored: 'List restored'
+  load_more: 'Load More'
   name: Name
   restore: Restore
   shared: 'shared'
