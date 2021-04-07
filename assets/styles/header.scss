@@ -83,6 +83,8 @@
     padding: 10px;
     background-color: #fff;
     border-radius: 12px;
+    max-height: 500px;
+    overflow-y: auto;
     .nf {
       font-size: 14px;
       min-width: 396px;

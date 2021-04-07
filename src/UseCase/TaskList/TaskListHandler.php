@@ -160,14 +160,22 @@ class TaskListHandler
      */
     public function delete(TaskList $taskList): void
     {
+        $shared = $taskList->getShared()->toArray();
+        $creator = $taskList->getCreator();
+        $name = $taskList->getName();
+
+        foreach ($taskList->getNotifications() as $notification) {
+            $this->em->remove($notification);
+        }
         $this->em->remove($taskList);
         $this->em->flush();
 
         $this->notificationService->createForManyUsers(
-            NotificationService::EVENT_UNSUBSCRIBED,
-            $taskList->getShared()->toArray(),
-            $taskList,
-            $taskList->getCreator()
+            NotificationService::EVENT_LIST_REMOVED,
+            $shared,
+            null,
+            $creator,
+            $name
         );
     }
 

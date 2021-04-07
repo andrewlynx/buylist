@@ -4,28 +4,29 @@
 
 {% block body %}
     {% if notifications %}
-        <div class="row">
         {% for notification in notifications %}
-            <div class="well">
+            <p class="well">
                 {% if notification.taskList %}
                     <a href="{{ path('task_list_view', {'id': notification.taskList.id}) }}">
                         {{ notification.getDescription()|trans({
                             '%app%': _site_name,
-                            '%user%': notification.userInvolved.email,
-                            '%list%': notification.taskList.name
+                            '%user%': notification.userInvolved.nickname,
+                            '%list%': notification.taskList.name ?? '',
+                            '%text%': notification.text
                         })|raw }}
                     </a>
                 {% else %}
                     <a href="#" onclick="return">
                         {{ notification.getDescription()|trans({
                             '%app%': _site_name,
-                        }) }}
+                            '%user%': notification.userInvolved.nickname,
+                            '%text%': notification.text
+                        })|raw }}
                     </a>
                 {% endif %}
                 <small class="text-muted">{{ notification.date|date }}</small>
-            </div>
+            </p>
         {% endfor %}
-        </div>
     {% else %}
         {% include 'common/no-result.html.twig' only %}
     {% endif %}

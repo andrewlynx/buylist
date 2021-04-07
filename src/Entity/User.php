@@ -18,6 +18,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+    public const ROLE_USER = 'ROLE_USER';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -151,8 +154,7 @@ class User implements UserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = self::ROLE_USER;
 
         return array_unique($roles);
     }
@@ -168,6 +170,30 @@ class User implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @param string $role
+     *
+     * @return $this
+     */
+    public function addRole(string $role): self
+    {
+        array_push($this->roles, $role);
+        $this->roles = array_unique($this->roles);
+
+        return $this;
+    }
+
+    /**
+     * @param string $role
+     *
+     * @return bool
+     */
+    public function hasRole(string $role): bool
+    {
+        return in_array($role, $this->roles);
+    }
+
 
     /**
      * @see UserInterface

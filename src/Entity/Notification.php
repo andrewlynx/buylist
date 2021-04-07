@@ -37,7 +37,7 @@ class Notification
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity=TaskList::class)
+     * @ORM\ManyToOne(targetEntity=TaskList::class, inversedBy="notifications")
      *
      * @var TaskList|null
      */

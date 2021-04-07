@@ -95,10 +95,11 @@ class NotificationService
     }
 
     /**
-     * @param int $event
-     * @param array<User> $users
+     * @param int           $event
+     * @param array         $users
      * @param TaskList|null $taskList
-     * @param User|null $userInvolved
+     * @param User|null     $userInvolved
+     * @param string|null   $text
      *
      * @throws Exception
      */
@@ -106,7 +107,8 @@ class NotificationService
         int $event,
         array $users,
         ?TaskList $taskList = null,
-        ?User $userInvolved = null
+        ?User $userInvolved = null,
+        ?string $text = null
     ): void {
         foreach ($users as $user) {
             // do not add notification for current user
@@ -117,7 +119,8 @@ class NotificationService
                 $event,
                 $user,
                 $taskList,
-                $userInvolved
+                $userInvolved,
+                $text
             );
             $this->em->persist($notification);
         }
@@ -180,22 +183,25 @@ class NotificationService
      * @param User          $user
      * @param TaskList|null $taskList
      * @param User|null     $userInvolved
+     * @param string|null   $text
      *
      * @return Notification
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function getOrCreate(
         int $event,
         User $user,
         ?TaskList $taskList = null,
-        ?User $userInvolved = null
+        ?User $userInvolved = null,
+        ?string $text = null
     ): Notification {
         $notification = $this->em->getRepository(Notification::class)->findOneBy([
             'event' => $event,
             'user' => $user->getId(),
-            'taskList' => $taskList->getId(),
+            'taskList' => $taskList ? $taskList->getId() : null,
             'userInvolved' => $userInvolved,
+            'text' => $text,
             'seen' => false
         ]);
         if (!$notification) {
@@ -203,7 +209,8 @@ class NotificationService
                 $event,
                 $user,
                 $taskList,
-                $userInvolved
+                $userInvolved,
+                $text
             );
         }
 

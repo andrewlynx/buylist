@@ -2,10 +2,13 @@
 
 namespace App\Menu;
 
+use App\Entity\User;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Security;
 
 final class Builder implements ContainerAwareInterface
 {
@@ -17,11 +20,18 @@ final class Builder implements ContainerAwareInterface
     private $factory;
 
     /**
-     * @param FactoryInterface $factory
+     * @var Security
      */
-    public function __construct(FactoryInterface $factory)
+    private $security;
+
+    /**
+     * @param FactoryInterface $factory
+     * @param Security $security
+     */
+    public function __construct(FactoryInterface $factory, Security $security)
     {
         $this->factory = $factory;
+        $this->security = $security;
     }
 
     /**
@@ -31,6 +41,9 @@ final class Builder implements ContainerAwareInterface
      */
     public function createMainMenu(array $options): ItemInterface
     {
+        /** @var User $user */
+        $user = $this->security->getUser();
+
         $menu = $this->factory->createItem('main_menu');
 
         $menu
@@ -45,6 +58,11 @@ final class Builder implements ContainerAwareInterface
         $menu
             ->addChild('menu.settings', ['route' => 'user_settings'])
             ->setLinkAttribute('class', 'iconly-brokenSetting menu-item');
+        if ($user->hasRole(User::ROLE_ADMIN)) {
+            $menu
+                ->addChild('Admin', ['route' => 'admin_panel'])
+                ->setLinkAttribute('class', 'iconly-brokenSetting menu-item');
+        }
 
         return $menu;
     }

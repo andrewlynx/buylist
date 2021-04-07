@@ -8,9 +8,11 @@ use App\Entity\EmailInvitation;
 use App\Entity\Object\Email;
 use App\Entity\User;
 use App\Repository\EmailInvitationRepository;
+use App\Repository\UserRepository;
 use App\Validator\Locale;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -115,6 +117,27 @@ class RegistrationHandler
     public function login(User $user): User
     {
         $user->setLastLogin(new DateTime());
+        $this->em->flush();
+
+        return $user;
+    }
+
+    /**
+     * @param string $userName
+     *
+     * @return User
+     *
+     * @throws NonUniqueResultException
+     */
+    public function makeAdmin(string $userName): User
+    {
+        /** @var UserRepository $userRepo */
+        $userRepo = $this->em->getRepository(User::class);
+        $user = $userRepo->findUser($userName);
+        if (!$user) {
+            throw new Exception(sprintf('User %s not found', $userName));
+        }
+        $user->addRole(User::ROLE_ADMIN);
         $this->em->flush();
 
         return $user;

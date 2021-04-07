@@ -88,6 +88,13 @@ class TaskList
     private $emailInvitations;
 
     /**
+     * @var Collection<Notification>
+     *
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="taskList")
+     */
+    private $notifications;
+
+    /**
      * @var bool
      *
      * @ORM\Column(type="boolean")
@@ -101,6 +108,7 @@ class TaskList
     {
         $this->shared = new ArrayCollection();
         $this->taskItems = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     /**
@@ -122,7 +130,7 @@ class TaskList
     /**
      * @param string $name
      *
-     * @return TaskList
+     * @return $this
      */
     public function setName(string $name): self
     {
@@ -142,7 +150,7 @@ class TaskList
     /**
      * @param string|null $description
      *
-     * @return TaskList
+     * @return $this
      */
     public function setDescription(?string $description): self
     {
@@ -162,7 +170,7 @@ class TaskList
     /**
      * @param DateTimeInterface|null $date
      *
-     * @return TaskList
+     * @return $this
      */
     public function setDate(?DateTimeInterface $date): self
     {
@@ -182,7 +190,7 @@ class TaskList
     /**
      * @param User|null $creator
      *
-     * @return TaskList
+     * @return $this
      */
     public function setCreator(?User $creator): self
     {
@@ -202,7 +210,7 @@ class TaskList
     /**
      * @param User $shared
      *
-     * @return TaskList
+     * @return $this
      */
     public function addShared(User $shared): self
     {
@@ -216,7 +224,7 @@ class TaskList
     /**
      * @param User $shared
      *
-     * @return TaskList
+     * @return $this
      */
     public function removeShared(User $shared): self
     {
@@ -236,7 +244,7 @@ class TaskList
     /**
      * @param DateTimeInterface $createdAt
      *
-     * @return TaskList
+     * @return $this
      */
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
@@ -256,7 +264,7 @@ class TaskList
     /**
      * @param DateTimeInterface $updatedAt
      *
-     * @return TaskList
+     * @return $this
      */
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
@@ -276,7 +284,7 @@ class TaskList
     /**
      * @param TaskItem $taskItem
      *
-     * @return TaskList
+     * @return $this
      */
     public function addTaskItem(TaskItem $taskItem): self
     {
@@ -291,7 +299,7 @@ class TaskList
     /**
      * @param TaskItem $taskItem
      *
-     * @return TaskList
+     * @return $this
      */
     public function removeTaskItem(TaskItem $taskItem): self
     {
@@ -306,21 +314,31 @@ class TaskList
     }
 
     /**
-     * @return mixed
+     * @return Collection
      */
-    public function getEmailInvitations()
+    public function getEmailInvitations(): Collection
     {
         return $this->emailInvitations;
     }
 
     /**
      * @param mixed $emailInvitations
-     * @return TaskList
+     *
+     * @return $this
      */
-    public function setEmailInvitations($emailInvitations)
+    public function setEmailInvitations($emailInvitations): self
     {
         $this->emailInvitations = $emailInvitations;
+
         return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
     }
 
     /**

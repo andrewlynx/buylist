@@ -3,6 +3,9 @@
     <span id="unread-notifications">{{ _notifications.countUnread() }}</span>
 </a>
 <ul class="dropdown-menu nf-dropdown">
+    <li class="text-center all-btn">
+        <a href="{{ path('notification_index') }}" class="btn btn-lg btn-primary">{{ 'menu.notifications'|trans }}</a>
+    </li>
     {% for notification in _notifications.getUnread() %}
         <li class="nf">
             {% if notification.getUrlParams is not null %}
@@ -17,7 +20,8 @@
                     {{ notification.getDescription()|trans({
                         '%app%': _site_name,
                         '%user%': notification.userInvolved.nickname,
-                        '%list%': notification.taskList.name
+                        '%list%': notification.taskList.name ?? '',
+                        '%text%': notification.text
                     })|raw }}
                     </div>
                 </a>
@@ -34,7 +38,4 @@
             <small class="date">{{ notification.date|date }}</small>
         </li>
     {% endfor %}
-    <li class="text-center all-btn">
-        <a href="{{ path('notification_index') }}" class="btn btn-lg btn-primary">{{ 'menu.notifications'|trans }}</a>
-    </li>
 </ul>

@@ -12,10 +12,11 @@ use InvalidArgumentException;
 class NotificationFactory
 {
     /**
-     * @param int $event
-     * @param User $user
+     * @param int           $event
+     * @param User          $user
      * @param TaskList|null $taskList
-     * @param User|null $userInvolved
+     * @param User|null     $userInvolved
+     * @param string|null   $text
      *
      * @return Notification
      *
@@ -25,7 +26,8 @@ class NotificationFactory
         int $event,
         User $user,
         ?TaskList $taskList = null,
-        ?User $userInvolved = null
+        ?User $userInvolved = null,
+        ?string $text = null
     ): Notification {
         $notification = (new Notification())
             ->setEvent($event)
@@ -38,12 +40,17 @@ class NotificationFactory
             case NotificationService::EVENT_INVITED:
             case NotificationService::EVENT_LIST_CHANGED:
             case NotificationService::EVENT_LIST_ARCHIVED:
-            case NotificationService::EVENT_LIST_REMOVED:
             case NotificationService::EVENT_UNSUBSCRIBED:
                 self::validate($taskList, TaskList::class);
                 self::validate($userInvolved, User::class);
                 $notification
                     ->setTaskList($taskList)
+                    ->setUserInvolved($userInvolved);
+                break;
+            case NotificationService::EVENT_LIST_REMOVED:
+                self::validate($userInvolved, User::class);
+                $notification
+                    ->setText($text)
                     ->setUserInvolved($userInvolved);
                 break;
             default:

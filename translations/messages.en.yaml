@@ -51,7 +51,7 @@ notification:
   invitation: '<u>%user%</u> invited you to list <l>%list%</l>'
   list_archived: '<u>%user%</u> archived list <l>%list%</l>'
   list_changed: '<u>%user%</u> made changes in list <l>%list%</l>'
-  list_removed: '<u>%user%</u> removed list <l>%list%</l>'
+  list_removed: '<u>%user%</u> removed list <l>%text%</l>'
   not_found: 'Something got wrong, sorry. We are fixing.'
   unsubscribed: '<u>%user%</u> unsubscribed from list <l>%list%</l>'
   welcome: 'Welcome to %app%'
