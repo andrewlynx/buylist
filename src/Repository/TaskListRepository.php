@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class TaskListRepository extends ServiceEntityRepository
 {
-    public const PER_PAGE = 20;
+    public const PER_PAGE = 10;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -26,32 +26,33 @@ class TaskListRepository extends ServiceEntityRepository
 
     /**
      * @param UserInterface $user
-     * @param int|null $startId
+     * @param int|null $page
      *
      * @return array
      */
-    public function getUsersTasks(UserInterface $user, ?int $startId = null): array
+    public function getUsersTasks(UserInterface $user, ?int $page = null): array
     {
-        return $this->getTasks($user, false, $startId);
+        return $this->getTasks($user, false, $page);
     }
 
     /**
      * @param UserInterface $user
-     * @param int|null $startId
+     * @param int|null $page
      *
      * @return array
      */
-    public function getArchivedUsersTasks(UserInterface $user, ?int $startId = null): array
+    public function getArchivedUsersTasks(UserInterface $user, ?int $page = null): array
     {
-        return $this->getTasks($user, true, $startId);
+        return $this->getTasks($user, true, $page);
     }
 
     /**
      * @param User $user
+     * @param int|null $page
      *
      * @return array
      */
-    public function getSharedTasks(User $user): array
+    public function getSharedTasks(User $user, ?int $page = null): array
     {
         $qb = $this->createQueryBuilder('t')
             ->innerJoin('t.shared', 'u', 'WITH', 'u.email = :email')
@@ -59,7 +60,12 @@ class TaskListRepository extends ServiceEntityRepository
             ->setParameter('email', $user->getEmail())
             ->orderBy('t.creator')
             ->addOrderBy('t.createdAt', 'DESC')
+            ->setMaxResults(self::PER_PAGE)
         ;
+
+        if ($page !== null) {
+            $qb->setFirstResult(intval($page * self::PER_PAGE));
+        }
 
         return $qb->getQuery()->getResult();
     }
@@ -108,11 +114,11 @@ class TaskListRepository extends ServiceEntityRepository
     /**
      * @param UserInterface $user
      * @param bool $archived
-     * @param int|null $startId
+     * @param int|null $page
      *
      * @return array
      */
-    private function getTasks(UserInterface $user, bool $archived, ?int $startId): array
+    private function getTasks(UserInterface $user, bool $archived, ?int $page): array
     {
         $qb = $this->createQueryBuilder('t')
             ->Where('t.creator = :user')
@@ -123,10 +129,8 @@ class TaskListRepository extends ServiceEntityRepository
             ->setMaxResults(self::PER_PAGE)
         ;
 
-        if ($startId !== null) {
-            $qb->andWhere('t.id < :start')
-                ->setParameter('start', intval($startId))
-            ;
+        if ($page !== null) {
+            $qb->setFirstResult(intval($page * self::PER_PAGE));
         }
 
         return $qb->getQuery()->getResult();

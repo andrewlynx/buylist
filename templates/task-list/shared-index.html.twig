@@ -7,7 +7,8 @@
         <div class="tls" id="tls">
             {% include 'parts/private/list/shared-list.html.twig' with {
                 'task_lists': task_lists,
-                'unsubscribe_forms': unsubscribe_forms
+                'unsubscribe_forms': unsubscribe_forms,
+                'load_more_link': load_more_link
             } %}
         </div>
     {% else %}

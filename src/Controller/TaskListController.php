@@ -51,6 +51,31 @@ class TaskListController extends TranslatableController
             [
                 'task_lists' => $taskLists,
                 'archive_item_forms' => $this->getArchiveListFormsViews($taskLists),
+                'load_more_link' => $this->generateUrl('task_list_load_more', ['page' => 1]),
+            ]
+        );
+    }
+
+    /**
+     * @Route("/load-more/{page}", name="load_more")
+     *
+     * @param int $page
+     * @param TaskListRepository $taskListRepository
+     *
+     * @return Response
+     */
+    public function loadMore(int $page, TaskListRepository $taskListRepository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $taskLists = $taskListRepository->getUsersTasks($user, $page);
+
+        return $this->render(
+            'parts/private/list/list.html.twig',
+            [
+                'task_lists' => $taskLists,
+                'archive_item_forms' => $this->getArchiveListFormsViews($taskLists),
+                'load_more_link' => $this->generateUrl('task_list_load_more', ['page' => ++$page]),
             ]
         );
     }
@@ -67,13 +92,37 @@ class TaskListController extends TranslatableController
         /** @var User $user */
         $user = $this->getUser();
         $taskLists = $taskListRepository->getSharedTasks($user);
-        $unsubscribeForms = $this->getUnsubscribeFormsViews($taskLists);
 
         return $this->render(
             'task-list/shared-index.html.twig',
             [
                 'task_lists' => $taskLists,
-                'unsubscribe_forms' => $unsubscribeForms,
+                'unsubscribe_forms' => $this->getUnsubscribeFormsViews($taskLists),
+                'load_more_link' => $this->generateUrl('task_list_load_more_shared', ['page' => 1]),
+            ]
+        );
+    }
+
+    /**
+     * @Route("/load-more-shared/{page}", name="load_more_shared")
+     *
+     * @param int $page
+     * @param TaskListRepository $taskListRepository
+     *
+     * @return Response
+     */
+    public function loadMoreShared(int $page, TaskListRepository $taskListRepository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $taskLists = $taskListRepository->getSharedTasks($user, $page);
+
+        return $this->render(
+            'parts/private/list/shared-list.html.twig',
+            [
+                'task_lists' => $taskLists,
+                'unsubscribe_forms' => $this->getUnsubscribeFormsViews($taskLists),
+                'load_more_link' => $this->generateUrl('task_list_load_more_shared', ['page' => ++$page]),
             ]
         );
     }
@@ -96,29 +145,31 @@ class TaskListController extends TranslatableController
             [
                 'task_lists' => $taskLists,
                 'archive_item_forms' => $this->getArchiveListFormsViews($taskLists),
+                'load_more_link' => $this->generateUrl('task_list_load_more_archive', ['page' => 1]),
             ]
         );
     }
 
     /**
-     * @Route("/load-more/{id}", name="load_more")
+     * @Route("/load-more-archive/{page}", name="load_more_archive")
      *
-     * @param int $id
+     * @param int $page
      * @param TaskListRepository $taskListRepository
      *
      * @return Response
      */
-    public function loadMore(int $id, TaskListRepository $taskListRepository): Response
+    public function loadMoreArchive(int $page, TaskListRepository $taskListRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();
-        $taskLists = $taskListRepository->getUsersTasks($user, $id);
+        $taskLists = $taskListRepository->getArchivedUsersTasks($user, $page);
 
         return $this->render(
             'parts/private/list/list.html.twig',
             [
                 'task_lists' => $taskLists,
                 'archive_item_forms' => $this->getArchiveListFormsViews($taskLists),
+                'load_more_link' => $this->generateUrl('task_list_load_more_archive', ['page' => ++$page]),
             ]
         );
     }

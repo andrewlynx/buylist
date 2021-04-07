@@ -6,7 +6,7 @@
 {% endfor %}
 {% if task_lists|length == constant('App\\Repository\\TaskListRepository::PER_PAGE') %}
     {% set last_list = task_lists|last %}
-    <div id="loader" data-url="{{ path('task_list_load_more', {'id': last_list.id}) }}" class="text-center">
+    <div id="loader" data-url="{{ load_more_link }}" class="text-center">
         <button class="btn-primary btn">{{ 'list.load_more'|trans }}</button>
     </div>
 {% endif %}

@@ -8,7 +8,8 @@
         <div class="tls" id="tls">
             {% include 'parts/private/list/list.html.twig' with {
                 'task_lists': task_lists,
-                'archive_item_forms': archive_item_forms
+                'archive_item_forms': archive_item_forms,
+                'load_more_link': load_more_link
             } %}
         </div>
     {% else %}
