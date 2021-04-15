@@ -2,6 +2,7 @@
 
 namespace App\Service\Notification;
 
+use App\Entity\AdminNotification;
 use App\Entity\Notification;
 use App\Entity\TaskList;
 use App\Entity\User;
@@ -63,6 +64,14 @@ class NotificationService
     public function countUnread(): int
     {
         return $this->em->getRepository(Notification::class)->countUnread($this->getUser());
+    }
+
+    /**
+     * @return array
+     */
+    public function getAdminNotifications(): array
+    {
+        return $this->em->getRepository(AdminNotification::class)->getUnread($this->getUser());
     }
 
     /**

@@ -3,8 +3,15 @@
 {% block title %}Admin{% endblock %}
 
 {% block body %}
+    <a class="btn btn-primary" href="{{ path('admin_create_notification', {'id': 0}) }}">
+        Create notification for all users
+    </a>
     <p>Total users: {{ users|length }}</p>
     {% for user in users %}
-        <p>{{ user.email }} ({{ user.taskLists|length }} lists) {{ user.lastLogin|date }}</p>git
+        <p>{{ user.email }} ({{ user.taskLists|length }} lists) {{ user.lastLogin|date }}
+            <a class="btn btn-primary" href="{{ path('admin_create_notification', {'id': user.id}) }}">
+                Create notification
+            </a>
+        </p>
     {% endfor %}
 {% endblock %}

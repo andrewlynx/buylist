@@ -44,6 +44,17 @@ class UserFixtures extends Fixture
 
             $manager->persist($$name);
         }
+
+        // Create Admin
+        $admin = new User();
+        $admin->setEmail('admin@example.com');
+        $admin->setPassword($this->passwordEncoder->encodePassword(
+            $admin,
+            'test'
+        ));
+        $admin->addRole(User::ROLE_ADMIN);
+        $manager->persist($admin);
+
         $manager->flush();
 
         $user = $manager->getRepository(User::class)->find(1);

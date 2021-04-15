@@ -101,6 +101,13 @@ class User implements UserInterface
     private $nickName;
 
     /**
+     * @var Collection<AdminNotification>
+     *
+     * @ORM\OneToMany(targetEntity=AdminNotification::class, mappedBy="user")
+     */
+    private $adminNotifications;
+
+    /**
      *
      */
     public function __construct()
@@ -108,6 +115,7 @@ class User implements UserInterface
         $this->shared = new ArrayCollection();
         $this->taskLists = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->adminNotifications = new ArrayCollection();
     }
 
     /**
@@ -398,9 +406,20 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getColor(): string
     {
         $colors = ['orange', 'green', 'purple'];
         return $colors[array_rand($colors)];
+    }
+
+    /**
+     * @return Collection|AdminNotification[]
+     */
+    public function getAdminNotifications(): Collection
+    {
+        return $this->adminNotifications;
     }
 }

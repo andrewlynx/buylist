@@ -37,3 +37,14 @@
         {% endif %}
     </ul>
 </nav>
+<div class="a-n">
+    {% for notification in _notifications.getAdminNotifications() %}
+        <div class="alert alert-info" role="alert">
+            {{ notification.text|nl2br }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+                    data-url="{{ path('admin_read_notification', {'id': notification.id}) }}">
+                <span class="iconly-brokenClose-Square"></span>
+            </button>
+        </div>
+    {% endfor %}
+</div>

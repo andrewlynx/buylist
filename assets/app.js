@@ -152,7 +152,6 @@ $( document ).ready(function() {
     // Task item edit call handler
     $(document).on("click", '.ti > .ie', function(e){
         $.get($(this).attr('data-url')).then(function(data){
-            //alert(data);
             $('#li-modal').addClass('active');
             $('#li-modal .data').html(data);
         });
@@ -161,6 +160,14 @@ $( document ).ready(function() {
     // Close modal window
     $(document).on("click", '#li-modal .close', function(e){
         closeModal();
+    });
+
+    $(document).on("click", '.a-n .close', function(e){
+        $.get($(this).attr('data-url')).then(function(msg){
+            if (msg.status != msgSuccess) {
+                alert( msg.data );
+            }
+        });
     });
 
     // Load more lists on scrolling down
