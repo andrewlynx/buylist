@@ -13,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
 class AdminNotification
 {
     /**
+     * @var int
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -20,16 +22,22 @@ class AdminNotification
     private $id;
 
     /**
+     * @var User|null
+     *
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="adminNotifications")
      */
     private $user;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="text")
      */
     private $text;
 
     /**
+     * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
     private $seen = false;

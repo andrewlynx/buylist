@@ -49,4 +49,5 @@ security:
         - { path: ^/(%locales%)/task.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ] }
         - { path: ^/(%locales%)/user.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ] }
         - { path: ^/(%locales%)/notification.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ] }
+        - { path: ^/(%locales%)/search.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ] }
         - { path: ^/(%locales%)/master.*, roles: [ ROLE_ADMIN ] }

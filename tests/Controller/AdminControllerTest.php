@@ -54,14 +54,18 @@ class AdminControllerTest extends WebTestCase
         $this->assertEquals('Test Notification', $adminNotification->getText());
     }
 
+    /**
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function testReadAdminNotification()
     {
         $client = static::createClient();
         $this->createAdminNotification($client);
 
+        /** @var UserRepository $userRepository */
         $userRepository = static::$container->get(UserRepository::class);
-        /** @var User $user */
-        $admin = $userRepository->findOneByEmail('admin@example.com');
+        /** @var User $admin */
+        $admin = $userRepository->findUser('admin@example.com');
         $this->assertFalse($admin->getAdminNotifications()->first()->isSeen());
 
         $client->request(
@@ -75,10 +79,14 @@ class AdminControllerTest extends WebTestCase
 
         $client->request(
             'GET',
-            ControllerTestHelper::generateRoute('admin_read_notification', $admin->getAdminNotifications()->first()->getId())
+            ControllerTestHelper::generateRoute(
+                'admin_read_notification',
+                $admin->getAdminNotifications()->first()->getId()
+            )
         );
 
-        $admin = $userRepository->findOneByEmail('admin@example.com');
+        /** @var User $admin */
+        $admin = $userRepository->findUser('admin@example.com');
         $this->assertTrue($admin->getAdminNotifications()->first()->isSeen());
 
         $client->request(

@@ -91,7 +91,9 @@ class AdminController extends TranslatableController
         NotificationHandler $notificationHandler
     ): Response {
         try {
-            $notificationHandler->markSeen($notification, $this->getUser());
+            /** @var User $user */
+            $user = $this->getUser();
+            $notificationHandler->markSeen($notification, $user);
 
             return new JsonSuccess('');
         } catch (Throwable $e) {

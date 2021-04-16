@@ -50,10 +50,11 @@ class CreateAdmin extends Command
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    {git
         try {
+            $username = $input->getArgument('user');
             $user = $this->registrationHandler->makeAdmin(
-                $input->getArgument('user')
+                is_array($username) ? array_pop($username) : $username
             );
             $output->writeln(sprintf('User %s is admin now', $user->getEmail()));
 
