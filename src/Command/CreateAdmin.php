@@ -50,7 +50,7 @@ class CreateAdmin extends Command
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
-    {git
+    {
         try {
             $username = $input->getArgument('user');
             $user = $this->registrationHandler->makeAdmin(
