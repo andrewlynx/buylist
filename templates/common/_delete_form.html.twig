@@ -1,5 +1,5 @@
 <form method="post" action="{{ path(path, {'id': item.id}) }}" onsubmit="return confirm({{ 'validation.delete_prompt'|trans }});">
     <input type="hidden" name="_method" value="DELETE">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
-    <button class="btn">{{ 'form.delete'|trans }}</button>
+    <button class="btn-primary btn-sm btn">{{ 'form.delete'|trans }}</button>
 </form>

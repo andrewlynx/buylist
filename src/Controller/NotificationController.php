@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Controller\Extendable\TranslatableController;
+use App\Entity\AdminNotification;
 use App\Entity\JsonResponse\JsonError;
 use App\Entity\JsonResponse\JsonSuccess;
 use App\Entity\Notification;
 use App\Entity\User;
 use App\Repository\NotificationRepository;
+use App\UseCase\Admin\NotificationHandler as AdminNotificationHandler;
 use App\UseCase\Notification\NotificationHandler;
 use Exception;
 use RuntimeException;
@@ -80,6 +82,31 @@ class NotificationController extends TranslatableController
             return new JsonSuccess(
                 'read'
             );
+        } catch (Throwable $e) {
+            return new JsonError(
+                $this->translator->trans($e->getMessage())
+            );
+        }
+    }
+
+    /**
+     * @Route("/read-notification/{id}", name="read_admin")
+     *
+     * @param AdminNotification|null $notification
+     * @param AdminNotificationHandler $notificationHandler
+     *
+     * @return Response
+     */
+    public function readAdminNotification(
+        ?AdminNotification $notification = null,
+        AdminNotificationHandler $notificationHandler
+    ): Response {
+        try {
+            /** @var User $user */
+            $user = $this->getUser();
+            $notificationHandler->markSeen($notification, $user);
+
+            return new JsonSuccess('');
         } catch (Throwable $e) {
             return new JsonError(
                 $this->translator->trans($e->getMessage())

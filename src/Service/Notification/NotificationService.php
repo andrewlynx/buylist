@@ -75,6 +75,14 @@ class NotificationService
     }
 
     /**
+     * @return int
+     */
+    public function countUnreadAdminNotifications(): int
+    {
+        return $this->em->getRepository(AdminNotification::class)->countUnread();
+    }
+
+    /**
      * @param int $event
      * @param User $user
      * @param TaskList|null $taskList

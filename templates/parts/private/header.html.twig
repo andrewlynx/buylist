@@ -42,9 +42,14 @@
         <div class="alert alert-info" role="alert">
             {{ notification.text|nl2br }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"
-                    data-url="{{ path('admin_read_notification', {'id': notification.id}) }}">
+                    data-url="{{ path('notification_read_admin', {'id': notification.id}) }}">
                 <span class="iconly-brokenClose-Square"></span>
             </button>
+            <p class="mb-0">
+                <a href="https://translate.google.com/?sl=auto&tl={{ app.request.locale }}&text={{ notification.text|url_encode }}&op=translate" target="_blank">
+                    {{ 'notification.translate'|trans }}
+                </a>
+            </p>
         </div>
     {% endfor %}
 </div>

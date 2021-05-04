@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="options-menu">
+        {{ knp_menu_render('options_menu', {'currentClass': 'active', 'ancestorClass': 'active'}) }}
+    </div>
+{% endblock %}

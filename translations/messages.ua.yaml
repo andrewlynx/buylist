@@ -42,17 +42,21 @@ menu:
   about: 'Про сайт'
   about_us: 'Про нас'
   archive: Архів
+  credentials: 'Доступи'
   lists: 'Мої списки'
   lists_shared: 'Спільні списки'
   notifications: Повідомлення
   privacy_policy: 'Політика конфіденційності'
   settings: Налаштування
+  users: Користувачі
 notification:
+  all_btn: 'Дивитись Всю Активність'
   invitation: '<u>%user%</u> запросив вас у список <l>%list%</l>'
   list_archived: '<u>%user%</u> архівував список <l>%list%</l>'
   list_changed: '<u>%user%</u> вніс зміни у список <l>%list%</l>'
   list_removed: '<u>%user%</u> видалив список <l>%list%</l>'
   not_found: 'Щось сталося не так, вибачте. Ми виправляємо.'
+  translate: 'Переклад'
   unsubscribed: '<u>%user%</u> відписався від <l>%list%</l>'
   welcome: 'Вітаємо у %app%'
   your_notifications: 'Ваші повідомлення'
@@ -87,12 +91,20 @@ validation:
   invalid_json_request: 'Невірний формат данних: %error%'
   invalid_submission: 'Невірні данні'
 user:
+  add_to_favourites: 'Додати в улюблені'
+  block: 'Заблокувати'
+  blocked_users: 'Заблоковані користувачі'
   email: Email
   incorrect_current_password: 'Невірний поточний пароль'
   language: Мова
   new_password: Новий Пароль
   nickname: "Відображуване ім'я"
   nickname_help: 'Якщо не вказано, відображатиметься перша частина email'
+  not_found: 'Користувача не знайдено'
   password: Пароль
   password_change_help: 'Заповніть це поле, лише якщо ви хочете змінити пароль'
   register: Реєстрація
+  remove_from_favourites: 'Видалити з улюблених'
+  shared_with_you: 'Списки користувача, якими він поділився'
+  unblock_user: 'Розблокувати'
+  your_lists_shared: 'Ваші списки, спільні з користувачем'

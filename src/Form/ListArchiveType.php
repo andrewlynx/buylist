@@ -19,7 +19,8 @@ class ListArchiveType extends AbstractType
                 'data' => $status,
             ])
             ->add('archive', SubmitType::class, [
-                'label' => $status ? 'list.restore' : 'list.archive'
+                'label' => $status ? 'list.restore' : 'list.archive',
+                'attr' => ['class' => 'btn'],
             ])
         ;
     }

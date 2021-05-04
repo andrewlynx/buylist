@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\AdminNotification;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,5 +39,32 @@ class AdminNotificationRepository extends ServiceEntityRepository
             ->orderBy('n.id', 'DESC');
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     *
+     */
+    public function clearRead(): void
+    {
+        $qb = $this->createQueryBuilder('n')
+            ->delete()
+            ->where('n.seen = 1');
+
+        $qb->getQuery()->execute();
+    }
+
+    /**
+     * @return int
+     *
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
+    public function countUnread(): int
+    {
+        $qb = $this->createQueryBuilder('n')
+            ->select('COUNT(n)')
+            ->where('n.seen = 1');
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }

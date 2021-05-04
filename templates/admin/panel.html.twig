@@ -6,6 +6,9 @@
     <a class="btn btn-primary" href="{{ path('admin_create_notification', {'id': 0}) }}">
         Create notification for all users
     </a>
+    <a class="btn btn-warning" href="{{ path('admin_remove_read_notifications') }}">
+        Remove all read notifications ({{ _notifications.countUnreadAdminNotifications }})
+    </a>
     <p>Total users: {{ users|length }}</p>
     {% for user in users %}
         <p>{{ user.email }} ({{ user.taskLists|length }} lists) {{ user.lastLogin|date }}

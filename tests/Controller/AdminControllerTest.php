@@ -80,7 +80,7 @@ class AdminControllerTest extends WebTestCase
         $client->request(
             'GET',
             ControllerTestHelper::generateRoute(
-                'admin_read_notification',
+                'notification_read_admin',
                 $admin->getAdminNotifications()->first()->getId()
             )
         );
@@ -106,7 +106,7 @@ class AdminControllerTest extends WebTestCase
 
         $client->request(
             'GET',
-            ControllerTestHelper::generateRoute('admin_read_notification', 100)
+            ControllerTestHelper::generateRoute('notification_read_admin', 100)
         );
 
         $this->assertContains(

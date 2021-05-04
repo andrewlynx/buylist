@@ -1,8 +1,9 @@
-{% extends 'base.html.twig' %}
+{% extends 'user/options_template.html.twig' %}
 
 {% block title %}{{ 'menu.settings'|trans }}{% endblock %}
 
 {% block body %}
+    {{ parent() }}
     <div class="row">
         <div class="col-sm-12">
             {{ form(form) }}

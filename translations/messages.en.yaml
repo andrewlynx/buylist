@@ -42,17 +42,21 @@ menu:
   about: About
   about_us: 'About Us'
   archive: Archive
+  credentials: Credentials
   lists: 'My Lists'
   lists_shared: 'Shared Lists'
   notifications: Notifications
   privacy_policy: 'Privacy Policy'
   settings: Settings
+  users: Users
 notification:
+  all_btn: 'See All Incoming Activity'
   invitation: '<u>%user%</u> invited you to list <l>%list%</l>'
   list_archived: '<u>%user%</u> archived list <l>%list%</l>'
   list_changed: '<u>%user%</u> made changes in list <l>%list%</l>'
   list_removed: '<u>%user%</u> removed list <l>%text%</l>'
   not_found: 'Something got wrong, sorry. We are fixing.'
+  translate: 'Translate'
   unsubscribed: '<u>%user%</u> unsubscribed from list <l>%list%</l>'
   welcome: 'Welcome to %app%'
   your_notifications: 'Your notifications'
@@ -87,12 +91,20 @@ validation:
   invalid_json_request: 'Incorrect data format: %error%'
   invalid_submission: 'Invalid form data'
 user:
+  add_to_favourites: 'Add to favourites'
+  block: 'Block users'
+  blocked_users: 'Blocked users'
   email: Email
   incorrect_current_password: 'Incorrect Current Password'
   language: Language
   new_password: 'New Password'
   nickname: 'Display name'
   nickname_help: 'If not set, first part of email will be displayed'
+  not_found: 'User not found'
   password: Password
   password_change_help: 'Fill this field only if you want to change your password'
   register: Register
+  remove_from_favourites: 'Remove from favourites'
+  shared_with_you: 'User lists shared with you'
+  unblock_user: 'Unblock user'
+  your_lists_shared: 'Your lists shared to user'

@@ -1,0 +1,27 @@
+{% extends 'user/options_template.html.twig' %}
+
+{% block title %}{{ 'menu.users'|trans }}{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    {% if users %}
+        {% for user in users %}
+            <p class="well">
+                <a class="mr-auto" href="{{ path('user_user', {'email': user.email}) }}">{{ user.email }}</a>
+                {% include 'parts/private/user/favourites-button.html.twig' with {'user': user} %}
+                {% include 'parts/private/user/block-button.html.twig' with {'user': user} %}
+            </p>
+        {% endfor %}
+        {% if app.user.bannedUsers %}
+            <h4>{{ 'user.blocked_users'|trans }}</h4>
+        {% endif %}
+        {% for user in app.user.bannedUsers %}
+            <p class="well">
+                <a class="mr-auto" href="{{ path('user_user', {'email': user.email}) }}">{{ user.email }}</a>
+                {% include 'parts/private/user/block-button.html.twig' with {'user': user} %}
+            </p>
+        {% endfor %}
+    {% else %}
+        {% include 'common/no-result.html.twig' only %}
+    {% endif %}
+{% endblock %}

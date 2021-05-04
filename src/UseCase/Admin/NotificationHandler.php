@@ -4,6 +4,7 @@ namespace App\UseCase\Admin;
 
 use App\Entity\AdminNotification;
 use App\Entity\User;
+use App\Repository\AdminNotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
@@ -53,5 +54,12 @@ class NotificationHandler
 
         $notification->setSeen(true);
         $this->em->flush();
+    }
+
+    public function clear(): void
+    {
+        /** @var AdminNotificationRepository $adminNotificationRepo */
+        $adminNotificationRepo = $this->em->getRepository(AdminNotification::class);
+        $adminNotificationRepo->clearRead();
     }
 }

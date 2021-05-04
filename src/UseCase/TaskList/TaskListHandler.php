@@ -81,7 +81,8 @@ class TaskListHandler
     {
         /** @var User|null $user */
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => $dto->email]);
-        if ($user && $user !== $taskList->getCreator()) {
+
+        if ($user && $user !== $taskList->getCreator() && !$user->isBanned($taskList->getCreator())) {
             $taskList->addShared($user);
             $this->notificationService->createOrUpdate(
                 NotificationService::EVENT_INVITED,
@@ -93,6 +94,9 @@ class TaskListHandler
             return $user;
         } elseif ($user === $taskList->getCreator()) {
             throw new Exception('share_list.user_is_list_author');
+        } elseif ($user && $user->isBanned($taskList->getCreator())) {
+            //@todo add some logic for banned users
+            return $user;
         } else {
             $invitation = (new EmailInvitation())
                 ->setEmail($dto->email)

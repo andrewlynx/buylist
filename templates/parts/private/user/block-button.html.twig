@@ -1,0 +1,9 @@
+{% if app.user.isBanned(user) %}
+    <a class="btn btn-primary" href="{{ path('user_unblock', {'email': user.email}) }}">
+        {{ 'user.unblock_user'|trans }}
+    </a>
+{% else %}
+    <a class="btn btn-primary" href="{{ path('user_block', {'email': user.email}) }}">
+        {{ 'user.block'|trans }}
+    </a>
+{% endif %}

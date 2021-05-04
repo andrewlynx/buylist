@@ -39,3 +39,4 @@ services:
     App\Menu\Builder:
         tags:
             - { name: knp_menu.menu_builder, method: createMainMenu, alias: main_menu }
+            - { name: knp_menu.menu_builder, method: createOptionsMenu, alias: options_menu }

@@ -108,6 +108,28 @@ class User implements UserInterface
     private $adminNotifications;
 
     /**
+     * @ORM\ManyToMany(targetEntity=User::class)
+     * @ORM\JoinTable(name="user_favourite",
+     *      joinColumns={@ORM\JoinColumn(name="user", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="favourites", referencedColumnName="id")}
+     * )
+     *
+     * @var Collection<User>
+     */
+    private $favouriteUsers;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class)
+     * @ORM\JoinTable(name="user_banned",
+     *      joinColumns={@ORM\JoinColumn(name="user", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="banned", referencedColumnName="id")}
+     * )
+     *
+     * @var Collection<User>
+     */
+    private $bannedUsers;
+
+    /**
      *
      */
     public function __construct()
@@ -116,6 +138,8 @@ class User implements UserInterface
         $this->taskLists = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->adminNotifications = new ArrayCollection();
+        $this->favouriteUsers = new ArrayCollection();
+        $this->bannedUsers = new ArrayCollection();
     }
 
     /**
@@ -310,6 +334,20 @@ class User implements UserInterface
     }
 
     /**
+     * @param User $user
+     *
+     * @return Collection
+     */
+    public function getCommonTaskLists(User $user): Collection
+    {
+        return $this->taskLists->filter(
+            function (TaskList $taskList) use ($user) {
+                return $taskList->getShared()->contains($user);
+            }
+        );
+    }
+
+    /**
      * @param TaskList $taskList
      *
      * @return $this
@@ -397,7 +435,7 @@ class User implements UserInterface
     /**
      * @param string $nickName
      *
-     * @return User
+     * @return $this
      */
     public function setNickName(string $nickName): User
     {
@@ -421,5 +459,93 @@ class User implements UserInterface
     public function getAdminNotifications(): Collection
     {
         return $this->adminNotifications;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getFavouriteUsers(): Collection
+    {
+        return $this->favouriteUsers;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return bool
+     */
+    public function isFavourite(User $user): bool
+    {
+        return $this->favouriteUsers->contains($user);
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return $this
+     */
+    public function addFavouriteUser(User $user): self
+    {
+        if (!$this->favouriteUsers->contains($user)) {
+            $this->favouriteUsers->add($user);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return $this
+     */
+    public function removeFromFavouriteUsers(User $user): self
+    {
+        $this->favouriteUsers->removeElement($user);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getBannedUsers(): Collection
+    {
+        return $this->bannedUsers;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return $this
+     */
+    public function banUser(User $user): self
+    {
+        if (!$this->bannedUsers->contains($user)) {
+            $this->bannedUsers->add($user);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return bool
+     */
+    public function isBanned(User $user): bool
+    {
+        return $this->bannedUsers->contains($user);
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return $this
+     */
+    public function removeFromBan(User $user): self
+    {
+        $this->bannedUsers->removeElement($user);
+
+        return $this;
     }
 }

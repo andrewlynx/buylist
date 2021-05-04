@@ -2,7 +2,10 @@
 {% for task_list in task_lists %}
     {% if task_list.creator.nickname != author %}
         {% set author = task_list.creator.nickname %}
-        By {{ author }} ({{ task_list.creator.email }})
+
+        By <a href="{{ path('user_user', {'email': task_list.creator.email}) }}">
+            {{ author }} ({{ task_list.creator.email }})
+        </a>
     {% endif %}
     {% include 'parts/private/list/shared-list-block.html.twig' with {
         'task_list': task_list,

@@ -3,10 +3,6 @@
 namespace App\Controller;
 
 use App\Controller\Extendable\TranslatableController;
-use App\Entity\AdminNotification;
-use App\Entity\JsonResponse\JsonError;
-use App\Entity\JsonResponse\JsonSuccess;
-use App\Entity\User;
 use App\Form\Admin\CreateAdminNotificationType;
 use App\Repository\UserRepository;
 use App\UseCase\Admin\NotificationHandler;
@@ -79,27 +75,21 @@ class AdminController extends TranslatableController
     }
 
     /**
-     * @Route("/read-notification/{id}", name="read_notification")
+     * @Route("/remove-notification", name="remove_read_notifications")
      *
-     * @param AdminNotification|null $notification
-     * @param NotificationHandler    $notificationHandler
+     * @param NotificationHandler $notificationHandler
      *
      * @return Response
      */
-    public function readAdminNotification(
-        ?AdminNotification $notification = null,
-        NotificationHandler $notificationHandler
-    ): Response {
+    public function removeReadNotifications(NotificationHandler $notificationHandler): Response
+    {
         try {
-            /** @var User $user */
-            $user = $this->getUser();
-            $notificationHandler->markSeen($notification, $user);
-
-            return new JsonSuccess('');
+            $notificationHandler->clear();
+            $this->addFlash('success', 'Message(s) cleared');
         } catch (Throwable $e) {
-            return new JsonError(
-                $this->translator->trans($e->getMessage())
-            );
+            $this->addFlash('danger', $e->getMessage());
         }
+
+        return $this->redirectToRoute('admin_panel');
     }
 }

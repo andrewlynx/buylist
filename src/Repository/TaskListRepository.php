@@ -55,10 +55,13 @@ class TaskListRepository extends ServiceEntityRepository
     public function getSharedTasks(User $user, ?int $page = null): array
     {
         $qb = $this->createQueryBuilder('t')
+            ->addSelect('CASE WHEN t.creator in (:favourites) THEN 1 ELSE 0 END AS HIDDEN favourites')
             ->innerJoin('t.shared', 'u', 'WITH', 'u.email = :email')
             ->andWhere('t.archived = 0')
             ->setParameter('email', $user->getEmail())
+            ->setParameter('favourites', $user->getFavouriteUsers())
             ->orderBy('t.creator')
+            ->orderBy('favourites', 'DESC')
             ->addOrderBy('t.createdAt', 'DESC')
             ->setMaxResults(self::PER_PAGE)
         ;

@@ -24,6 +24,18 @@
       margin-left: 21px;
       min-width: 110px;
     }
+    .label {
+      padding: 5px;
+      border-radius: 10px;
+      height: 32px;
+      width: 32px;
+      display: block;
+      text-align: center;
+      &.shared {
+        background-color: #e7f5f9;
+        color: #7dc2d7;
+      }
+    }
   }
   #loader {
     margin-bottom: 15px;
@@ -81,5 +93,9 @@
     background-color: #fff;
     display: block;
     padding: 20px;
+    .close {
+      z-index: 9;
+      position: relative;
+    }
   }
 }

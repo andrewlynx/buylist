@@ -61,4 +61,35 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         return $qb->getQuery()->getOneOrNullResult();
     }
+
+    /**
+     * @param User $user
+     *
+     * @return array
+     */
+    public function findFriends(User $user): array
+    {
+        try {
+            $conn = $this->getEntityManager()->getConnection();
+
+            $sql = '
+                SELECT DISTINCT u.id FROM user u
+                LEFT JOIN task_list_user tu ON tu.user_id = u.id
+                LEFT JOIN task_list t ON tu.task_list_id = t.id
+                WHERE t.creator_id = :user
+            ';
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(['user' => $user->getId()]);
+
+            $ids = array_column($stmt->fetchAllAssociative(), 'id');
+        } catch (\Throwable $e) {
+            //@todo log exception
+            $ids = [];
+        }
+        $qb = $this->createQueryBuilder('u')
+            ->where('u.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        return $qb->getQuery()->getResult();
+    }
 }

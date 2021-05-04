@@ -1,0 +1,9 @@
+{% if app.user.isFavourite(user) %}
+    <a class="btn btn-primary" href="{{ path('user_remove_from_favourites', {'email': user.email}) }}">
+        {{ 'user.remove_from_favourites'|trans }}
+    </a>
+{% else %}
+    <a class="btn btn-primary" href="{{ path('user_add_to_favourites', {'email': user.email}) }}">
+        {{ 'user.add_to_favourites'|trans }}
+    </a>
+{% endif %}
