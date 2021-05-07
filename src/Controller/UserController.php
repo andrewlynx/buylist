@@ -142,7 +142,7 @@ class UserController extends TranslatableController
 
         $referer = $request->headers->get('referer');
 
-        return $referer ? $this->redirect($referer) : $this->redirectToRoute('index');
+        return $referer ? $this->redirect($referer) : $this->redirectToRoute('task_list_index');
     }
 
     /**
@@ -171,7 +171,7 @@ class UserController extends TranslatableController
 
         $referer = $request->headers->get('referer');
 
-        return $referer ? $this->redirect($referer) : $this->redirectToRoute('index');
+        return $referer ? $this->redirect($referer) : $this->redirectToRoute('task_list_index');
     }
 
     /**
@@ -200,7 +200,7 @@ class UserController extends TranslatableController
 
         $referer = $request->headers->get('referer');
 
-        return $referer ? $this->redirect($referer) : $this->redirectToRoute('index');
+        return $referer ? $this->redirect($referer) : $this->redirectToRoute('task_list_index');
     }
 
     /**
@@ -229,6 +229,6 @@ class UserController extends TranslatableController
 
         $referer = $request->headers->get('referer');
 
-        return $referer ? $this->redirect($referer) : $this->redirectToRoute('index');
+        return $referer ? $this->redirect($referer) : $this->redirectToRoute('task_list_index');
     }
 }

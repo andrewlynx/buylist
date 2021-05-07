@@ -38,4 +38,15 @@ class CreateAdminTest extends KernelTestCase
 
         $this->assertContains(User::ROLE_ADMIN, $user->getRoles());
     }
+
+    public function testUnexistingUser()
+    {
+        $kernel = static::createKernel();
+        $application = new Application($kernel);
+
+        $command = $application->find('app:create-admin');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(['user' => 'some@wrong.email']);
+        $this->assertStringContainsString('Error: User some@wrong.email not found', $commandTester->getDisplay());
+    }
 }

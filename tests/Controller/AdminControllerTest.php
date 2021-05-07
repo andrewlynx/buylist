@@ -2,7 +2,9 @@
 
 namespace App\Tests\Controller;
 
+use App\Entity\AdminNotification;
 use App\Entity\User;
+use App\Repository\AdminNotificationRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -97,6 +99,15 @@ class AdminControllerTest extends WebTestCase
             'Test Notification',
             $client->getResponse()->getContent()
         );
+
+        $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('admin_remove_read_notifications')
+        );
+        /** @var AdminNotificationRepository $adminNotificationRepository */
+        $adminNotificationRepository = static::$container->get(AdminNotificationRepository::class);
+        $count = $adminNotificationRepository->findBy(['seen' => 1]);
+        $this->assertEquals(count($count), 0);
     }
 
     public function testReadAdminNotificationError()

@@ -56,6 +56,9 @@ class NotificationHandler
         $this->em->flush();
     }
 
+    /**
+     *
+     */
     public function clear(): void
     {
         /** @var AdminNotificationRepository $adminNotificationRepo */

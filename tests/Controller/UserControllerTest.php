@@ -2,8 +2,11 @@
 
 namespace App\Tests\Controller;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
+use App\UseCase\User\UserHandler;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserControllerTest extends WebTestCase
 {
@@ -50,6 +53,112 @@ class UserControllerTest extends WebTestCase
         $client->submit($form);
         $this->assertContains(
             'Incorrect Current Password',
+            $client->getResponse()->getContent()
+        );
+    }
+
+    public function testUsersPage()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+        $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('user_users')
+        );
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testUserFound()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+        $client->request(
+            'GET',
+            'en/user/user/user2@example.com'
+        );
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testUserNotFound()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+        $client->catchExceptions(false);
+        $this->expectException(NotFoundHttpException::class);
+        $client->request(
+            'GET',
+            'en/user/user/incorrect_user@name'
+        );
+    }
+
+    public function testAddUserToFavourites()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+        $client->request(
+            'GET',
+            'en/user/add-to-favourites/user2@example.com'
+        );
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+
+        $userRepository = static::$container->get(UserRepository::class);
+
+        /** @var User $testUser */
+        $testUser = $userRepository->find(1);
+        $favouriteUser = $userRepository->find(2);
+        $this->assertContains($favouriteUser, $testUser->getFavouriteUsers());
+    }
+
+    public function testAddToFavouritesIncorrectUser()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+        $client->request(
+            'GET',
+            'en/user/add-to-favourites/incorrect_user@name'
+        );
+        $client->followRedirect();
+        $this->assertContains(
+            'User not found',
+            $client->getResponse()->getContent()
+        );
+    }
+
+    public function testRemoveUserFromFavourites()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+        $userRepository = static::$container->get(UserRepository::class);
+        /** @var UserHandler $userHandler */
+        $userHandler = static::$container->get(UserHandler::class);
+
+        /** @var User $testUser */
+        $testUser = $userRepository->find(1);
+        $favouriteUser = $userRepository->find(2);
+        $userHandler->addToFavourites($testUser, $favouriteUser);
+
+        $client->request(
+            'GET',
+            'en/user/remove-from-favourites/user2@example.com'
+        );
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+
+        $testUser = $userRepository->find(1);
+        $favouriteUser = $userRepository->find(2);
+        $this->assertNotContains($favouriteUser, $testUser->getFavouriteUsers());
+    }
+
+    public function testRemoveFromFavouritesIncorrectUser()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+        $client->request(
+            'GET',
+            'en/user/remove-from-favourites/incorrect_user@name'
+        );
+        $client->followRedirect();
+        $this->assertContains(
+            'User not found',
             $client->getResponse()->getContent()
         );
     }
