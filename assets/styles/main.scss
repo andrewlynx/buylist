@@ -8,21 +8,12 @@
     align-items: center;
     .link {
       display: flex;
-      color: theme-color("link");
+      color: theme-color("text");
       font-size: 16px;
       font-weight: 700;
     }
     .form-group {
       margin-bottom: 0;
-    }
-    button {
-      font-weight: 500;
-      padding: 9px 27px;
-      border-radius: 12px;
-      font-size: 14px;
-      border: 1px solid theme-color("primary");
-      margin-left: 21px;
-      min-width: 110px;
     }
     .label {
       padding: 5px;
@@ -62,7 +53,7 @@
     position: absolute;
     top: 10px;
     left: 20px;
-    color: theme-color("link");
+    color: theme-color("text");
   }
 }
 .ti {
@@ -96,6 +87,19 @@
     .close {
       z-index: 9;
       position: relative;
+    }
+  }
+}
+.u-links {
+  list-style: none;
+  padding-left: 10px;
+  border-bottom: 2px solid #e7e7e7;
+  padding-bottom: 20px;
+  .u-link {
+    margin-bottom: 10px;
+    a {
+      color: theme-color("text");
+      font-weight: 600;
     }
   }
 }

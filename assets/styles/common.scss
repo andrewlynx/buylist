@@ -1,6 +1,7 @@
 $theme-colors: (
   "primary": #6c5dd3,
-  "link": #434345
+  "text": #434345,
+  "link": #5f75ee
 );
 $colors: (
   'orange': #dc9948,
@@ -25,33 +26,74 @@ $sidebar-width: 263px;
 body {
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
-  a {
-    &:hover {
-      text-decoration: none;
-      transition-duration: .3s;
-    }
+  font-size: 14px;
+  color: theme-color("text");
+}
+a {
+  color: theme-color("link");
+  &:hover {
+    text-decoration: none;
+    transition-duration: .3s;
   }
+}
 
-  .orange {
-    background-color: lighten(color('orange'), 40%);
-    color: color('orange') !important;
-    & > a {
-      color: color('orange');
-    }
+h1 {
+  font-size: 40px;
+  font-weight: bold;
+}
+h2 {
+  font-size: 30px;
+  font-weight: bold;
+}
+h3 {
+  font-size: 18px;
+}
+h4 {
+  font-size: 16px;
+}
+h5 {
+  font-size: 16px;
+  font-weight: bold;
+}
+h6 {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+input {
+  font-size: 14px;
+}
+.btn {
+  font-weight: 500;
+  padding: 9px 27px;
+  border-radius: 12px;
+  font-size: 14px;
+  min-width: 110px;
+  margin: 0 10px;
+  &.btn-outline-primary {
+    border: 1px solid theme-color("primary");
   }
-  .green {
-    background-color: lighten(color('green'), 50%);
-    color: color('green') !important;
-    & > a {
-      color: color('green');
-    }
+}
+
+.orange {
+  background-color: lighten(color('orange'), 40%);
+  color: color('orange') !important;
+  & > a {
+    color: color('orange');
   }
-  .purple {
-    background-color: lighten(color('purple'), 30%);
-    color: color('purple') !important;
-    & > a {
-      color: color('purple');
-    }
+}
+.green {
+  background-color: lighten(color('green'), 50%);
+  color: color('green') !important;
+  & > a {
+    color: color('green');
+  }
+}
+.purple {
+  background-color: lighten(color('purple'), 30%);
+  color: color('purple') !important;
+  & > a {
+    color: color('purple');
   }
 }
 .row.wrapper{
@@ -61,7 +103,7 @@ body {
   display: inline-block;
   width: 50px;
   height: 50px;
-  line-height: 50px;
+  line-height: 44px;
   font-size: 24px;
   font-weight: 600;
   border-radius: 28px;
@@ -70,6 +112,13 @@ body {
   -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
   -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
   box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  &.small {
+    width: 40px;
+    height: 40px;
+    line-height: 34px;
+    font-size: 16px;
+    margin-right: 10px;
+  }
 }
 .page-content {
   width: calc(100% - #{$sidebar-width});
@@ -118,12 +167,6 @@ body {
     border-radius: 12px;
     color: theme-color("primary");
     padding: 12px;
-    a {
-      padding: 12px 30px;
-      background-color: theme-color("primary");
-      border-radius: 12px;
-      display: inline-block;
-    }
     p {
       margin-bottom: 5px;
     }
@@ -144,14 +187,4 @@ body {
   .top-padding {
     padding-top: 30px;
   }
-}
-input {
-  font-size: 14px;
-}
-.btn {
-  font-weight: 500;
-  padding: 9px 27px;
-  border-radius: 12px;
-  font-size: 14px;
-  min-width: 110px;
 }

@@ -14,50 +14,62 @@
       height: 52px;
     }
   }
-  .main-menu {
-    ul {
-      list-style: none;
-      padding: 20px 26px 20px 15px;
-      li {
-        position: relative;
-        border-radius: 12px;
-        a.menu-item {
-          display: inline-block;
-          width: 100%;
-          color: #69696b;
-          line-height: 24px;
-          font-family: Montserrat, sans-serif;
-          font-weight: 500;
-          padding: 15px 15px 15px 44px;
+  .menus {
+    padding: 20px 26px 20px 15px;
+
+    .main-menu {
+      ul {
+        list-style: none;
+        padding: 0;
+        border-bottom: 2px solid #e7e7e7;
+
+        li {
+          position: relative;
           border-radius: 12px;
-          margin-bottom: 2px;
-          &:before {
-            position: absolute;
-            left: 13px;
-            top: 16px;
+
+          a.menu-item {
+            display: inline-block;
+            width: 100%;
             color: #69696b;
-            font-size: 24px;
-            pointer-events: none;
-          }
-        }
-        &.active {
-          background-color: theme-color("primary");
-          &:after {
-            content: '';
-            display: block;
-            background-color: theme-color("primary");
-            border-radius: 5px;
-            position: absolute;
-            right: -8px;
-            top: 14px;
-            width: 30px;
-            height: 30px;
-            transform: rotate(45deg);
-          }
-          a {
-            color: #fff;
+            line-height: 24px;
+            font-family: Montserrat, sans-serif;
+            font-weight: 500;
+            padding: 15px 15px 15px 44px;
+            border-radius: 12px;
+            margin-bottom: 2px;
+
             &:before {
+              position: absolute;
+              left: 13px;
+              top: 16px;
+              color: #69696b;
+              font-size: 24px;
+              pointer-events: none;
+            }
+          }
+
+          &.active {
+            background-color: theme-color("primary");
+
+            &:after {
+              content: '';
+              display: block;
+              background-color: theme-color("primary");
+              border-radius: 5px;
+              position: absolute;
+              right: -8px;
+              top: 14px;
+              width: 30px;
+              height: 30px;
+              transform: rotate(45deg);
+            }
+
+            a {
               color: #fff;
+
+              &:before {
+                color: #fff;
+              }
             }
           }
         }
