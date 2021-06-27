@@ -33,7 +33,7 @@ class TaskList
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $description;
 
@@ -75,6 +75,7 @@ class TaskList
 
     /**
      * @var Collection<TaskItem>
+     * @ORM\OrderBy({"completed" = "ASC"})
      *
      * @ORM\OneToMany(targetEntity=TaskItem::class, mappedBy="taskList", orphanRemoval=true, cascade={"persist"})
      */
@@ -100,6 +101,13 @@ class TaskList
      * @ORM\Column(type="boolean")
      */
     private $archived = false;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=64, nullable=true)
+     */
+    private $colorLabel;
 
     /**
      *
@@ -234,6 +242,21 @@ class TaskList
     }
 
     /**
+     * @return array
+     */
+    public function getSimpleUsersEmails(): array
+    {
+        $emails = [];
+        foreach ($this->shared as $sharedUser) {
+            if (!$this->creator->getFavouriteUsers()->contains($sharedUser)) {
+                $emails[] = ['email' => $sharedUser->getEmail()];
+            }
+        }
+
+        return $emails;
+    }
+
+    /**
      * @return DateTimeInterface|null
      */
     public function getCreatedAt(): ?\DateTimeInterface
@@ -357,6 +380,26 @@ class TaskList
     public function setArchived(bool $archived): self
     {
         $this->archived = $archived;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColorLabel(): string
+    {
+        return $this->colorLabel;
+    }
+
+    /**
+     * @param string $colorLabel
+     *
+     * @return $this
+     */
+    public function setColorLabel(string $colorLabel): TaskList
+    {
+        $this->colorLabel = $colorLabel;
 
         return $this;
     }

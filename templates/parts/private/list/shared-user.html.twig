@@ -1,3 +1,7 @@
-<div class="col-12">
-    {{ user.nickname }}
-</div>
+{% if task_list.shared %}
+    <ul class="u-links">
+        {% for user in task_list.shared %}
+            {% include 'parts/private/user/user-block.html.twig' with {'email': true} %}
+        {% endfor %}
+    </ul>
+{% endif %}

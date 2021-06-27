@@ -3,11 +3,13 @@
 namespace App\UseCase\TaskList;
 
 use App\DTO\TaskList\TaskListShare;
+use App\DTO\TaskList\TaskListUsers;
+use App\DTO\TaskList\TaskListUsersRaw;
 use App\Entity\EmailInvitation;
+use App\Entity\Object\Email;
 use App\Entity\TaskList;
 use App\Entity\User;
 use App\Repository\TaskListRepository;
-use App\Service\Notification\NotificationFactory;
 use App\Service\Notification\NotificationService;
 use App\UseCase\Email\InvitationEmailHandler;
 use DateTime;
@@ -69,46 +71,89 @@ class TaskListHandler
     }
 
     /**
-     * @param TaskList      $taskList
-     * @param TaskListShare $dto
+     * @param TaskList $taskList
+     * @param array    $users
      *
-     * @return User
+     * @return TaskList
+     */
+    public function updateSharedUsers(TaskList $taskList, array $users): TaskList
+    {
+        foreach ($taskList->getShared() as $user) {
+            if (!in_array($user, $users)) {
+                $taskList->removeShared($user);
+            }
+        }
+        foreach ($users as $user) {
+            $taskList->addShared($user);
+        }
+
+        return $taskList;
+    }
+
+    /**
+     * @param TaskListUsersRaw $taskListUsers
+     * @param TaskList         $taskList
+     *
+     * @return TaskListUsers
      *
      * @throws Exception
-     * @throws TransportExceptionInterface
      */
-    public function share(TaskList $taskList, TaskListShare $dto): User
+    public function processSharedList(TaskListUsersRaw $taskListUsers, TaskList $taskList): TaskListUsers
     {
-        /** @var User|null $user */
-        $user = $this->em->getRepository(User::class)->findOneBy(['email' => $dto->email]);
+        $usersDTO = new TaskListUsers();
 
-        if ($user && $user !== $taskList->getCreator() && !$user->isBanned($taskList->getCreator())) {
-            $taskList->addShared($user);
-            $this->notificationService->createOrUpdate(
-                NotificationService::EVENT_INVITED,
-                $user,
-                $taskList,
-                $taskList->getCreator()
-            );
+        /** @var Email $email */
+        foreach ($taskListUsers->users as $email) {
+            /** @var User|null $user */
+            $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email->getValue()]);
 
-            return $user;
-        } elseif ($user === $taskList->getCreator()) {
-            throw new Exception('share_list.user_is_list_author');
-        } elseif ($user && $user->isBanned($taskList->getCreator())) {
-            //@todo add some logic for banned users
-            return $user;
-        } else {
-            $invitation = (new EmailInvitation())
-                ->setEmail($dto->email)
-                ->setCreatedDate(new DateTime())
-                ->setTaskList($taskList);
-            $this->em->persist($invitation);
-            $this->em->flush();
+            if ($user && $user !== $taskList->getCreator() && !$user->isBanned($taskList->getCreator())) {
+                $taskList->addShared($user);
+                $this->notificationService->createOrUpdate(
+                    NotificationService::EVENT_INVITED,
+                    $user,
+                    $taskList,
+                    $taskList->getCreator()
+                );
 
-            $this->emailHandler->sendInvitationEmail($taskList->getCreator(), $dto);
+                $usersDTO->addRegistered($user);
+            } elseif ($user === $taskList->getCreator()) {
+                $usersDTO->addNotAllowed($user->getEmail());
+            } elseif ($user && $user->isBanned($taskList->getCreator())) {
+                $usersDTO->addNotAllowed($user->getEmail());
+            } else {
+                $invitation = (new EmailInvitation())
+                    ->setEmail($email->getValue())
+                    ->setCreatedDate(new DateTime())
+                    ->setTaskList($taskList);
+                $this->em->persist($invitation);
+                $this->em->flush();
 
-            throw new Exception('share_list.user_not_found');
+                //$this->emailHandler->sendInvitationEmail($taskList->getCreator(), $email);
+
+                $usersDTO->addInvitationSent($email->getValue());
+            }
         }
+
+        return $usersDTO;
+    }
+
+    /**
+     * @param TaskList $taskList
+     *
+     * @return TaskList
+     *
+     * @throws Exception
+     */
+    public function edit(TaskList $taskList): TaskList
+    {
+        $taskList
+            ->setUpdatedAt(new DateTime());
+
+        $this->em->persist($taskList);
+        $this->em->flush();
+
+        return $taskList;
     }
 
     /**

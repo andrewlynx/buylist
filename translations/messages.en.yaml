@@ -27,6 +27,7 @@ list:
   create_new: 'Create'
   created: Created
   description: Description
+  edit: Edit
   last_update: 'Last update'
   list_archived: 'List archived'
   list_restored: 'List restored'
@@ -37,6 +38,7 @@ list:
   unsubscribe: Unsubscribe
   unsubscribed: 'You successfully unsubscribed from list'
   updated: 'List updated'
+  users: 'Added users'
   your_lists: 'Your lists'
 menu:
   about: About

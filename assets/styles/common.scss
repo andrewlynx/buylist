@@ -25,7 +25,7 @@ $sidebar-width: 263px;
 
 body {
   font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 14px;
   color: theme-color("text");
 }
@@ -47,9 +47,11 @@ h2 {
 }
 h3 {
   font-size: 18px;
+  font-weight: 500;
 }
 h4 {
   font-size: 16px;
+  font-weight: 500;
 }
 h5 {
   font-size: 16px;
@@ -62,6 +64,23 @@ h6 {
 
 input {
   font-size: 14px;
+  height: auto;
+  padding: 9px 15px;
+  border-radius: 10px;
+  border-color: #f4f4f4;
+}
+.form-control {
+  @extend input;
+}
+label {
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 16px;
+}
+.form-group {
+  padding-right: 0;
+  padding-left: 0;
 }
 .btn {
   font-weight: 500;
@@ -72,6 +91,9 @@ input {
   margin: 0 10px;
   &.btn-outline-primary {
     border: 1px solid theme-color("primary");
+  }
+  &[type=submit] {
+    margin: 0;
   }
 }
 

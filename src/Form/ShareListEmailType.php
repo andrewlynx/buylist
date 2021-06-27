@@ -4,7 +4,7 @@ namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class ShareListEmailType extends AbstractType
@@ -13,10 +13,14 @@ class ShareListEmailType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'user.email'
+                'label' => 'user.email',
+                'attr' => [
+                    'readonly' => true,
+                    'class' => 'active t-l-user',
+                ],
             ])
-            ->add('add', SubmitType::class, [
-                'label' => 'form.add'
+            ->add('active', HiddenType::class, [
+                'data' => true,
             ])
         ;
     }

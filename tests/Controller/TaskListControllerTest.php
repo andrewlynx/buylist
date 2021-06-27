@@ -51,20 +51,6 @@ class TaskListControllerTest extends WebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 
-    public function testCreate()
-    {
-        $client = static::createClient();
-
-        /** @var TaskListRepository $listRepository */
-        $listRepository = static::$container->get(TaskListRepository::class);
-
-        $this->assertCount(1, $listRepository->findAll());
-
-        $client = ControllerTestHelper::logInUser($client);
-        $client->request('GET', ControllerTestHelper::generateRoute('task_list_create', 1));
-        $this->assertCount(2, $listRepository->findAll());
-    }
-
     public function testView()
     {
         $client = static::createClient();
@@ -133,202 +119,120 @@ class TaskListControllerTest extends WebTestCase
         $this->assertCount(0, $listRepository->findAll());
     }
 
-    public function testTaskListShareJsonFail()
-    {
-        $client = static::createClient();
-        $client = ControllerTestHelper::logInUser($client);
+//    public function TaskListShareExistingUser()
+//    {
+//        $client = static::createClient();
+//        $client = ControllerTestHelper::logInUser($client);
+//
+//        $client->request(
+//            'POST',
+//            ControllerTestHelper::generateRoute('task_list_share', 1),
+//            [],
+//            [],
+//            [],
+//            json_encode([
+//                'share_list_email[_token]' => ControllerTestHelper::getToken(TaskListShare::FORM_NAME),
+//                'share_list_email[email]' => 'user2@example.com'
+//            ])
+//        );
+//        $responseArray = json_decode($client->getResponse()->getContent(), true);
+//        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_SUCCESS);
+//
+//        /** @var UserRepository $userRepository */
+//        $userRepository = static::$container->get(UserRepository::class);
+//        $testUser = $userRepository->findOneByEmail('user2@example.com');
+//
+//        /** @var TaskList $taskList */
+//        $taskList = static::$container->get(TaskListRepository::class)->find(1);
+//        $this->assertTrue($taskList->getShared()->contains($testUser));
+//
+//        return $client;
+//    }
 
-        $client->request(
-            'POST',
-            ControllerTestHelper::generateRoute('task_list_share', 1),
-            [],
-            [],
-            [],
-            'not-json'
-        );
-        $responseArray = json_decode($client->getResponse()->getContent(), true);
-        $this->assertArrayHasKey('status', $responseArray);
-        $this->assertArrayHasKey('data', $responseArray);
-        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
-    }
+//    public function TaskListInviteUser()
+//    {
+//        $client = static::createClient();
+//        $client = ControllerTestHelper::logInUser($client);
+//
+//        $client->request(
+//            'POST',
+//            ControllerTestHelper::generateRoute('task_list_share', 1),
+//            [],
+//            [],
+//            [],
+//            json_encode([
+//                'share_list_email[_token]' => ControllerTestHelper::getToken(TaskListShare::FORM_NAME),
+//                'share_list_email[email]' => 'non-existing-user@example.com'
+//            ])
+//        );
+//        $responseArray = json_decode($client->getResponse()->getContent(), true);
+//        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
+//        $this->assertEquals(
+//            $responseArray['data'],
+//            'User not found. The registration invitation was send on this email'
+//        );
+//    }
 
-    public function testTaskListShareTokenFail()
-    {
-        $client = static::createClient();
-        $client = ControllerTestHelper::logInUser($client);
-
-        $client->request(
-            'POST',
-            ControllerTestHelper::generateRoute('task_list_share', 1),
-            [],
-            [],
-            [],
-            json_encode([
-                'share_list_email[_token]' => 'wrong_token',
-                'share_list_email[email]' => 'email@example.com'
-            ])
-        );
-        $responseArray = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
-        $this->assertEquals($responseArray['data'], 'Invalid CSRF token');
-    }
-
-    public function testTaskListShareExistingUser()
-    {
-        $client = static::createClient();
-        $client = ControllerTestHelper::logInUser($client);
-
-        $client->request(
-            'POST',
-            ControllerTestHelper::generateRoute('task_list_share', 1),
-            [],
-            [],
-            [],
-            json_encode([
-                'share_list_email[_token]' => ControllerTestHelper::getToken(TaskListShare::FORM_NAME),
-                'share_list_email[email]' => 'user2@example.com'
-            ])
-        );
-        $responseArray = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_SUCCESS);
-
-        /** @var UserRepository $userRepository */
-        $userRepository = static::$container->get(UserRepository::class);
-        $testUser = $userRepository->findOneByEmail('user2@example.com');
-
-        /** @var TaskList $taskList */
-        $taskList = static::$container->get(TaskListRepository::class)->find(1);
-        $this->assertTrue($taskList->getShared()->contains($testUser));
-
-        return $client;
-    }
-
-    public function testTaskListShareAuthor()
-    {
-        $client = static::createClient();
-        $client = ControllerTestHelper::logInUser($client);
-
-        $client->request(
-            'POST',
-            ControllerTestHelper::generateRoute('task_list_share', 1),
-            [],
-            [],
-            [],
-            json_encode([
-                'share_list_email[_token]' => ControllerTestHelper::getToken(TaskListShare::FORM_NAME),
-                'share_list_email[email]' => 'user1@example.com'
-            ])
-        );
-        $responseArray = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
-        $this->assertEquals($responseArray['data'], 'This user is this List author');
-    }
-
-    public function testTaskListInviteUser()
-    {
-        $client = static::createClient();
-        $client = ControllerTestHelper::logInUser($client);
-
-        $client->request(
-            'POST',
-            ControllerTestHelper::generateRoute('task_list_share', 1),
-            [],
-            [],
-            [],
-            json_encode([
-                'share_list_email[_token]' => ControllerTestHelper::getToken(TaskListShare::FORM_NAME),
-                'share_list_email[email]' => 'non-existing-user@example.com'
-            ])
-        );
-        $responseArray = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
-        $this->assertEquals(
-            $responseArray['data'],
-            'User not found. The registration invitation was send on this email'
-        );
-    }
-
-    public function testEditList()
-    {
-        $client = static::createClient();
-        $client = ControllerTestHelper::logInUser($client);
-
-        $crawler = $client->request('GET', ControllerTestHelper::generateRoute('task_list_view', 1));
-        $form = $crawler->filter('form[name="task_list"]')->form();
-        $form->setValues([
-            'task_list[name]' => 'New Name',
-            'task_list[description]' => 'New Description',
-        ]);
-
-        $client->submit($form);
-        $client->followRedirect();
-
-        $this->assertContains(
-            'List updated',
-            $client->getResponse()->getContent()
-        );
-    }
-
-    public function testArchiveListAndNotifications()
-    {
-        $client = $this->testTaskListShareExistingUser();
-        $client = ControllerTestHelper::logInUser($client);
-
-        /** @var TaskList $taskList */
-        $taskList = static::$container->get(TaskListRepository::class)->find(1);
-        $this->assertFalse($taskList->isArchived());
-
-        $crawler = $client->request('GET', ControllerTestHelper::generateRoute('task_list_view', 1));
-        $form = $crawler->filter('form[name="list_archive"]')->form();
-
-        $client->submit($form);
-        $client->followRedirect();
-
-        $this->assertContains(
-            'List archived',
-            $client->getResponse()->getContent()
-        );
-
-        /** @var TaskList $taskList */
-        $taskList = static::$container->get(TaskListRepository::class)->find(1);
-        $this->assertTrue($taskList->isArchived());
-
-        $client = ControllerTestHelper::logInUser($client, 'user2@example.com');
-        $crawler = $client->request(
-            'GET',
-            ControllerTestHelper::generateRoute('task_list_index')
-        );
-        $this->assertContains(
-            '<u>user1</u> archived list <l>New Task List</l>',
-            $client->getResponse()->getContent()
-        );
-
-        /** @var TaskList $taskList */
-        $taskList = static::$container->get(NotificationRepository::class)->findOneBy([
-            'event' => NotificationService::EVENT_LIST_ARCHIVED
-        ]);
-
-        $client->request(
-            'POST',
-            ControllerTestHelper::generateRoute('notification_read', 3),
-            [],
-            [],
-            [],
-            json_encode([
-                '_token' => ControllerTestHelper::getToken('read_notification3'),
-            ])
-        );
-
-        $responseArray = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_SUCCESS);
-
-        $client->request(
-            'GET',
-            ControllerTestHelper::generateRoute('task_list_index')
-        );
-        $this->assertNotContains(
-            'user1@example.com archived list New Task List',
-            $client->getResponse()->getContent()
-        );
-    }
+//    public function ArchiveListAndNotifications()
+//    {
+//        $client = $this->testTaskListShareExistingUser();
+//        $client = ControllerTestHelper::logInUser($client);
+//
+//        /** @var TaskList $taskList */
+//        $taskList = static::$container->get(TaskListRepository::class)->find(1);
+//        $this->assertFalse($taskList->isArchived());
+//
+//        $crawler = $client->request('GET', ControllerTestHelper::generateRoute('task_list_view', 1));
+//        $form = $crawler->filter('form[name="list_archive"]')->form();
+//
+//        $client->submit($form);
+//        $client->followRedirect();
+//
+//        $this->assertContains(
+//            'List archived',
+//            $client->getResponse()->getContent()
+//        );
+//
+//        /** @var TaskList $taskList */
+//        $taskList = static::$container->get(TaskListRepository::class)->find(1);
+//        $this->assertTrue($taskList->isArchived());
+//
+//        $client = ControllerTestHelper::logInUser($client, 'user2@example.com');
+//        $crawler = $client->request(
+//            'GET',
+//            ControllerTestHelper::generateRoute('task_list_index')
+//        );
+//        $this->assertContains(
+//            '<u>user1</u> archived list <l>New Task List</l>',
+//            $client->getResponse()->getContent()
+//        );
+//
+//        /** @var TaskList $taskList */
+//        $taskList = static::$container->get(NotificationRepository::class)->findOneBy([
+//            'event' => NotificationService::EVENT_LIST_ARCHIVED
+//        ]);
+//
+//        $client->request(
+//            'POST',
+//            ControllerTestHelper::generateRoute('notification_read', 3),
+//            [],
+//            [],
+//            [],
+//            json_encode([
+//                '_token' => ControllerTestHelper::getToken('read_notification3'),
+//            ])
+//        );
+//
+//        $responseArray = json_decode($client->getResponse()->getContent(), true);
+//        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_SUCCESS);
+//
+//        $client->request(
+//            'GET',
+//            ControllerTestHelper::generateRoute('task_list_index')
+//        );
+//        $this->assertNotContains(
+//            'user1@example.com archived list New Task List',
+//            $client->getResponse()->getContent()
+//        );
+//    }
 }

@@ -44,19 +44,3 @@ parameters:
 			message: "#^Parameter \\#6 \\$content of method Symfony\\\\Component\\\\BrowserKit\\\\AbstractBrowser\\:\\:request\\(\\) expects string\\|null, string\\|false given\\.$#"
 			count: 4
 			path: tests/Controller/TaskItemControllerTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
-			count: 6
-			path: tests/Controller/TaskListControllerTest.php
-
-		-
-			message: "#^Parameter \\#6 \\$content of method Symfony\\\\Component\\\\BrowserKit\\\\AbstractBrowser\\:\\:request\\(\\) expects string\\|null, string\\|false given\\.$#"
-			count: 5
-			path: tests/Controller/TaskListControllerTest.php
-
-		-
-			message: "#^Call to an undefined method App\\\\Repository\\\\UserRepository\\:\\:findOneByEmail\\(\\)\\.$#"
-			count: 1
-			path: tests/Controller/TaskListControllerTest.php
-

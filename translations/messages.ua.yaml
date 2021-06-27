@@ -27,6 +27,7 @@ list:
   create_new: 'Створити'
   created: Created
   description: Деталi
+  edit: Редагувати
   last_update: 'Останнє оновлення'
   list_archived: 'Список Архівовано'
   list_restored: 'Список Відновлено'
@@ -36,8 +37,9 @@ list:
   shared: 'Спільний'
   unsubscribe: Відписатися
   unsubscribed: 'Ви успішно скасували підписку на list'
-  your_lists: 'Ваші списки'
   updated: 'Список оновлено'
+  users: 'Додані користувачі'
+  your_lists: 'Ваші списки'
 menu:
   about: 'Про сайт'
   about_us: 'Про нас'

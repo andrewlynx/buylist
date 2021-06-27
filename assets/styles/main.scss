@@ -32,6 +32,29 @@
     margin-bottom: 15px;
   }
 }
+.t-l-sidebar {
+  .t-l-s-block {
+    border-bottom: 1px solid #e7e7e7;
+    margin-bottom: 20px;
+  }
+  .u-links {
+    border: none;
+    padding: 0;
+    .u-link {
+      border: 1px solid transparent;
+      padding: 8px 16px;
+      &.active {
+        border-color: theme-color("primary");
+      }
+    }
+  }
+}
+.white-block {
+  background-color: #fff;
+  padding: 20px 15px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+}
 .sf {
   position: relative;
   input {
@@ -57,8 +80,18 @@
   }
 }
 .ti {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  .tiq, .tin {
+    padding: 8px 15px;
+  }
   &.completed {
     opacity: 0.5;
+    background-color: #f7f7f7;
+    border: 1px solid #e7e7e7;
   }
 }
 #li-modal {
@@ -97,9 +130,93 @@
   padding-bottom: 20px;
   .u-link {
     margin-bottom: 10px;
+    border-radius: 15px;
     a {
       color: theme-color("text");
       font-weight: 600;
+    }
+    .email {
+      font-size: 12px;
+      color: #adafba;
+      display: block;
+      font-weight: 500;
+      margin-left: 55px;
+      margin-top: -8px;
+    }
+  }
+}
+.li-create {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 20px;
+}
+.t-l-create {
+  legend {
+    display: none;
+  }
+  ul.list-items {
+    list-style: none;
+    padding-left: 0;
+
+    li {
+      position: relative;
+      display: flex;
+
+      label {
+        display: none;
+      }
+      .col-auto {
+        width: 100%;
+        position: relative;
+      }
+      .form-group {
+        margin-bottom: 0;
+        border-bottom: 1px dashed #ced4da;
+      }
+      div[id^="task_list_taskItems"] {
+        width: 90%;
+
+        .form-group {
+          width: 50%;
+          float: left;
+          border: none;
+        }
+        input {
+          border: none;
+          &:focus {
+            box-shadow: 0px 0px 0px 2px rgba(108, 93, 211, 0.25) inset;
+          }
+        }
+      }
+      .delete {
+        position: absolute;
+        right: 30px;
+        -webkit-appearance: none;
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: #f55b5b;
+      }
+    }
+  }
+}
+.task-list-users {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 15px;
+  label {
+    display: none;
+  }
+  input.form-control {
+    border: 1px solid transparent;
+    user-select : none;
+    -moz-user-select : none;
+    -webkit-user-select : none;
+    &:read-only {
+      background-color: transparent;
+    }
+    &.active {
+      border-color: #6c5dd3;
     }
   }
 }

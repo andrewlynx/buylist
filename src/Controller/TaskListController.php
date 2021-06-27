@@ -3,30 +3,24 @@
 namespace App\Controller;
 
 use App\Controller\Extendable\TranslatableController;
-use App\DTO\TaskList\TaskListShare;
-use App\Entity\JsonResponse\JsonError;
-use App\Entity\JsonResponse\JsonSuccess;
+use App\DTO\TaskList\TaskListUsersRaw;
 use App\Entity\TaskItem;
 use App\Entity\TaskList;
 use App\Entity\User;
 use App\Form\ShareListEmailType;
 use App\Form\ListArchiveType;
 use App\Form\TaskItemCompleteType;
-use App\Form\TaskItemCreateType;
 use App\Form\TaskListType;
 use App\Form\UnsubscribeType;
 use App\Repository\TaskListRepository;
 use App\UseCase\TaskList\TaskListHandler;
 use DateTime;
 use Exception;
-use RuntimeException;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Validator\Exception\ValidatorException;
-use Throwable;
 
 /**
  * @Route("/{_locale}/task-list", name="task_list_", requirements={"_locale": "[a-z]{2}"})
@@ -204,18 +198,79 @@ class TaskListController extends TranslatableController
      * @Route("/create", name="create")
      *
      * @param TaskListHandler $taskListHandler
+     * @param Request         $request
+     * @param TaskList        $taskList
      *
      * @return Response
      *
      * @throws Exception
      */
-    public function create(TaskListHandler $taskListHandler): Response
+    public function create(TaskListHandler $taskListHandler, Request $request, TaskList $taskList = null): Response
     {
         /** @var User $user */
         $user = $this->getUser();
-        $taskList = $taskListHandler->create($user);
+        $taskList = $taskList ?? $taskListHandler->create($user);
 
-        return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
+        $form = $this->createForm(TaskListType::class, $taskList)
+            ->handleRequest($request);
+
+        $shareListForm = $this->createForm(ShareListEmailType::class);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $fromFavourites = $form->get('favouriteUsers')->getNormData();
+                $fromUsersData = $form->get('users')->getNormData();
+
+                $fromUsers = $taskListHandler->processSharedList(new TaskListUsersRaw($fromUsersData), $taskList);
+                foreach ($fromUsers->notAllowed as $notAllowed) {
+                    $this->addFlash('warning', $notAllowed);
+                }
+                foreach ($fromUsers->invitationSent as $invitationSent) {
+                    $this->addFlash('success', $invitationSent);
+                }
+                $users = array_merge($fromFavourites, $fromUsers->registered);
+                if ($taskList->getId()) {
+                    $taskList = $taskListHandler->updateSharedUsers($taskList, $users);
+                    $taskList = $taskListHandler->edit($taskList);
+                } else {
+                    $taskListHandler->create($user);
+                }
+
+                return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
+            } catch (Exception $e) {
+                $this->addFlash('danger', $e->getMessage());
+            }
+        }
+
+        return $this->render(
+            'task-list/create.html.twig',
+            [
+                'task_list' => $taskList,
+                'form' => $form->createView(),
+                'task_list_share' => $shareListForm->createView(),
+                'complete_item_forms' => $this->getCompleteItemFormsViews($taskList->getTaskItems()),
+            ]
+        );
+    }
+
+    /**
+     * @Route("/edit/{id}", name="edit")
+     *
+     * @param TaskList        $taskList
+     * @param TaskListHandler $taskListHandler
+     * @param Request         $request
+     *
+     * @return Response
+     *
+     * @throws Exception
+     */
+    public function edit(TaskList $taskList, TaskListHandler $taskListHandler, Request $request): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $this->checkCreatorAccess($taskList, $user);
+
+        return $this->create($taskListHandler, $request, $taskList);
     }
 
     /**
@@ -249,18 +304,6 @@ class TaskListController extends TranslatableController
             return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
         }
 
-        $createItemForm = $this->createForm(
-            TaskItemCreateType::class,
-            ['taskList' => $taskList],
-            ['action' => $this->generateUrl('task_item_create')]
-        );
-
-        $shareListForm = $this->createForm(
-            ShareListEmailType::class,
-            [],
-            ['action' => $this->generateUrl('task_list_share', ['id' => $taskList->getId()])]
-        );
-
         $archiveForm = $this->getArchiveListForm($taskList);
 
         return $this->render(
@@ -269,8 +312,6 @@ class TaskListController extends TranslatableController
                 'task_list' => $taskList,
                 'form' => $form->createView(),
                 'task_list_archive' => $archiveForm->createView(),
-                'create_item_form' => $createItemForm->createView(),
-                'task_list_share' => $shareListForm->createView(),
                 'complete_item_forms' => $this->getCompleteItemFormsViews($taskList->getTaskItems()),
             ]
         );
@@ -303,56 +344,6 @@ class TaskListController extends TranslatableController
         $this->addFlash('danger', 'validation.invalid_submission');
 
         return $this->redirectToRoute('task_list_index');
-    }
-
-    /**
-     * @Route("/share/{id}", name="share", methods={"POST"})
-     *
-     * @param TaskList $taskList
-     * @param Request $request
-     * @param TaskListHandler $taskListHandler
-     *
-     * @return Response
-     */
-    public function taskListShare(
-        TaskList $taskList,
-        Request $request,
-        TaskListHandler $taskListHandler
-    ): Response {
-        try {
-            if ($taskList->isArchived()) {
-                throw new RuntimeException(
-                    $this->translator->trans('list.activate_list_to_edit')
-                );
-            }
-
-            $dataArray = json_decode($request->getContent(), true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new RuntimeException(
-                    $this->translator->trans('validation.invalid_json_request', ['error' => json_last_error_msg()])
-                );
-            }
-
-            $taskListShareData = new TaskListShare($dataArray);
-            if (!$this->isCsrfTokenValid(TaskListShare::FORM_NAME, $taskListShareData->token)) {
-                throw new ValidatorException('validation.invalid_csrf');
-            }
-
-            $user = $taskListHandler->share($taskList, $taskListShareData);
-
-            return new JsonSuccess(
-                $this->renderView(
-                    'parts/private/list/shared-user.html.twig',
-                    [
-                        'user' => $user,
-                    ]
-                )
-            );
-        } catch (Throwable $e) {
-            return new JsonError(
-                $this->translator->trans($e->getMessage())
-            );
-        }
     }
 
     /**

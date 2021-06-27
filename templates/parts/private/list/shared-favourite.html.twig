@@ -1,0 +1,11 @@
+{% if app.user.favouriteUsers %}
+    <ul class="u-links">
+        {% for user in app.user.favouriteUsers %}
+            {% if user in task_list.shared %}
+                {% include 'parts/private/user/user-block.html.twig' with {'email': true, 'active': true} %}
+            {% else %}
+                {% include 'parts/private/user/user-block.html.twig' with {'email': true} %}
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}

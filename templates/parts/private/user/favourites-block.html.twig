@@ -1,12 +1,7 @@
 {% if app.user.favouriteUsers %}
     <ul class="u-links">
     {% for user in app.user.favouriteUsers %}
-        <li class="u-link">
-            <a href="{{ path('user_user', {'email': user.email}) }}">
-                <span class="user-box small {{ user.color }}">{{ user.nickname|first|capitalize }}</span>
-                {{ user.nickName }}
-            </a>
-        </li>
+        {% include 'parts/private/user/user-block.html.twig' %}
     {% endfor %}
     </ul>
 {% endif %}
