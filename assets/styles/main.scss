@@ -22,6 +22,7 @@
       width: 32px;
       display: block;
       text-align: center;
+      margin-right: 10px;
       &.shared {
         background-color: #e7f5f9;
         color: #7dc2d7;
@@ -217,6 +218,24 @@
     }
     &.active {
       border-color: #6c5dd3;
+    }
+  }
+}
+.helper {
+  font-size: 22px;
+  position: relative;
+  .helper-popup {
+    font-size: 14px;
+    display: none;
+    position: absolute;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #434345;
+    border-radius: 15px;
+  }
+  &:hover {
+    .helper-popup {
+      display: block;
     }
   }
 }

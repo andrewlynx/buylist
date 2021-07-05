@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-sm-8">
             <h4>{{ task_list.name }}</h4>
-            <p>{{ task_list.description }}</p>
+            <p>{{ task_list.description|auto_url|raw|nl2br }}</p>
             <div id="list-items">
                 {% for taskItem in task_list.taskItems %}
                     {% include 'task-item/task-item.html.twig' with {'task_item': taskItem, 'complete_item_forms': complete_item_forms} %}

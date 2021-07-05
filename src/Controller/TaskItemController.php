@@ -30,7 +30,7 @@ class TaskItemController extends TranslatableController
     /**
      * @Route("/create", name="create", methods={"POST"})
      *
-     * @param Request $request
+     * @param Request         $request
      * @param TaskItemHandler $taskItemHandler
      *
      * @return Response
@@ -38,16 +38,9 @@ class TaskItemController extends TranslatableController
     public function create(Request $request, TaskItemHandler $taskItemHandler): Response
     {
         try {
-            $dataArray = json_decode($request->getContent(), true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    throw new RuntimeException(
-                        $this->translator->trans('validation.invalid_json_request', ['error' => json_last_error_msg()])
-                    );
-                }
-            }
-
-            $taskItemCreateData = new TaskItemCreate($dataArray);
+            $taskItemCreateData = new TaskItemCreate(
+                $this->jsonDecode($request->getContent())
+            );
             if (!$this->isCsrfTokenValid(TaskItemCreate::FORM_NAME, $taskItemCreateData->token)) {
                 throw new ValidatorException('validation.invalid_csrf');
             }
@@ -95,14 +88,9 @@ class TaskItemController extends TranslatableController
         TaskItemHandler $taskItemHandler
     ): Response {
         try {
-            $dataArray = json_decode($request->getContent(), true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new RuntimeException(
-                    $this->translator->trans('validation.invalid_json_request', ['error' => json_last_error_msg()])
-                );
-            }
-
-            $taskItemCompleteData = new TaskItemComplete($dataArray);
+            $taskItemCompleteData = new TaskItemComplete(
+                $this->jsonDecode($request->getContent())
+            );
             if (!$this->isCsrfTokenValid(TaskItemComplete::FORM_NAME, $taskItemCompleteData->token)) {
                 throw new ValidatorException('validation.invalid_csrf');
             }
@@ -162,14 +150,9 @@ class TaskItemController extends TranslatableController
     public function edit(TaskItem $taskItem, Request $request, TaskItemHandler $taskItemHandler): Response
     {
         try {
-            $dataArray = json_decode($request->getContent(), true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new RuntimeException(
-                    $this->translator->trans('validation.invalid_json_request', ['error' => json_last_error_msg()])
-                );
-            }
-
-            $taskItemEditData = new TaskItemEdit($dataArray);
+            $taskItemEditData = new TaskItemEdit(
+                $this->jsonDecode($request->getContent())
+            );
             $taskItemEditData->taskItem = $taskItem;
             if (!$this->isCsrfTokenValid(TaskItemEdit::FORM_NAME, $taskItemEditData->token)) {
                 throw new ValidatorException('validation.invalid_csrf');
@@ -198,5 +181,22 @@ class TaskItemController extends TranslatableController
                 $this->translator->trans($e->getMessage())
             );
         }
+    }
+
+    /**
+     * @param string|null $data
+     *
+     * @return array
+     */
+    private function jsonDecode(?string $data): array
+    {
+        $dataArray = json_decode($data, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new RuntimeException(
+                $this->translator->trans('validation.invalid_json_request', ['error' => json_last_error_msg()])
+            );
+        }
+
+        return $dataArray;
     }
 }

@@ -18,6 +18,8 @@ header:
   hi: Вiтаю
   logout: Вийти
   welcome_back: 'З поверненням'
+helper:
+  turn_off: 'Ці підказки можна вимкнути у Налаштуваннях'
 list:
   activate_list_to_edit: 'Цей список заархівовано. Активуйте список, щоб внести зміни'
   archive: Архівувати
@@ -97,6 +99,7 @@ user:
   block: 'Заблокувати'
   blocked_users: 'Заблоковані користувачі'
   email: Email
+  helpers: Допомога
   incorrect_current_password: 'Невірний поточний пароль'
   language: Мова
   new_password: Новий Пароль

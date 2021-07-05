@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Constant\AppConstant;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -36,6 +37,10 @@ class UserSettingsType extends AbstractType
                 },
                 'required' => false,
                 'choice_translation_domain' => false,
+            ])
+            ->add('helpers', CheckboxType::class, [
+                'label' => 'user.helpers',
+                'required' => false,
             ])
             ->add('add', SubmitType::class, [
                 'label' => 'form.save'

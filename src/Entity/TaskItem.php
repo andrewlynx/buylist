@@ -34,7 +34,7 @@ class TaskItem
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string", length=64, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $qty;
 

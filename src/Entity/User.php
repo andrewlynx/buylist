@@ -59,6 +59,13 @@ class User implements UserInterface
     private $isVerified = false;
 
     /**
+     * @ORM\Column(type="boolean")
+     *
+     * @var bool
+     */
+    private $helpers = true;
+
+    /**
      * @ORM\ManyToMany(targetEntity=TaskList::class, mappedBy="shared", orphanRemoval=true)
      *
      * @var Collection<TaskList>
@@ -281,6 +288,26 @@ class User implements UserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHelpers(): bool
+    {
+        return $this->helpers;
+    }
+
+    /**
+     * @param bool $helpers
+     *
+     * @return $this
+     */
+    public function setHelpers(bool $helpers): self
+    {
+        $this->helpers = $helpers;
 
         return $this;
     }
