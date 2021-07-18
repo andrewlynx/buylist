@@ -5,6 +5,7 @@ namespace App\Tests\Controller;
 use App\Constant\AppConstant;
 use App\DTO\TaskList\TaskListShare;
 use App\Entity\TaskList;
+use App\Form\TaskListType;
 use App\Repository\NotificationRepository;
 use App\Repository\TaskListRepository;
 use App\Repository\UserRepository;
@@ -19,7 +20,7 @@ class TaskListControllerTest extends WebTestCase
 
         $client->request(
             'GET',
-            $client->getContainer()->get('router')->generate('task_list_index', ['_locale' => 'en'])
+            $client->getContainer()->get('router')->generate('task_list_index')
         );
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $this->assertSame('/en/login', $client->getResponse()->headers->get('Location'));
@@ -27,7 +28,7 @@ class TaskListControllerTest extends WebTestCase
         $client = ControllerTestHelper::logInUser($client);
         $client->request(
             'GET',
-            $client->getContainer()->get('router')->generate('task_list_index', ['_locale' => 'en'])
+            $client->getContainer()->get('router')->generate('task_list_index')
         );
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
@@ -38,7 +39,7 @@ class TaskListControllerTest extends WebTestCase
 
         $client->request(
             'GET',
-            $client->getContainer()->get('router')->generate('task_list_index_shared', ['_locale' => 'en'])
+            $client->getContainer()->get('router')->generate('task_list_index_shared')
         );
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $this->assertSame('/en/login', $client->getResponse()->headers->get('Location'));
@@ -46,7 +47,26 @@ class TaskListControllerTest extends WebTestCase
         $client = ControllerTestHelper::logInUser($client);
         $client->request(
             'GET',
-            $client->getContainer()->get('router')->generate('task_list_index_shared', ['_locale' => 'en'])
+            $client->getContainer()->get('router')->generate('task_list_index_shared')
+        );
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    public function testArchive()
+    {
+        $client = static::createClient();
+
+        $client->request(
+            'GET',
+            $client->getContainer()->get('router')->generate('task_list_archive')
+        );
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+        $this->assertSame('/en/login', $client->getResponse()->headers->get('Location'));
+
+        $client = ControllerTestHelper::logInUser($client);
+        $client->request(
+            'GET',
+            $client->getContainer()->get('router')->generate('task_list_archive')
         );
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
@@ -119,35 +139,165 @@ class TaskListControllerTest extends WebTestCase
         $this->assertCount(0, $listRepository->findAll());
     }
 
-//    public function TaskListShareExistingUser()
-//    {
-//        $client = static::createClient();
-//        $client = ControllerTestHelper::logInUser($client);
-//
-//        $client->request(
-//            'POST',
-//            ControllerTestHelper::generateRoute('task_list_share', 1),
-//            [],
-//            [],
-//            [],
-//            json_encode([
-//                'share_list_email[_token]' => ControllerTestHelper::getToken(TaskListShare::FORM_NAME),
-//                'share_list_email[email]' => 'user2@example.com'
-//            ])
-//        );
-//        $responseArray = json_decode($client->getResponse()->getContent(), true);
-//        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_SUCCESS);
-//
-//        /** @var UserRepository $userRepository */
-//        $userRepository = static::$container->get(UserRepository::class);
-//        $testUser = $userRepository->findOneByEmail('user2@example.com');
-//
-//        /** @var TaskList $taskList */
-//        $taskList = static::$container->get(TaskListRepository::class)->find(1);
-//        $this->assertTrue($taskList->getShared()->contains($testUser));
-//
-//        return $client;
-//    }
+    public function testLoadMore()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+
+        $client->request(
+            'GET',
+            static::$container->get('router')
+                ->generate('task_list_load_more', [
+                    'page' => 0
+                ])
+        );
+        $this->assertResponseIsSuccessful();
+        $this->assertContains(
+            '<div class="tl">',
+            $client->getResponse()->getContent()
+        );
+
+        $client->request(
+            'GET',
+            static::$container->get('router')
+                ->generate('task_list_load_more', [
+                    'page' => 1
+                ])
+        );
+        $this->assertResponseIsSuccessful();
+        $this->assertNotContains(
+            '<div class="tl">',
+            $client->getResponse()->getContent()
+        );
+    }
+
+    public function testLoadMoreShared()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+
+        $client->request(
+            'GET',
+            static::$container->get('router')
+                ->generate('task_list_load_more_shared', [
+                    'page' => 1
+                ])
+        );
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testLoadMoreArchive()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+
+        $client->request(
+            'GET',
+            static::$container->get('router')
+                ->generate('task_list_load_more_archive', [
+                    'page' => 1
+                ])
+        );
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testCreatePost()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+
+        $crawler = $client->request(
+            'POST',
+            static::$container->get('router')->generate('task_list_create'),
+            [
+                'task_list' => [
+                    '_token' => ControllerTestHelper::getToken('task_list'),
+                    'name' => 'cool name',
+                    'description' => 'nice description',
+                    'users' => [
+                        1 => [
+                            'email' => 'test4_test.test',
+                            'active' => 1,
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $this->assertResponseIsSuccessful();
+        $this->assertContains(
+            'Incorrect Email',
+            $client->getResponse()->getContent()
+        );
+
+        $crawler = $client->request(
+            'POST',
+            static::$container->get('router')->generate('task_list_create'),
+            [
+                'task_list' => [
+                    '_token' => ControllerTestHelper::getToken('task_list'),
+                    'name' => 'cool name',
+                    'description' => 'nice description',
+                    'users' => [
+                        0 => [
+                            'email' => 'test4@test.test',
+                            'active' => 1,
+                        ],
+                        1 => [
+                            'email' => 'user1@example.com',
+                            'active' => 1,
+                        ],
+                        2 => [
+                            'email' => 'test66@test.test',
+                            'active' => 1,
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $client->followRedirect();
+        $this->assertContains(
+            'List created',
+            $client->getResponse()->getContent()
+        );
+    }
+
+    public function testEdit()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+
+        /** @var TaskList $taskList */
+        $taskList = static::$container->get(TaskListRepository::class)->find(1);
+
+        $this->assertNotEquals('new cool name', $taskList->getName());
+        $this->assertNotEquals('awesome description', $taskList->getDescription());
+
+        $crawler = $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('task_list_edit', 1)
+        );
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->filter('form[name="task_list"]')->form();
+        $form->setValues([
+            'task_list[name]' => 'new cool name',
+            'task_list[description]' => 'awesome description',
+        ]);
+        $client->submit($form);
+        $client->followRedirect();
+        $this->assertResponseIsSuccessful();
+        $this->assertContains(
+            'List updated',
+            $client->getResponse()->getContent()
+        );
+
+        /** @var TaskList $taskList */
+        $taskList = static::$container->get(TaskListRepository::class)->find(1);
+        $this->assertEquals('new cool name', $taskList->getName());
+        $this->assertEquals('awesome description', $taskList->getDescription());
+    }
 
 //    public function TaskListInviteUser()
 //    {
@@ -173,7 +323,7 @@ class TaskListControllerTest extends WebTestCase
 //        );
 //    }
 
-//    public function ArchiveListAndNotifications()
+//    public function testArchiveListAndNotifications()
 //    {
 //        $client = $this->testTaskListShareExistingUser();
 //        $client = ControllerTestHelper::logInUser($client);

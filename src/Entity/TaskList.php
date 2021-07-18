@@ -117,6 +117,7 @@ class TaskList
         $this->shared = new ArrayCollection();
         $this->taskItems = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->emailInvitations = new ArrayCollection();
     }
 
     /**
@@ -345,13 +346,15 @@ class TaskList
     }
 
     /**
-     * @param mixed $emailInvitations
+     * @param EmailInvitation $emailInvitation
      *
      * @return $this
      */
-    public function setEmailInvitations($emailInvitations): self
+    public function addEmailInvitations(EmailInvitation $emailInvitation): self
     {
-        $this->emailInvitations = $emailInvitations;
+        if (!$this->emailInvitations->contains($emailInvitation)) {
+            $this->emailInvitations[] = $emailInvitation;
+        }
 
         return $this;
     }

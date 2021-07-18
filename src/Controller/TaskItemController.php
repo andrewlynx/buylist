@@ -23,7 +23,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
- * @Route("/{_locale}/task-item", name="task_item_", requirements={"_locale": "[a-z]{2}"})
+ * @Route("/{_locale}/task-item", name="task_item_", locale="en", requirements={"_locale": "[a-z]{2}"})
  */
 class TaskItemController extends TranslatableController
 {

@@ -53,6 +53,7 @@ class UserFixtures extends Fixture
             'test'
         ));
         $admin->addRole(User::ROLE_ADMIN);
+        $admin->setHelpers(false);
         $manager->persist($admin);
 
         $manager->flush();

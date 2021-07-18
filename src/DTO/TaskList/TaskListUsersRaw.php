@@ -20,6 +20,9 @@ class TaskListUsersRaw
     public function __construct(array $formData)
     {
         foreach ($formData as $userData) {
+            if (!isset($userData[self::EMAIL], $userData[self::ACTIVE])) {
+                continue;
+            }
             if (!empty($userData[self::EMAIL]) && $userData[self::ACTIVE]) {
                 $this->users[] = new Email($userData[self::EMAIL]);
             }

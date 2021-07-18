@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 
 /**
- * @Route("/{_locale}", requirements={"_locale": "[a-z]{2}"})
+ * @Route("/{_locale}", locale="en", requirements={"_locale": "[a-z]{2}"})
  */
 class PublicController extends AbstractController
 {

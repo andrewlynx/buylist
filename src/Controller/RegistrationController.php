@@ -19,7 +19,7 @@ use Throwable;
 class RegistrationController extends TranslatableController
 {
     /**
-     * @Route("/{_locale}/register", name="app_register", requirements={"_locale": "[a-z]{2}"})
+     * @Route("/{_locale}/register", name="app_register", locale="en", requirements={"_locale": "[a-z]{2}"})
      *
      * @param Request                   $request
      * @param GuardAuthenticatorHandler $guardHandler

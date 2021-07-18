@@ -2,7 +2,6 @@
 
 namespace App\UseCase\TaskList;
 
-use App\DTO\TaskList\TaskListShare;
 use App\DTO\TaskList\TaskListUsers;
 use App\DTO\TaskList\TaskListUsersRaw;
 use App\Entity\EmailInvitation;
@@ -15,7 +14,6 @@ use App\UseCase\Email\InvitationEmailHandler;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class TaskListHandler
 {

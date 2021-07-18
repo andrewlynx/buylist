@@ -23,7 +23,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
- * @Route("/{_locale}/task-list", name="task_list_", requirements={"_locale": "[a-z]{2}"})
+ * @Route("/{_locale}/task-list", name="task_list_", locale="en", requirements={"_locale": "[a-z]{2}"})
  */
 class TaskListController extends TranslatableController
 {
@@ -207,6 +207,7 @@ class TaskListController extends TranslatableController
      */
     public function create(TaskListHandler $taskListHandler, Request $request, TaskList $taskList = null): Response
     {
+        $isUpdate = $taskList instanceof TaskList;
         /** @var User $user */
         $user = $this->getUser();
         $taskList = $taskList ?? $taskListHandler->create($user);
@@ -215,7 +216,6 @@ class TaskListController extends TranslatableController
             ->handleRequest($request);
 
         $shareListForm = $this->createForm(ShareListEmailType::class);
-
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $fromFavourites = $form->get('favouriteUsers')->getNormData();
@@ -229,12 +229,11 @@ class TaskListController extends TranslatableController
                     $this->addFlash('success', $invitationSent);
                 }
                 $users = array_merge($fromFavourites, $fromUsers->registered);
-                if ($taskList->getId()) {
-                    $taskList = $taskListHandler->updateSharedUsers($taskList, $users);
-                    $taskList = $taskListHandler->edit($taskList);
-                } else {
-                    $taskListHandler->create($user);
-                }
+
+                $taskList = $taskListHandler->updateSharedUsers($taskList, $users);
+                $taskList = $taskListHandler->edit($taskList);
+
+                $this->addFlash('success', $isUpdate ? 'list.updated' : 'list.created');
 
                 return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
             } catch (Exception $e) {
@@ -268,7 +267,7 @@ class TaskListController extends TranslatableController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $this->checkCreatorAccess($taskList, $user);
+        $this->checkSharedAccess($taskList, $user);
 
         return $this->create($taskListHandler, $request, $taskList);
     }

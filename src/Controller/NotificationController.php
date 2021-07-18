@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Exception\ValidatorException;
 use Throwable;
 
 /**
- * @Route("/{_locale}/notification", name="notification_", requirements={"_locale": "[a-z]{2}"})
+ * @Route("/{_locale}/notification", name="notification_", locale="en", requirements={"_locale": "[a-z]{2}"})
  */
 class NotificationController extends TranslatableController
 {

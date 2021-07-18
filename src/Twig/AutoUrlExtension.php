@@ -18,11 +18,11 @@ class AutoUrlExtension extends AbstractExtension
     }
 
     /**
-     * @param string $string
+     * @param string|null $string
      *
-     * @return string
+     * @return string|null
      */
-    public function AutoUrl(string $string): string
+    public function AutoUrl(?string $string): ?string
     {
         $pattern = "/http[s]?:\/\/[a-zA-Z0-9.\-\/?#=&]+/";
         $replacement = "<a href=\"$0\" target=\"_blank\">$0</a>";

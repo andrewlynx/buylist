@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
 /**
- * @Route("{_locale}/user", name="user_", requirements={"_locale": "[a-z]{2}"})
+ * @Route("{_locale}/user", name="user_", locale="en", requirements={"_locale": "[a-z]{2}"})
  */
 class UserController extends TranslatableController
 {

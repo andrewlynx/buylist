@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
 /**
- * @Route("{_locale}/master", name="admin_", requirements={"_locale": "[a-z]{2}"})
+ * @Route("{_locale}/master", name="admin_", locale="en", requirements={"_locale": "[a-z]{2}"})
  */
 class AdminController extends TranslatableController
 {

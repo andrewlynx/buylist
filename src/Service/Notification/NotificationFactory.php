@@ -67,13 +67,11 @@ class NotificationFactory
     private static function validate($argument, string $class): void
     {
         if (!$argument instanceof $class) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Incorrect value passed to Notification factory: expected %s, got %s',
-                    $class,
-                    gettype($argument)
-                )
-            );
+            throw new InvalidArgumentException(sprintf(
+                'Incorrect value passed to Notification factory: expected %s, got %s',
+                $class,
+                gettype($argument)
+            ));
         }
     }
 }

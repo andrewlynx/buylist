@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
- * @Route("/{_locale}/search", name="search_", requirements={"_locale": "[a-z]{2}"})
+ * @Route("/{_locale}/search", name="search_", locale="en", requirements={"_locale": "[a-z]{2}"})
  */
 class SearchController extends TranslatableController
 {

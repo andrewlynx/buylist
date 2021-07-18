@@ -27,7 +27,7 @@ list:
   archive_cleared: 'Archive cleared successfully'
   archived: 'archived'
   create_new: 'Create'
-  created: Created
+  created: 'List created'
   description: Description
   edit: Edit
   last_update: 'Last update'
