@@ -21,14 +21,19 @@ class EmailInvitationRepository extends ServiceEntityRepository
 
     /**
      * @param string $email
+     * @param int|null $taskListId
      *
      * @return array|null
      */
-    public function getPendingInvitations(string $email): ?array
+    public function getPendingInvitations(string $email, ?int $taskListId = null): ?array
     {
         $qb = $this->createQueryBuilder('i')
             ->andWhere('i.email = :email')
             ->setParameter('email', $email);
+        if ($taskListId !== null) {
+            $qb->andWhere('i.taskList = :id')
+                ->setParameter('id', $taskListId);
+        }
 
         return $qb->getQuery()->getResult();
     }

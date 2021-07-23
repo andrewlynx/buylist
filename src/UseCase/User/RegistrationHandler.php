@@ -9,6 +9,7 @@ use App\Entity\Object\Email;
 use App\Entity\User;
 use App\Repository\EmailInvitationRepository;
 use App\Repository\UserRepository;
+use App\Service\Notification\NotificationService;
 use App\Validator\Locale;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,6 +25,11 @@ class RegistrationHandler
     private $em;
 
     /**
+     * @var NotificationService
+     */
+    private $notificationService;
+
+    /**
      * @var UserPasswordEncoderInterface
      */
     private $passwordEncoder;
@@ -31,11 +37,16 @@ class RegistrationHandler
     /**
      * @param EntityManagerInterface       $em
      * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param NotificationService          $notificationService
      */
-    public function __construct(EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder)
-    {
+    public function __construct(
+        EntityManagerInterface $em,
+        UserPasswordEncoderInterface $passwordEncoder,
+        NotificationService $notificationService
+    ) {
         $this->em = $em;
         $this->passwordEncoder = $passwordEncoder;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -68,6 +79,13 @@ class RegistrationHandler
             $taskList = $invitation->getTaskList()->addShared($user);
             $this->em->persist($taskList);
             $this->em->remove($invitation);
+
+            $this->notificationService->createOrUpdate(
+                NotificationService::EVENT_INVITED,
+                $user,
+                $taskList,
+                $taskList->getCreator()
+            );
         }
 
         $this->em->flush();

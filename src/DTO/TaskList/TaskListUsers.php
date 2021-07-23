@@ -22,6 +22,11 @@ class TaskListUsers
     public $invitationSent = [];
 
     /**
+     * @var string[]
+     */
+    public $invitationExists = [];
+
+    /**
      * @param User $user
      *
      * @return $this
@@ -53,6 +58,18 @@ class TaskListUsers
     public function addInvitationSent(string $email): self
     {
         $this->invitationSent[] = $email;
+
+        return $this;
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return $this
+     */
+    public function addInvitationExists(string $email): self
+    {
+        $this->invitationExists[] = $email;
 
         return $this;
     }

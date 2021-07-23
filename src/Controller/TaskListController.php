@@ -218,21 +218,25 @@ class TaskListController extends TranslatableController
         $shareListForm = $this->createForm(ShareListEmailType::class);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $fromFavourites = $form->get('favouriteUsers')->getNormData();
-                $fromUsersData = $form->get('users')->getNormData();
+                if ($taskList->getCreator() === $user) {
+                    $fromFavourites = $form->get('favouriteUsers')->getNormData();
+                    $fromUsersData = $form->get('users')->getNormData();
 
-                $fromUsers = $taskListHandler->processSharedList(new TaskListUsersRaw($fromUsersData), $taskList);
-                foreach ($fromUsers->notAllowed as $notAllowed) {
-                    $this->addFlash('warning', $notAllowed);
-                }
-                foreach ($fromUsers->invitationSent as $invitationSent) {
-                    $this->addFlash('success', $invitationSent);
-                }
-                $users = array_merge($fromFavourites, $fromUsers->registered);
+                    $fromUsers = $taskListHandler->processSharedList(new TaskListUsersRaw($fromUsersData), $taskList);
+                    foreach ($fromUsers->notAllowed as $notAllowed) {
+                        $this->addFlash('warning', $notAllowed);
+                    }
+                    foreach ($fromUsers->invitationSent as $invitationSent) {
+                        $this->addFlash('success', $invitationSent);
+                    }
+                    foreach ($fromUsers->invitationExists as $invitationExist) {
+                        $this->addFlash('warning', $invitationExist);
+                    }
+                    $users = array_merge($fromFavourites, $fromUsers->registered);
 
-                $taskList = $taskListHandler->updateSharedUsers($taskList, $users);
+                    $taskList = $taskListHandler->updateSharedUsers($taskList, $users);
+                }
                 $taskList = $taskListHandler->edit($taskList);
-
                 $this->addFlash('success', $isUpdate ? 'list.updated' : 'list.created');
 
                 return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
@@ -288,28 +292,12 @@ class TaskListController extends TranslatableController
         $user = $this->getUser();
         $this->checkSharedAccess($taskList, $user);
 
-        $form = $this->createForm(TaskListType::class, $taskList)
-            ->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            if (!$taskList->isArchived()) {
-                $taskList->setUpdatedAt(new DateTime());
-                $this->getDoctrine()->getManager()->flush();
-                $this->addFlash('success', 'list.updated');
-            } else {
-                $this->addFlash('warning', 'list.activate_list_to_edit');
-            }
-
-            return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
-        }
-
         $archiveForm = $this->getArchiveListForm($taskList);
 
         return $this->render(
             'task-list/view.html.twig',
             [
                 'task_list' => $taskList,
-                'form' => $form->createView(),
                 'task_list_archive' => $archiveForm->createView(),
                 'complete_item_forms' => $this->getCompleteItemFormsViews($taskList->getTaskItems()),
             ]

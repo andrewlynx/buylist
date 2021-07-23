@@ -4,16 +4,17 @@ namespace App\UseCase\TaskList;
 
 use App\DTO\TaskList\TaskListUsers;
 use App\DTO\TaskList\TaskListUsersRaw;
-use App\Entity\EmailInvitation;
 use App\Entity\Object\Email;
 use App\Entity\TaskList;
 use App\Entity\User;
 use App\Repository\TaskListRepository;
 use App\Service\Notification\NotificationService;
-use App\UseCase\Email\InvitationEmailHandler;
+use App\UseCase\InvitationHandler\InvitationHandler;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use InvalidArgumentException;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class TaskListHandler
 {
@@ -23,9 +24,9 @@ class TaskListHandler
     private $em;
 
     /**
-     * @var InvitationEmailHandler
+     * @var InvitationHandler
      */
-    private $emailHandler;
+    private $invitationHandler;
 
     /**
      * @var NotificationService
@@ -34,16 +35,16 @@ class TaskListHandler
 
     /**
      * @param EntityManagerInterface $em
-     * @param InvitationEmailHandler $emailHandler
+     * @param InvitationHandler      $invitationHandler
      * @param NotificationService    $notificationService
      */
     public function __construct(
         EntityManagerInterface $em,
-        InvitationEmailHandler $emailHandler,
+        InvitationHandler $invitationHandler,
         NotificationService $notificationService
     ) {
         $this->em = $em;
-        $this->emailHandler = $emailHandler;
+        $this->invitationHandler = $invitationHandler;
         $this->notificationService = $notificationService;
     }
 
@@ -90,11 +91,12 @@ class TaskListHandler
 
     /**
      * @param TaskListUsersRaw $taskListUsers
-     * @param TaskList         $taskList
+     * @param TaskList $taskList
      *
      * @return TaskListUsers
      *
      * @throws Exception
+     * @throws TransportExceptionInterface
      */
     public function processSharedList(TaskListUsersRaw $taskListUsers, TaskList $taskList): TaskListUsers
     {
@@ -120,16 +122,12 @@ class TaskListHandler
             } elseif ($user && $user->isBanned($taskList->getCreator())) {
                 $usersDTO->addNotAllowed($user->getEmail());
             } else {
-                $invitation = (new EmailInvitation())
-                    ->setEmail($email->getValue())
-                    ->setCreatedDate(new DateTime())
-                    ->setTaskList($taskList);
-                $this->em->persist($invitation);
-                $this->em->flush();
-
-                //$this->emailHandler->sendInvitationEmail($taskList->getCreator(), $email);
-
-                $usersDTO->addInvitationSent($email->getValue());
+                try {
+                    $this->invitationHandler->createInvitation($email, $taskList);
+                    $usersDTO->addInvitationSent($email->getValue());
+                } catch (InvalidArgumentException $e) {
+                    $usersDTO->addInvitationExists($email->getValue());
+                }
             }
         }
 

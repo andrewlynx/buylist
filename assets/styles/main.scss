@@ -221,6 +221,11 @@
     }
   }
 }
+form[name="task_list"] {
+  &>.form-group {
+    display: none;
+  }
+}
 .helper {
   font-size: 22px;
   position: relative;

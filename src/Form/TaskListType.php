@@ -53,23 +53,6 @@ class TaskListType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
             ])
-            ->add('favouriteUsers', ChoiceType::class, [
-                'required' => false,
-                'mapped' => false,
-                'multiple' => true,
-                'choices' => $user->getFavouriteUsers(),
-                'choice_label' => function ($choice, $key, $value) {
-                    return $choice->getEmail();
-                },
-                'data' => $taskList->getShared()->toArray(),
-            ])
-            ->add('users', CollectionType::class, [
-                'entry_type' => ShareListEmailType::class,
-                'required' => false,
-                'mapped' => false,
-                'allow_add' => true,
-                'data' => $taskList->getSimpleUsersEmails(),
-            ])
             ->add('save', SubmitType::class, [
                 'label' => 'form.save'
             ])
@@ -82,6 +65,27 @@ class TaskListType extends AbstractType
                 }
             })
         ;
+
+        if ($taskList->getCreator() === $user) {
+            $builder
+                ->add('favouriteUsers', ChoiceType::class, [
+                    'required' => false,
+                    'mapped' => false,
+                    'multiple' => true,
+                    'choices' => $user->getFavouriteUsers(),
+                    'choice_label' => function ($choice, $key, $value) {
+                        return $choice->getEmail();
+                    },
+                    'data' => $taskList->getShared()->toArray(),
+                ])
+                ->add('users', CollectionType::class, [
+                    'entry_type' => ShareListEmailType::class,
+                    'required' => false,
+                    'mapped' => false,
+                    'allow_add' => true,
+                    'data' => $taskList->getSimpleUsersEmails(),
+                ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
