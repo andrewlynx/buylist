@@ -38,7 +38,7 @@ class TaskListTest extends WebTestCase
         $this->assertSame($user2, $taskList->getShared()->first());
         $this->assertSame($taskItem, $taskList->getTaskItems()->first());
         $this->assertSame($date, $taskList->getDate());
-        $this->assertSame(false, $taskList->isArchived());
+        $this->assertFalse($taskList->isArchived());
         $this->assertSame($date2, $taskList->getUpdatedAt());
         $this->assertSame($date3, $taskList->getCreatedAt());
         $this->assertSame('description', $taskList->getDescription());

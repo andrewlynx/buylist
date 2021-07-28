@@ -14,7 +14,7 @@ class ResetPasswordRequestTest extends WebTestCase
         $date = new \DateTime();
         $resetPasswordRequest = new ResetPasswordRequest($user, $date, 'selector', 'hash');
 
-        $this->assertSame(null, $resetPasswordRequest->getId());
+        $this->assertNull($resetPasswordRequest->getId());
         $this->assertSame($user, $resetPasswordRequest->getUser());
     }
 }

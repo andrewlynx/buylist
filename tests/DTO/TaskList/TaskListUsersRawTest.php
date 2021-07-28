@@ -2,9 +2,7 @@
 
 namespace App\Tests\DTO\TaskItem;
 
-use App\DTO\TaskList\TaskListUsers;
 use App\DTO\TaskList\TaskListUsersRaw;
-use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskListUsersRawTest extends WebTestCase

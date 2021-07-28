@@ -29,7 +29,7 @@ class NotificationTest extends WebTestCase
         $this->assertNull($notification->getId());
         $this->assertSame($taskList, $notification->getTaskList());
         $this->assertSame('text', $notification->getText());
-        $this->assertSame(false, $notification->isSeen());
+        $this->assertFalse($notification->isSeen());
         $this->assertSame($user, $notification->getUser());
         $this->assertSame($user2, $notification->getUserInvolved());
         $this->assertSame($date, $notification->getDate());

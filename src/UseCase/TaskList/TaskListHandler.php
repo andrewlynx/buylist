@@ -162,7 +162,7 @@ class TaskListHandler
      */
     public function archive(TaskList $taskList, bool $status): TaskList
     {
-        $taskList->setArchived(!$status);
+        $taskList->setArchived($status);
         $this->em->flush();
 
         $this->notificationService->createForManyUsers(

@@ -16,7 +16,7 @@ class ListArchiveType extends AbstractType
         $status = $options['data']['status'];
         $builder
             ->add('status', HiddenType::class, [
-                'data' => $status,
+                'data' => !$status,
             ])
             ->add('archive', SubmitType::class, [
                 'label' => $status ? 'list.restore' : 'list.archive',

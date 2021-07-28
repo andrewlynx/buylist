@@ -18,7 +18,7 @@ class AdminNotificationTest extends WebTestCase
             ->setText('text');
 
         $this->assertSame($user, $adminNotification->getUser());
-        $this->assertSame(false, $adminNotification->isSeen());
+        $this->assertFalse($adminNotification->isSeen());
         $this->assertSame('text', $adminNotification->getText());
     }
 }

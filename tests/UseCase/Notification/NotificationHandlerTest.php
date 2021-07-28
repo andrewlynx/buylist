@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Tests\UseCase\Notification;
+
 use App\Entity\Notification;
 use App\Repository\UserRepository;
 use App\UseCase\Notification\NotificationHandler;
@@ -14,7 +16,7 @@ class TaskItemHandlerTest extends WebTestCase
         }
     }
 
-    public function testRead()
+    public function testRead(): void
     {
         $userRepository = static::$container->get(UserRepository::class);
         $user = $userRepository->find(1);

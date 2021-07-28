@@ -14,7 +14,7 @@ class TaskItemTest extends WebTestCase
         $taskItem = new TaskItem();
         $taskItem
             ->setTaskList($taskList)
-            ->setQty(45)
+            ->setQty('45')
             ->setName('name')
             ->setCompleted(true);
 
@@ -22,6 +22,6 @@ class TaskItemTest extends WebTestCase
         $this->assertSame($taskList, $taskItem->getTaskList());
         $this->assertSame('45', $taskItem->getQty());
         $this->assertSame('name', $taskItem->getName());
-        $this->assertSame(true, $taskItem->isCompleted());
+        $this->assertTrue($taskItem->isCompleted());
     }
 }

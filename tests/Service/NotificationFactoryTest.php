@@ -14,7 +14,7 @@ class NotificationFactoryTest extends WebTestCase
     {
         $user = new User();
         $this->expectExceptionMessage('event.invalid_event');
-        $notification = NotificationFactory::make(-67, $user);
+        NotificationFactory::make(-67, $user);
     }
 
     public function testWelcome()
@@ -31,7 +31,7 @@ class NotificationFactoryTest extends WebTestCase
         $user = new User();
         $taskList = new TaskList();
         $this->expectException(\InvalidArgumentException::class);
-        $notification = NotificationFactory::make(NotificationService::EVENT_INVITED, $user, $taskList);
+        NotificationFactory::make(NotificationService::EVENT_INVITED, $user, $taskList);
     }
 
     public function testInvited()
@@ -52,11 +52,17 @@ class NotificationFactoryTest extends WebTestCase
         $user = new User();
         $user2 = new User();
         $taskList = new TaskList();
-        $notification = NotificationFactory::make(NotificationService::EVENT_LIST_REMOVED, $user, $taskList, $user2, 'text');
+        $notification = NotificationFactory::make(
+            NotificationService::EVENT_LIST_REMOVED,
+            $user,
+            $taskList,
+            $user2,
+            'text'
+        );
 
         $this->assertSame($user, $notification->getUser());
         $this->assertSame(NotificationService::EVENT_LIST_REMOVED, $notification->getEvent());
-        $this->assertSame(null, $notification->getTaskList());
+        $this->assertNull($notification->getTaskList());
         $this->assertSame('text', $notification->getText());
         $this->assertSame($user2, $notification->getUserInvolved());
     }
@@ -65,6 +71,6 @@ class NotificationFactoryTest extends WebTestCase
     {
         $user = new User();
         $this->expectException(\InvalidArgumentException::class);
-        $notification = NotificationFactory::make(NotificationService::EVENT_INVITED, $user);
+        NotificationFactory::make(NotificationService::EVENT_INVITED, $user);
     }
 }

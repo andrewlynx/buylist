@@ -29,6 +29,9 @@
             <div class="t-l-s-block">
                 <p>{{ 'list.created'|trans }}: {{ task_list.createdAt|date }}</p>
                 <p>{{ 'list.last_update'|trans }}: {{ task_list.updatedAt|date }}</p>
+                {% if app.user != task_list.creator %}
+                    <p>List created by <b>{{ task_list.creator.nickname }}</b></p>
+                {% endif %}
             </div>
             <div class="t-l-s-block">
                 <a class="btn btn-outline-primary float-left" href="{{ path('task_list_edit', {'id': task_list.id}) }}">
@@ -37,13 +40,11 @@
                 {% if app.user == task_list.creator %}
                     {{ form(task_list_archive) }}
                 {% endif %}
+                <div class="clearfix"></div>
                 {% if task_list.isArchived %}
                     <div class="alert alert-warning">
                         {{ 'list.activate_list_to_edit'|trans }}
                     </div>
-                {% endif %}
-                {% if app.user != task_list.creator %}
-                    <div>List created by <b>{{ task_list.creator.nickname }}</b></div>
                 {% endif %}
             </div>
         </div>

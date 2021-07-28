@@ -13,7 +13,7 @@ class AutoUrlExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('auto_url', [$this, 'AutoUrl']),
+            new TwigFilter('auto_url', [$this, 'autoUrl']),
         ];
     }
 
@@ -22,7 +22,7 @@ class AutoUrlExtension extends AbstractExtension
      *
      * @return string|null
      */
-    public function AutoUrl(?string $string): ?string
+    public function autoUrl(?string $string): ?string
     {
         $pattern = "/http[s]?:\/\/[a-zA-Z0-9.\-\/?#=&]+/";
         $replacement = "<a href=\"$0\" target=\"_blank\">$0</a>";

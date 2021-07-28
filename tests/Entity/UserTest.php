@@ -32,12 +32,12 @@ class UserTest extends WebTestCase
             ->addTaskList($taskList);
 
         $this->assertNull($user->getId());
-        $this->assertSame(true, $user->getHelpers());
+        $this->assertTrue($user->getHelpers());
         $this->assertSame([User::ROLE_USER, User::ROLE_ADMIN], $user->getRoles());
         $this->assertSame('nickName', $user->getNickName());
         $this->assertSame($lastLogin, $user->getLastLogin());
         $this->assertSame('fr', $user->getLocale());
-        $this->assertSame(false, $user->isVerified());
+        $this->assertFalse($user->isVerified());
         $this->assertSame('plainPass', $user->getPassword());
         $this->assertSame($taskList2, $user->getShared()->first());
         $this->assertSame($user2, $user->getFavouriteUsers()->first());
