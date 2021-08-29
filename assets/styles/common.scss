@@ -20,6 +20,7 @@ $sidebar-width: 263px;
 @import "~bootstrap/scss/_grid";
 @import "~bootstrap/scss/_nav";
 @import "~bootstrap/scss/_navbar";
+@import "~bootstrap/scss/_transitions";
 @import "~bootstrap/scss/_utilities";
 @import "fonts";
 
@@ -230,3 +231,15 @@ label {
     height: 52px;
   }
 }
+
+@media (max-width: 1199.98px) {
+  .footer {
+    padding-left: 0;
+  }
+}
+@media (max-width: 991.98px) {
+  .page-content {
+    width: 100%;
+  }
+}
+

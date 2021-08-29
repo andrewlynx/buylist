@@ -1,8 +1,8 @@
 .navbar {
   margin-bottom: 16px;
 }
-.navbar-nav {
-  &>li {
+.navbar-nav, .nav {
+  &>li:not(:last-child) {
     margin-right: 30px;
     &>a:not(.btn) {
       color: #69696b;
@@ -133,6 +133,19 @@
     }
     .all-btn {
       margin-top: 15px;
+    }
+  }
+}
+.nav {
+  flex: 0 0 100%;
+}
+@media (max-width: 991.98px) {
+  .navbar-nav {
+    &.right {
+      display: none;
+    }
+    .welcome-box h2 {
+      font-size: 18px;
     }
   }
 }
