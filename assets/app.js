@@ -6,7 +6,6 @@
  */
 
 import './styles/app.scss';
-
 import './common';
 
 $( document ).ready(function() {
@@ -205,7 +204,6 @@ $( document ).ready(function() {
             if (scrollHeight - scrollPos < (footerHeight + 50)) {
                 loadMore();
                 $('#loader').remove();
-                console.log("bottom!");
             }
         }
     });
