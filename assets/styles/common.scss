@@ -147,10 +147,6 @@ label {
   width: calc(100% - #{$sidebar-width});
   background-color: #f7f7f7;
 }
-.container-fluid.in-frame {
-  padding-left: 45px;
-  padding-right: 45px;
-}
 .sub-footer {
   font-size: 14px;
   color: #69696b;
@@ -240,6 +236,12 @@ label {
 @media (max-width: 991.98px) {
   .page-content {
     width: 100%;
+  }
+}
+@media (min-width: 992px) {
+  .container-fluid.in-frame {
+    padding-left: 45px;
+    padding-right: 45px;
   }
 }
 

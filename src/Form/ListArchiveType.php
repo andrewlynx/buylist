@@ -20,7 +20,7 @@ class ListArchiveType extends AbstractType
             ])
             ->add('archive', SubmitType::class, [
                 'label' => $status ? 'list.restore' : 'list.archive',
-                'attr' => ['class' => 'btn btn-outline-primary'],
+                'attr' => ['class' => 'btn btn-outline-primary list-archive iconly-brokenBookmark'],
             ])
         ;
     }

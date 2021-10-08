@@ -28,6 +28,11 @@
         color: #7dc2d7;
       }
     }
+    .list-archive.btn, .list-delete.btn {
+      &:before {
+        font-size: 0;
+      }
+    }
   }
   #loader {
     margin-bottom: 15px;
@@ -242,6 +247,23 @@ form[name="task_list"] {
   &:hover {
     .helper-popup {
       display: block;
+    }
+  }
+}
+@media (max-width: 991.98px) {
+  .btn {
+    min-width: 0;
+  }
+  .tls {
+    .tl {
+      .list-archive.btn, .list-delete.btn {
+        font-size: 0;
+        padding-left: 5px;
+        padding-right: 5px;
+        &:before {
+          font-size: 18px;
+        }
+      }
     }
   }
 }
