@@ -29,7 +29,7 @@ class AdminController extends TranslatableController
         $users = $userRepository->findAll();
 
         return $this->render(
-            'admin/panel.html.twig',
+            'v1/admin/panel.html.twig',
             [
                 'users' => $users,
             ]
@@ -67,7 +67,7 @@ class AdminController extends TranslatableController
         }
 
         return $this->render(
-            'admin/create-admin-notification.html.twig',
+            'v1/admin/create-admin-notification.html.twig',
             [
                 'form' => $form->createView(),
             ]

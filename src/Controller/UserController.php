@@ -56,7 +56,7 @@ class UserController extends TranslatableController
         }
 
         return $this->render(
-            'user/settings.html.twig',
+            'v1/user/settings.html.twig',
             [
                 'task_lists' => $user,
                 'form' => $form->createView(),
@@ -80,7 +80,7 @@ class UserController extends TranslatableController
         $users = $userRepo->findFriends($currentUser);
 
         return $this->render(
-            'user/users.html.twig',
+            'v1/user/users.html.twig',
             [
                 'users' => $users,
             ]
@@ -106,7 +106,7 @@ class UserController extends TranslatableController
         $currentUser = $this->getUser();
         if ($user && !$user->isBanned($currentUser)) {
             return $this->render(
-                'user/user.html.twig',
+                'v1/user/user.html.twig',
                 [
                     'user' => $user,
                 ]

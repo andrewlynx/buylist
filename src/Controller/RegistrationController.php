@@ -66,7 +66,7 @@ class RegistrationController extends TranslatableController
             }
         }
 
-        return $this->render('public/registration/register.html.twig', [
+        return $this->render('v1/public/registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
     }

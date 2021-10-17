@@ -14,11 +14,11 @@ use App\Form\TaskListType;
 use App\Form\UnsubscribeType;
 use App\Repository\TaskListRepository;
 use App\UseCase\TaskList\TaskListHandler;
-use DateTime;
 use Exception;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -41,7 +41,7 @@ class TaskListController extends TranslatableController
         $taskLists = $taskListRepository->getUsersTasks($user);
 
         return $this->render(
-            'task-list/index.html.twig',
+            'v1/task-list/index.html.twig',
             [
                 'task_lists' => $taskLists,
                 'archive_item_forms' => $this->getArchiveListFormsViews($taskLists),
@@ -65,7 +65,7 @@ class TaskListController extends TranslatableController
         $taskLists = $taskListRepository->getUsersTasks($user, $page);
 
         return $this->render(
-            'parts/private/list/list.html.twig',
+            'v1/parts/private/list/list.html.twig',
             [
                 'task_lists' => $taskLists,
                 'archive_item_forms' => $this->getArchiveListFormsViews($taskLists),
@@ -88,7 +88,7 @@ class TaskListController extends TranslatableController
         $taskLists = $taskListRepository->getSharedTasks($user);
 
         return $this->render(
-            'task-list/shared-index.html.twig',
+            'v1/task-list/shared-index.html.twig',
             [
                 'task_lists' => $taskLists,
                 'unsubscribe_forms' => $this->getUnsubscribeFormsViews($taskLists),
@@ -112,7 +112,7 @@ class TaskListController extends TranslatableController
         $taskLists = $taskListRepository->getSharedTasks($user, $page);
 
         return $this->render(
-            'parts/private/list/shared-list.html.twig',
+            'v1/parts/private/list/shared-list.html.twig',
             [
                 'task_lists' => $taskLists,
                 'unsubscribe_forms' => $this->getUnsubscribeFormsViews($taskLists),
@@ -135,7 +135,7 @@ class TaskListController extends TranslatableController
         $taskLists = $taskListRepository->getArchivedUsersTasks($user);
 
         return $this->render(
-            'task-list/archive-index.html.twig',
+            'v1/task-list/archive-index.html.twig',
             [
                 'task_lists' => $taskLists,
                 'archive_item_forms' => $this->getArchiveListFormsViews($taskLists),
@@ -159,7 +159,7 @@ class TaskListController extends TranslatableController
         $taskLists = $taskListRepository->getArchivedUsersTasks($user, $page);
 
         return $this->render(
-            'parts/private/list/list.html.twig',
+            'v1/parts/private/list/list.html.twig',
             [
                 'task_lists' => $taskLists,
                 'archive_item_forms' => $this->getArchiveListFormsViews($taskLists),
@@ -198,12 +198,13 @@ class TaskListController extends TranslatableController
      * @Route("/create", name="create")
      *
      * @param TaskListHandler $taskListHandler
-     * @param Request         $request
-     * @param TaskList        $taskList
+     * @param Request $request
+     * @param TaskList $taskList
      *
      * @return Response
      *
      * @throws Exception
+     * @throws TransportExceptionInterface
      */
     public function create(TaskListHandler $taskListHandler, Request $request, TaskList $taskList = null): Response
     {
@@ -246,7 +247,7 @@ class TaskListController extends TranslatableController
         }
 
         return $this->render(
-            'task-list/create.html.twig',
+            'v1/task-list/create.html.twig',
             [
                 'task_list' => $taskList,
                 'form' => $form->createView(),
@@ -259,13 +260,14 @@ class TaskListController extends TranslatableController
     /**
      * @Route("/edit/{id}", name="edit")
      *
-     * @param TaskList        $taskList
+     * @param TaskList $taskList
      * @param TaskListHandler $taskListHandler
-     * @param Request         $request
+     * @param Request $request
      *
      * @return Response
      *
      * @throws Exception
+     * @throws TransportExceptionInterface
      */
     public function edit(TaskList $taskList, TaskListHandler $taskListHandler, Request $request): Response
     {
@@ -295,7 +297,7 @@ class TaskListController extends TranslatableController
         $archiveForm = $this->getArchiveListForm($taskList);
 
         return $this->render(
-            'task-list/view.html.twig',
+            'v1/task-list/view.html.twig',
             [
                 'task_list' => $taskList,
                 'task_list_archive' => $archiveForm->createView(),

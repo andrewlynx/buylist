@@ -49,7 +49,7 @@ class SearchController extends TranslatableController
         // archived
 
         return $this->render(
-            'search/index.html.twig',
+            'v1/search/index.html.twig',
             [
                 'search_phrase' => $searchPhrase,
                 'task_lists' => array_unique(

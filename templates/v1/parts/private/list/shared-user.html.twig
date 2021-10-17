@@ -1,0 +1,7 @@
+{% if task_list.shared %}
+    <ul class="u-links">
+        {% for user in task_list.shared %}
+            {% include 'v1/parts/private/user/user-block.html.twig' with {'email': true} %}
+        {% endfor %}
+    </ul>
+{% endif %}

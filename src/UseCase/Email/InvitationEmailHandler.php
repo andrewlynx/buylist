@@ -21,7 +21,7 @@ class InvitationEmailHandler extends AbstractEmailHandler
         $email = (new TemplatedEmail())
             ->to($mail->getValue())
             ->subject($from->getEmail().' has shared a list with you')
-            ->htmlTemplate('public/email/invitation.html.twig')
+            ->htmlTemplate('v1/public/email/invitation.html.twig')
             ->context([
                 'from' => $from->getEmail(),
             ])

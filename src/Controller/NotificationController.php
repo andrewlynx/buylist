@@ -38,7 +38,7 @@ class NotificationController extends TranslatableController
         $taskLists = $repository->getUsersNotifications($user);
 
         return $this->render(
-            'notification/index.html.twig',
+            'v1/notification/index.html.twig',
             [
                 'notifications' => $taskLists,
             ]

@@ -55,7 +55,7 @@ class TaskItemController extends TranslatableController
 
             return new JsonSuccess(
                 $this->renderView(
-                    'task-item/task-item.html.twig',
+                    'v1/task-item/task-item.html.twig',
                     [
                         'task_item' => $taskItem,
                         'complete_item_forms' => [
@@ -131,7 +131,7 @@ class TaskItemController extends TranslatableController
         );
 
         return $this->render(
-            'task-item/task-item-edit.html.twig',
+            'v1/task-item/task-item-edit.html.twig',
             [
                 'form' => $form->createView(),
             ]
@@ -167,7 +167,7 @@ class TaskItemController extends TranslatableController
 
             return new JsonSuccess(
                 $this->renderView(
-                    'task-item/task-item.html.twig',
+                    'v1/task-item/task-item.html.twig',
                     [
                         'task_item' => $taskItem,
                         'complete_item_forms' => [

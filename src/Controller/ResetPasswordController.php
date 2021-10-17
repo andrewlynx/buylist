@@ -57,7 +57,7 @@ class ResetPasswordController extends AbstractController
             );
         }
 
-        return $this->render('public/reset_password/request.html.twig', [
+        return $this->render('v1/public/reset_password/request.html.twig', [
             'requestForm' => $form->createView(),
         ]);
     }
@@ -72,7 +72,7 @@ class ResetPasswordController extends AbstractController
             return $this->redirectToRoute('app_forgot_password_request');
         }
 
-        return $this->render('public/reset_password/check_email.html.twig', [
+        return $this->render('v1/public/reset_password/check_email.html.twig', [
             'tokenLifetime' => $this->resetPasswordHelper->getTokenLifetime(),
         ]);
     }
@@ -139,7 +139,7 @@ class ResetPasswordController extends AbstractController
             return $this->redirectToRoute('welcome');
         }
 
-        return $this->render('public/reset_password/reset.html.twig', [
+        return $this->render('v1/public/reset_password/reset.html.twig', [
             'resetForm' => $form->createView(),
         ]);
     }

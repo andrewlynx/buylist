@@ -66,7 +66,7 @@ class PublicController extends AbstractController
      */
     private function getPublicUrl(string $template, string $locale = 'en'): string
     {
-        return 'public/'.$locale.'/'.$template.'.html.twig';
+        return 'v1/public/'.$locale.'/'.$template.'.html.twig';
     }
 
     /**

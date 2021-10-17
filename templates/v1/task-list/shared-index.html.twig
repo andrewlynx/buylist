@@ -1,0 +1,17 @@
+{% extends 'v1/base.html.twig' %}
+
+{% block title %}{{ 'list.your_lists'|trans }}{% endblock %}
+
+{% block body %}
+    {% if task_lists %}
+        <div class="tls" id="tls">
+            {% include 'v1/parts/private/list/shared-list.html.twig' with {
+                'task_lists': task_lists,
+                'unsubscribe_forms': unsubscribe_forms,
+                'load_more_link': load_more_link
+            } %}
+        </div>
+    {% else %}
+        {% include 'v1/common/no-result.html.twig' only %}
+    {% endif %}
+{% endblock %}

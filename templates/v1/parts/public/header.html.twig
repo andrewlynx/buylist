@@ -1,0 +1,15 @@
+<nav class="navbar navbar-default navbar-expand-lg">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a href="{{ path('index') }}"><h4>{{ _site_name }}</h4></a>
+        </div>
+        <ul class="nav navbar-nav navbar-left">
+            <li><a class="btn btn-primary" href="{{ path('app_login') }}">{{ 'security.login'|trans }}</a></li>
+            <li><a class="btn btn-primary" href="{{ path('app_register') }}">{{ 'security.registration'|trans }}</a></li>
+            <li><a class="btn btn-primary" href="{{ path('about') }}">{{ 'menu.about'|trans }}</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            {% include 'v1/parts/lang-dropdown.html.twig' %}
+        </ul>
+    </div>
+</nav>

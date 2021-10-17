@@ -1,0 +1,7 @@
+{% if app.user.favouriteUsers %}
+    <ul class="u-links">
+    {% for user in app.user.favouriteUsers %}
+        {% include 'v1/parts/private/user/user-block.html.twig' %}
+    {% endfor %}
+    </ul>
+{% endif %}

@@ -1,0 +1,41 @@
+{% extends 'v1/base.html.twig' %}
+
+{% block title %}{{ 'menu.user'|trans }}{% endblock %}
+
+{% block body %}
+    {% if app.user.isFavourite(user) %}
+        <a class="btn btn-primary" href="{{ path('user_remove_from_favourites', {'email': user.email}) }}">
+            {{ 'user.remove_from_favourites'|trans }}
+        </a>
+    {% else %}
+        <a class="btn btn-primary" href="{{ path('user_add_to_favourites', {'email': user.email}) }}">
+            {{ 'user.add_to_favourites'|trans }}
+        </a>
+    {% endif %}
+    <p>{{ user.nickName }}</p>
+    <p>{{ user.email }}</p>
+    <div class="tls" id="tls">
+        <h4>{{ 'user.your_lists_shared'|trans }}</h4>
+        {% for task_list in user.getCommonTaskLists(app.user) %}
+            <div class="tl">
+                <a href="{{ path('task_list_view', {'id': task_list.id}) }}" class="link mr-auto">
+                    {{ task_list.name }}
+                    {% if task_list.archived %}
+                        ({{ 'list.archived'|trans }})
+                    {% endif %}
+                </a>
+            </div>
+        {% endfor %}
+        <h4>{{ 'user.shared_with_you'|trans }}</h4>
+        {% for task_list in app.user.getCommonTaskLists(user) %}
+            <div class="tl">
+                <a href="{{ path('task_list_view', {'id': task_list.id}) }}" class="link mr-auto">
+                    {{ task_list.name }}
+                    {% if task_list.archived %}
+                        ({{ 'list.archived'|trans }})
+                    {% endif %}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

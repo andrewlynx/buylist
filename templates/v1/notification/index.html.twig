@@ -1,0 +1,33 @@
+{% extends 'v1/base.html.twig' %}
+
+{% block title %}{{ 'notification.your_notifications'|trans }}{% endblock %}
+
+{% block body %}
+    {% if notifications %}
+        {% for notification in notifications %}
+            <p class="well">
+                {% if notification.taskList %}
+                    <a href="{{ path('task_list_view', {'id': notification.taskList.id}) }}">
+                        {{ notification.getDescription()|trans({
+                            '%app%': _site_name,
+                            '%user%': notification.userInvolved.nickname,
+                            '%list%': notification.taskList.name ?? '',
+                            '%text%': notification.text
+                        })|raw }}
+                    </a>
+                {% else %}
+                    <a href="#" onclick="return">
+                        {{ notification.getDescription()|trans({
+                            '%app%': _site_name,
+                            '%user%': notification.userInvolved.nickname,
+                            '%text%': notification.text
+                        })|raw }}
+                    </a>
+                {% endif %}
+                <small class="text-muted">{{ notification.date|date }}</small>
+            </p>
+        {% endfor %}
+    {% else %}
+        {% include 'v1/common/no-result.html.twig' only %}
+    {% endif %}
+{% endblock %}
