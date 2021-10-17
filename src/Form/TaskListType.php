@@ -8,6 +8,7 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -76,7 +77,7 @@ class TaskListType extends AbstractType
                     'choice_label' => function ($choice, $key, $value) {
                         return $choice->getEmail();
                     },
-                    'data' => $taskList->getShared()->toArray(),
+                    'data' => $user->getFavouriteUsers()->isEmpty() ? [] : $taskList->getShared()->toArray(),
                 ])
                 ->add('users', CollectionType::class, [
                     'entry_type' => ShareListEmailType::class,
@@ -84,7 +85,8 @@ class TaskListType extends AbstractType
                     'mapped' => false,
                     'allow_add' => true,
                     'data' => $taskList->getSimpleUsersEmails(),
-                ]);
+                ])
+            ;
         }
     }
 

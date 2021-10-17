@@ -32,9 +32,11 @@
   }
   .notifications {
     display: inline-block;
-    position: relative;
     vertical-align: baseline;
     font-size: 48px;
+    &>a {
+      position: relative;
+    }
     #unread-notifications {
       position: absolute;
       top: 0;
@@ -146,6 +148,40 @@
     }
     .welcome-box h2 {
       font-size: 18px;
+    }
+  }
+  .btn.list-create {
+    font-size: 0;
+    padding-left: 5px;
+    padding-right: 5px;
+    &:before {
+      font-size: 24px;
+      margin: 0;
+    }
+  }
+  .nav .notifications {
+    position: inherit;
+  }
+  .navbar-nav .nf-dropdown, .nav .nf-dropdown {
+    padding: 0;
+    width: 100%;
+  }
+  .nav .notifications {
+    position: inherit;
+  }
+  .menu-mobile ul {
+    list-style: none;
+    li {
+      padding-bottom: 20px;
+      a {
+        color: #434345;
+        font-size: 16px;
+        font-weight: 700;
+        &:before {
+          margin-right: 15px;
+          font-size: 24px;
+        }
+      }
     }
   }
 }
