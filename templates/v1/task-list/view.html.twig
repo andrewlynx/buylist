@@ -5,48 +5,54 @@
 {% block body %}
     <div class="row">
         <div class="col-sm-8">
-            <h4>{{ task_list.name }}</h4>
-            <p>{{ task_list.description|auto_url|raw|nl2br }}</p>
-            <div id="list-items">
-                {% for taskItem in task_list.taskItems %}
-                    {% include 'v1/task-item/task-item.html.twig' with {'task_item': taskItem, 'complete_item_forms': complete_item_forms} %}
-                {% endfor %}
-            </div>
-            <div id="li-modal">
-                <div class="w">
-                    <div class="close text-right">
-                        <span class="iconly-brokenClose-Square"></span>
-                    </div>
-                    <div class="data"></div>
+            {% block task_items_list %}
+                <h4>{{ task_list.name }}</h4>
+                <p>{{ task_list.description|auto_url|raw|nl2br }}</p>
+                <div id="list-items">
+                    {% for taskItem in task_list.taskItems %}
+                        {% include 'v1/task-item/task-item.html.twig' with {'task_item': taskItem, 'complete_item_forms': complete_item_forms} %}
+                    {% endfor %}
                 </div>
-            </div>
+            {% endblock %}
+            {% block task_items_modal %}
+                <div id="li-modal">
+                    <div class="w">
+                        <div class="close text-right">
+                            <span class="iconly-brokenClose-Square"></span>
+                        </div>
+                        <div class="data"></div>
+                    </div>
+                </div>
+            {% endblock %}
         </div>
         <div class="col-sm-4 t-l-sidebar">
-            <div class="shared-users t-l-s-block">
-                <h5>{{ 'list.users'|trans }}</h5>
-                {% include 'v1/parts/private/list/shared-user.html.twig' %}
-            </div>
-            <div class="t-l-s-block">
-                <p>{{ 'list.created'|trans }}: {{ task_list.createdAt|date }}</p>
-                <p>{{ 'list.last_update'|trans }}: {{ task_list.updatedAt|date }}</p>
-                {% if app.user != task_list.creator %}
-                    <p>List created by <b>{{ task_list.creator.nickname }}</b></p>
-                {% endif %}
-            </div>
-            <div class="t-l-s-block">
-                <a class="btn btn-outline-primary float-left" href="{{ path('task_list_edit', {'id': task_list.id}) }}">
-                    {{ 'list.edit'|trans }}
-                </a>
-                {% if app.user == task_list.creator %}
-                    {{ form(task_list_archive) }}
-                {% endif %}
-                <div class="clearfix"></div>
-                {% if task_list.isArchived %}
-                    <div class="alert alert-warning">
-                        {{ 'list.activate_list_to_edit'|trans }}
-                    </div>
-                {% endif %}
-            </div>
+            {% block task_list_sidebar %}
+                <div class="shared-users t-l-s-block">
+                    <h5>{{ 'list.users'|trans }}</h5>
+                    {% include 'v1/parts/private/list/shared-user.html.twig' %}
+                </div>
+                <div class="t-l-s-block">
+                    <p>{{ 'list.created'|trans }}: {{ task_list.createdAt|date }}</p>
+                    <p>{{ 'list.last_update'|trans }}: {{ task_list.updatedAt|date }}</p>
+                    {% if app.user != task_list.creator %}
+                        <p>List created by <b>{{ task_list.creator.nickname }}</b></p>
+                    {% endif %}
+                </div>
+                <div class="t-l-s-block">
+                    <a class="btn btn-outline-primary float-left" href="{{ path('task_list_edit', {'id': task_list.id}) }}">
+                        {{ 'list.edit'|trans }}
+                    </a>
+                    {% if app.user == task_list.creator %}
+                        {{ form(task_list_archive) }}
+                    {% endif %}
+                    <div class="clearfix"></div>
+                    {% if task_list.isArchived %}
+                        <div class="alert alert-warning">
+                            {{ 'list.activate_list_to_edit'|trans }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endblock %}
         </div>
     </div>
 {% endblock %}

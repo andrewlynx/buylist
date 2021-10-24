@@ -1,0 +1,15 @@
+{% extends 'v1/task-list/view.html.twig' %}
+
+{% block title %}{{ task_list.name }}{% endblock %}
+
+{% block task_items_list %}
+    <h4>{{ task_list.name }}</h4>
+    <p>{{ task_list.description|auto_url|raw|nl2br }}</p>
+    <div id="list-items">
+        {% for taskItem in task_list.taskItems %}
+            {% include 'v1/task-item/task-item-counter.html.twig'
+                with {'task_item': taskItem, 'complete_item_forms': complete_item_forms}
+            %}
+        {% endfor %}
+    </div>
+{% endblock %}

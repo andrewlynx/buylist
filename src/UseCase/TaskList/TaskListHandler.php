@@ -2,6 +2,7 @@
 
 namespace App\UseCase\TaskList;
 
+use App\Constant\TaskListTypes;
 use App\DTO\TaskList\TaskListUsers;
 use App\DTO\TaskList\TaskListUsersRaw;
 use App\Entity\Object\Email;
@@ -60,11 +61,28 @@ class TaskListHandler
         $taskList = (new TaskList())
             ->setName('New List')
             ->setCreator($user)
+            ->setType(TaskListTypes::DEFAULT)
             ->setCreatedAt(new DateTime())
             ->setUpdatedAt(new DateTime());
 
-        $this->em->persist($taskList);
-        $this->em->flush();
+        return $taskList;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return TaskList
+     *
+     * @throws Exception
+     */
+    public function createCounter(User $user): TaskList
+    {
+        $taskList = (new TaskList())
+            ->setName('New Counter List')
+            ->setCreator($user)
+            ->setType(TaskListTypes::COUNTER)
+            ->setCreatedAt(new DateTime())
+            ->setUpdatedAt(new DateTime());
 
         return $taskList;
     }

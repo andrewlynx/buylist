@@ -2,6 +2,7 @@
 
 namespace App\Tests\UseCase\TaskList;
 
+use App\Constant\TaskListTypes;
 use App\DTO\TaskList\TaskListUsersRaw;
 use App\Entity\EmailInvitation;
 use App\Entity\Notification;
@@ -28,8 +29,9 @@ class TaskListHandlerTest extends WebTestCase
 
         $taskList = $taskListHandler->create($user);
 
-        $this->assertNotNull($taskList->getId());
+        $this->assertNull($taskList->getId());
         $this->assertEquals($user, $taskList->getCreator());
+        $this->assertEquals(TaskListTypes::DEFAULT, $taskList->getType());
         $this->assertNull($taskList->getDescription());
         $this->assertEquals('New List', $taskList->getName());
     }

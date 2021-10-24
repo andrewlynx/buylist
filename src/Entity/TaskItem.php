@@ -101,6 +101,16 @@ class TaskItem
     }
 
     /**
+     * @return TaskItem
+     */
+    public function incrementQty(): self
+    {
+        $this->qty++;
+
+        return $this;
+    }
+
+    /**
      * @return TaskList|null
      */
     public function getTaskList(): ?TaskList

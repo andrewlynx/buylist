@@ -17,7 +17,7 @@
                 <div class="form-group col-md-6">
                     <div class="container">
                         <label for="add-task-item-qty">{{ 'task_item.qty'|trans }}</label>
-                        <input type="text" name="add-task-item-qty" class="add-task-item-qty form-control">
+                        <input type="number" name="add-task-item-qty" class="add-task-item-qty form-control">
                     </div>
                 </div>
                 <button class="btn btn-primary add-task-item" data-collection-holder-class="list-items">
@@ -26,7 +26,7 @@
             </div>
             <ul class="list-items"
                 data-prototype=
-                    "<div class='form-group col-auto'>
+                "<div class='form-group col-auto'>
                         {{ form_widget(form.taskItems.vars.prototype)|e('html_attr') }}
                     </div>"
                 data-index="9999"

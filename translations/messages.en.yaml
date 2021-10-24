@@ -26,6 +26,7 @@ list:
   archive_clear: 'Remove all'
   archive_cleared: 'Archive cleared successfully'
   archived: 'archived'
+  counter: 'Counter List'
   create_new: 'Create'
   created: 'List created'
   description: Description
@@ -37,6 +38,7 @@ list:
   name: Name
   restore: Restore
   shared: 'shared'
+  simple: 'Simple list'
   unsubscribe: Unsubscribe
   unsubscribed: 'You successfully unsubscribed from list'
   updated: 'List updated'

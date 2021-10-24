@@ -6,11 +6,22 @@
         {% include 'v1/parts/lang-dropdown.html.twig' %}
     </li>
 {% endif %}
-<li>
-    <a href="{{ path('task_list_create') }}" class="btn btn-primary list-create iconly-brokenPlus">
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle btn btn-primary list-create iconly-brokenPlus" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {{ 'list.create_new'|trans }}
     </a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{{ path('task_list_create') }}" class="btn btn-primary">
+                {{ 'list.simple'|trans }}
+            </a>
+            <a href="{{ path('task_list_create_counter') }}" class="btn btn-primary">
+                {{ 'list.counter'|trans }}
+            </a>
+        </li>
+    </ul>
 </li>
+
 <li class="dropdown notifications">
     {% include 'v1/parts/private/notifications/notifications-dropdown.html.twig' %}
 </li>

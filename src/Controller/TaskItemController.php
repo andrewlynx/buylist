@@ -6,6 +6,7 @@ use App\Controller\Extendable\TranslatableController;
 use App\DTO\TaskItem\TaskItemComplete;
 use App\DTO\TaskItem\TaskItemCreate;
 use App\DTO\TaskItem\TaskItemEdit;
+use App\DTO\TaskItem\TaskItemIncrement;
 use App\Entity\JsonResponse\JsonError;
 use App\Entity\JsonResponse\JsonSuccess;
 use App\Entity\TaskItem;
@@ -100,6 +101,43 @@ class TaskItemController extends TranslatableController
 
             return new JsonSuccess(
                 $serializer->serialize($taskItem, 'json', [AbstractNormalizer::ATTRIBUTES => ['id', 'completed']])
+            );
+        } catch (Exception $e) {
+            return new JsonError(
+                $this->translator->trans($e->getMessage())
+            );
+        }
+    }
+
+    /**
+     * @Route("/increment", name="increment", methods={"POST"})
+     *
+     * @param Request             $request
+     * @param SerializerInterface $serializer
+     * @param TaskItemHandler     $taskItemHandler
+     *
+     * @return Response
+     *
+     * @throws Exception
+     */
+    public function increment(
+        Request $request,
+        SerializerInterface $serializer,
+        TaskItemHandler $taskItemHandler
+    ): Response {
+        try {
+            $taskItemIncrementData = new TaskItemIncrement(
+                $this->jsonDecode($request->getContent())
+            );
+            if (!$this->isCsrfTokenValid(TaskItemIncrement::FORM_NAME, $taskItemIncrementData->token)) {
+                throw new ValidatorException('validation.invalid_csrf');
+            }
+            /** @var User $user */
+            $user = $this->getUser();
+            $taskItem = $taskItemHandler->increment($taskItemIncrementData, $user);
+
+            return new JsonSuccess(
+                $serializer->serialize($taskItem, 'json', [AbstractNormalizer::ATTRIBUTES => ['id', 'qty']])
             );
         } catch (Exception $e) {
             return new JsonError(

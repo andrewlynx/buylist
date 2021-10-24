@@ -89,6 +89,22 @@ $( document ).ready(function() {
         });
     }
 
+    // Adding task items on "Task Edit" page
+    function addTaskItems(e, nameField, formName) {
+        if ($(nameField).val() !== '') {
+            let collectionHolderClass = $(e.currentTarget).data('collectionHolderClass');
+            let index = addFormToCollection(collectionHolderClass, true);
+            $(['name', 'qty']).each(function (i, current) {
+                let input =  formName + '[taskItems][' + index + '][' + current + ']',
+                    source = '.add-task-item-' + current;
+                $('input[name="' + input + '"]').val($(source).val());
+                $(source).val('');
+            });
+        } else {
+            $(nameField).focus();
+        }
+    }
+
     // Add 'data-index' tad for multi-select forms
     function addDataIndex($selector, $count = 1) {
         $($selector).attr('data-index', $($selector).find('input').length / $count);
@@ -173,6 +189,45 @@ $( document ).ready(function() {
         });
     });
 
+    // Task item increment call handler
+    $(document).on("click", '#list-items > .ti .ti-counter', function(e) {
+        e.stopPropagation();
+
+        const classLoading = 'loading';
+
+        let description = $(this).parent().parent(),
+            form = $(this).find("form"),
+            id = $(form).find('input[name="task_item_increment[id]"]').val(),
+            data = getFormData(form),
+            selector = '#item-id-' + id;
+
+        if ($(this).hasClass(classLoading) || ($(selector).hasClass('completed'))) {
+            return false;
+        }
+
+        description.addClass(classLoading);
+
+        $.ajax({
+            url: form.attr('action'),
+            method: 'POST',
+            data: JSON.stringify(data)
+        }).done(function( msg ) {
+            description.removeClass(classLoading);
+
+            if (msg.status === msgSuccess) {
+                let response = $.parseJSON(msg.data);
+
+                if (response.id === parseInt(id)) {
+                    $(selector).find('.tiq').html(response.qty);
+                } else {
+                    alert( 'Error' );
+                }
+            } else {
+                alert( msg.data );
+            }
+        });
+    });
+
     // Task item edit call handler
     $(document).on("click", '.ti > .ie', function(e) {
         $.get($(this).attr('data-url')).then(function(data) {
@@ -215,23 +270,17 @@ $( document ).ready(function() {
     });
 
     // Add new task item inputs
-    $(document).on('click', '.add-task-item', function(e) {
+    $(document).on('click', '#task_list .add-task-item', function(e) {
         e.preventDefault();
-
-        let nameField = '.add-task-item-name';
-        if ($(nameField).val() !== '') {
-            let collectionHolderClass = $(e.currentTarget).data('collectionHolderClass');
-            let index = addFormToCollection(collectionHolderClass, true);
-            $(['name', 'qty']).each(function (i, current) {
-                let input =  'task_list[taskItems][' + index + '][' + current + ']',
-                    source = '.add-task-item-' + current;
-                $('input[name="' + input + '"]').val($(source).val());
-                $(source).val('');
-            });
-        } else {
-            $(nameField).focus();
-        }
+        addTaskItems(e, '.add-task-item-name', 'task_list');
     });
+
+    // Add new counter task item inputs
+    $(document).on('click', '#task_list_counter .add-task-item', function(e) {
+        e.preventDefault();
+        addTaskItems(e, '.add-task-item-name', 'task_list_counter');
+    });
+
     // Add new task list users inputs
     $(document).on('click', '.add-t-l-user', function(e) {
         e.preventDefault();

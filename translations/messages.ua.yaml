@@ -26,6 +26,7 @@ list:
   archive_clear: 'Видалити все'
   archive_cleared: 'Архів успішно очищено'
   archived: 'архів'
+  counter: 'Лічильник'
   create_new: 'Створити'
   created: Created
   description: Деталi
@@ -36,6 +37,7 @@ list:
   load_more: 'Більше'
   name: Назва
   restore: Відновити
+  simple: 'Звичайний список'
   shared: 'Спільний'
   unsubscribe: Відписатися
   unsubscribed: 'Ви успішно скасували підписку на list'

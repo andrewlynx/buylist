@@ -5,6 +5,7 @@ namespace App\UseCase\TaskItem;
 use App\DTO\TaskItem\TaskItemComplete;
 use App\DTO\TaskItem\TaskItemCreate;
 use App\DTO\TaskItem\TaskItemEdit;
+use App\DTO\TaskItem\TaskItemIncrement;
 use App\Entity\TaskItem;
 use App\Entity\TaskList;
 use App\Entity\User;
@@ -104,6 +105,23 @@ class TaskItemHandler
             $user
         );
 
+        $this->em->flush();
+
+        return $taskItem;
+    }
+
+    /**
+     * @param TaskItemIncrement $dto
+     * @param User              $user
+     *
+     * @return TaskItem
+     */
+    public function increment(TaskItemIncrement $dto, User $user): TaskItem
+    {
+        $taskItemRepo = $this->em->getRepository(TaskItem::class);
+        /** @var TaskItem $taskItem */
+        $taskItem = $taskItemRepo->find($dto->id);
+        $taskItem->incrementQty();
         $this->em->flush();
 
         return $taskItem;

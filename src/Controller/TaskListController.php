@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constant\TaskListTypes;
 use App\Controller\Extendable\TranslatableController;
 use App\DTO\TaskList\TaskListUsersRaw;
 use App\Entity\TaskItem;
@@ -10,10 +11,13 @@ use App\Entity\User;
 use App\Form\ShareListEmailType;
 use App\Form\ListArchiveType;
 use App\Form\TaskItemCompleteType;
+use App\Form\TaskItemIncrementType;
+use App\Form\TaskListCounterType;
 use App\Form\TaskListType;
 use App\Form\UnsubscribeType;
 use App\Repository\TaskListRepository;
 use App\UseCase\TaskList\TaskListHandler;
+use Doctrine\Common\Collections\Collection;
 use Exception;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,12 +25,28 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/{_locale}/task-list", name="task_list_", locale="en", requirements={"_locale": "[a-z]{2}"})
  */
 class TaskListController extends TranslatableController
 {
+    /**
+     * @var TaskListHandler
+     */
+    protected $taskListHandler;
+
+    /**
+     * @param TranslatorInterface $translator
+     * @param TaskListHandler     $taskListHandler
+     */
+    public function __construct(TranslatorInterface $translator, TaskListHandler $taskListHandler)
+    {
+        parent::__construct($translator);
+        $this->taskListHandler = $taskListHandler;
+    }
+
     /**
      * @Route("/", name="index")
      *
@@ -53,7 +73,7 @@ class TaskListController extends TranslatableController
     /**
      * @Route("/load-more/{page}", name="load_more")
      *
-     * @param int $page
+     * @param int                $page
      * @param TaskListRepository $taskListRepository
      *
      * @return Response
@@ -100,7 +120,7 @@ class TaskListController extends TranslatableController
     /**
      * @Route("/load-more-shared/{page}", name="load_more_shared")
      *
-     * @param int $page
+     * @param int                $page
      * @param TaskListRepository $taskListRepository
      *
      * @return Response
@@ -147,7 +167,7 @@ class TaskListController extends TranslatableController
     /**
      * @Route("/load-more-archive/{page}", name="load_more_archive")
      *
-     * @param int $page
+     * @param int                $page
      * @param TaskListRepository $taskListRepository
      *
      * @return Response
@@ -171,18 +191,17 @@ class TaskListController extends TranslatableController
     /**
      * @Route("/archive-clear", name="archive_clear")
      *
-     * @param TaskListHandler $taskListHandler
-     * @param Request         $request
+     * @param Request $request
      *
      * @return Response
      */
-    public function archiveClear(TaskListHandler $taskListHandler, Request $request): Response
+    public function archiveClear(Request $request): Response
     {
         /** @var User $user */
         $user = $this->getUser();
 
         if ($this->isCsrfTokenValid('clear_archive', $request->request->get('_token'))) {
-            $taskListHandler->clearArchive($user);
+            $this->taskListHandler->clearArchive($user);
 
             $this->addFlash('success', $this->translator->trans('list.archive_cleared'));
 
@@ -197,7 +216,6 @@ class TaskListController extends TranslatableController
     /**
      * @Route("/create", name="create")
      *
-     * @param TaskListHandler $taskListHandler
      * @param Request $request
      * @param TaskList $taskList
      *
@@ -206,38 +224,23 @@ class TaskListController extends TranslatableController
      * @throws Exception
      * @throws TransportExceptionInterface
      */
-    public function create(TaskListHandler $taskListHandler, Request $request, TaskList $taskList = null): Response
+    public function create(Request $request, TaskList $taskList = null): Response
     {
         $isUpdate = $taskList instanceof TaskList;
         /** @var User $user */
         $user = $this->getUser();
-        $taskList = $taskList ?? $taskListHandler->create($user);
+        $taskList = $taskList ?? $this->taskListHandler->create($user);
+        if ($taskList->getId() && !(is_null($taskList->getType()) || $taskList->getType() === TaskListTypes::DEFAULT)) {
+            return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
+        }
 
-        $form = $this->createForm(TaskListType::class, $taskList)
+        $form = $this->createForm(TaskListType::class, $taskList, ['attr' => ['id' => 'task_list']])
             ->handleRequest($request);
 
         $shareListForm = $this->createForm(ShareListEmailType::class);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                if ($taskList->getCreator() === $user) {
-                    $fromFavourites = $form->get('favouriteUsers')->getNormData();
-                    $fromUsersData = $form->get('users')->getNormData();
-
-                    $fromUsers = $taskListHandler->processSharedList(new TaskListUsersRaw($fromUsersData), $taskList);
-                    foreach ($fromUsers->notAllowed as $notAllowed) {
-                        $this->addFlash('warning', $notAllowed);
-                    }
-                    foreach ($fromUsers->invitationSent as $invitationSent) {
-                        $this->addFlash('success', $invitationSent);
-                    }
-                    foreach ($fromUsers->invitationExists as $invitationExist) {
-                        $this->addFlash('warning', $invitationExist);
-                    }
-                    $users = array_merge($fromFavourites, $fromUsers->registered);
-
-                    $taskList = $taskListHandler->updateSharedUsers($taskList, $users);
-                }
-                $taskList = $taskListHandler->edit($taskList);
+                $taskList = $this->processCreateForm($form, $taskList);
                 $this->addFlash('success', $isUpdate ? 'list.updated' : 'list.created');
 
                 return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
@@ -258,10 +261,55 @@ class TaskListController extends TranslatableController
     }
 
     /**
+     * @Route("/create-counter", name="create_counter")
+     *
+     * @param Request $request
+     * @param TaskList $taskList
+     *
+     * @return Response
+     *
+     * @throws TransportExceptionInterface
+     */
+    public function createCounter(Request $request, TaskList $taskList = null): Response
+    {
+        $isUpdate = $taskList instanceof TaskList;
+        /** @var User $user */
+        $user = $this->getUser();
+        $taskList = $taskList ?? $this->taskListHandler->createCounter($user);
+        if ($taskList->getId() && ($taskList->getType() !== TaskListTypes::COUNTER)) {
+            return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
+        }
+
+        $form = $this->createForm(TaskListCounterType::class, $taskList, ['attr' => ['id' => 'task_list_counter']])
+            ->handleRequest($request);
+
+        $shareListForm = $this->createForm(ShareListEmailType::class);
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $taskList = $this->processCreateForm($form, $taskList);
+                $this->addFlash('success', $isUpdate ? 'list.updated' : 'list.created');
+
+                return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
+            } catch (Exception $e) {
+                $this->addFlash('danger', $e->getMessage());
+            }
+        }
+
+        return $this->render(
+            'v1/task-list/create-counter.html.twig',
+            [
+                'task_list' => $taskList,
+                'form' => $form->createView(),
+                'task_list_share' => $shareListForm->createView(),
+                'complete_item_forms' => $this->getCompleteItemFormsViews($taskList->getTaskItems()),
+            ]
+        );
+    }
+
+    /**
      * @Route("/edit/{id}", name="edit")
      *
      * @param TaskList $taskList
-     * @param TaskListHandler $taskListHandler
      * @param Request $request
      *
      * @return Response
@@ -269,13 +317,19 @@ class TaskListController extends TranslatableController
      * @throws Exception
      * @throws TransportExceptionInterface
      */
-    public function edit(TaskList $taskList, TaskListHandler $taskListHandler, Request $request): Response
+    public function edit(TaskList $taskList, Request $request): Response
     {
         /** @var User $user */
         $user = $this->getUser();
         $this->checkSharedAccess($taskList, $user);
 
-        return $this->create($taskListHandler, $request, $taskList);
+        switch ($taskList->getType()) {
+            case TaskListTypes::COUNTER:
+                return $this->createCounter($request, $taskList);
+
+            default:
+                return $this->create($request, $taskList);
+        }
     }
 
     /**
@@ -297,11 +351,12 @@ class TaskListController extends TranslatableController
         $archiveForm = $this->getArchiveListForm($taskList);
 
         return $this->render(
-            'v1/task-list/view.html.twig',
+            TaskListTypes::getViewPath($taskList->getType()),
             [
                 'task_list' => $taskList,
                 'task_list_archive' => $archiveForm->createView(),
                 'complete_item_forms' => $this->getCompleteItemFormsViews($taskList->getTaskItems()),
+                'increment_item_forms' => $this->getIncrementItemFormsViews($taskList->getTaskItems()),
             ]
         );
     }
@@ -309,22 +364,21 @@ class TaskListController extends TranslatableController
     /**
      * @Route("/delete/{id}", name="delete")
      *
-     * @param TaskList        $taskList
-     * @param Request         $request
-     * @param TaskListHandler $taskListHandler
+     * @param TaskList $taskList
+     * @param Request  $request
      *
      * @return Response
      *
      * @throws Exception
      */
-    public function delete(TaskList $taskList, Request $request, TaskListHandler $taskListHandler): Response
+    public function delete(TaskList $taskList, Request $request): Response
     {
         /** @var User $user */
         $user = $this->getUser();
         $this->checkCreatorAccess($taskList, $user);
 
         if ($this->isCsrfTokenValid('delete'.$taskList->getId(), $request->request->get('_token'))) {
-            $taskListHandler->delete($taskList);
+            $this->taskListHandler->delete($taskList);
 
             $this->addFlash('success', sprintf('%s deleted', $taskList->getName()));
 
@@ -339,18 +393,14 @@ class TaskListController extends TranslatableController
      * @Route("/{id}/archive-list", name="archive_list")
      *
      * @param TaskList $taskList
-     * @param Request $request
-     * @param TaskListHandler $taskListHandler
+     * @param Request  $request
      *
      * @return Response
      *
      * @throws Exception
      */
-    public function archiveList(
-        TaskList $taskList,
-        Request $request,
-        TaskListHandler $taskListHandler
-    ): Response {
+    public function archiveList(TaskList $taskList, Request $request): Response
+    {
         /** @var User $user */
         $user = $this->getUser();
         $this->checkCreatorAccess($taskList, $user);
@@ -358,7 +408,7 @@ class TaskListController extends TranslatableController
         $archiveForm = $this->getArchiveListForm($taskList)->handleRequest($request);
 
         if ($archiveForm->isSubmitted() && $archiveForm->isValid()) {
-            $taskListHandler->archive(
+            $this->taskListHandler->archive(
                 $taskList,
                 (bool) $request->request->get('list_archive')['status'] ?? false
             );
@@ -378,18 +428,14 @@ class TaskListController extends TranslatableController
      * @Route("/{id}/unsubscribe", name="unsubscribe")
      *
      * @param TaskList $taskList
-     * @param Request $request
-     * @param TaskListHandler $taskListHandler
+     * @param Request  $request
      *
      * @return Response
      *
      * @throws Exception
      */
-    public function unsubscribe(
-        TaskList $taskList,
-        Request $request,
-        TaskListHandler $taskListHandler
-    ): Response {
+    public function unsubscribe(TaskList $taskList, Request $request): Response
+    {
         /** @var User $user */
         $user = $this->getUser();
         $this->checkSharedAccess($taskList, $user);
@@ -397,7 +443,7 @@ class TaskListController extends TranslatableController
         $unsubscribeForm = $this->getUnsubscribeForm($taskList)->handleRequest($request);
 
         if ($unsubscribeForm->isSubmitted() && $unsubscribeForm->isValid()) {
-            $taskListHandler->unsubscribe(
+            $this->taskListHandler->unsubscribe(
                 $taskList,
                 $user
             );
@@ -432,15 +478,46 @@ class TaskListController extends TranslatableController
     }
 
     /**
-     * @param iterable $taskItems
+     * @param TaskItem $taskItem
+     *
+     * @return FormInterface
+     */
+    private function getIncrementItemForm(TaskItem $taskItem): FormInterface
+    {
+        return $this->createForm(TaskItemIncrementType::class, $taskItem, [
+            'action' => $this->generateUrl('task_item_increment'),
+        ]);
+    }
+
+    /**
+     * @param Collection $taskItems
      *
      * @return array
      */
-    private function getCompleteItemFormsViews(iterable $taskItems): array
+    private function getCompleteItemFormsViews(Collection $taskItems): array
     {
         $views = [];
         foreach ($taskItems as $taskItem) {
             $views[$taskItem->getId()] = $this->getCompleteItemForm($taskItem)->createView();
+        }
+
+        return $views;
+    }
+
+    /**
+     * @param Collection $taskItems
+     *
+     * @return array
+     */
+    private function getIncrementItemFormsViews(Collection $taskItems): array
+    {
+        $views = [];
+        // Return empty array for all Task List types except "counter" type
+        if (!$taskItems->isEmpty() && $taskItems->first()->getTaskList()->getType() !== TaskListTypes::COUNTER) {
+            return $views;
+        }
+        foreach ($taskItems as $taskItem) {
+            $views[$taskItem->getId()] = $this->getIncrementItemForm($taskItem)->createView();
         }
 
         return $views;
@@ -528,5 +605,37 @@ class TaskListController extends TranslatableController
         if (!($taskList->getCreator() === $user || $taskList->getShared()->contains($user))) {
             throw new AccessDeniedException();
         }
+    }
+
+    /**
+     * @param FormInterface $form
+     * @param TaskList $taskList
+     *
+     * @return TaskList
+     *
+     * @throws TransportExceptionInterface
+     */
+    private function processCreateForm(FormInterface $form, TaskList $taskList): TaskList
+    {
+        if ($taskList->getCreator() === $this->getUser()) {
+            $fromFavourites = $form->get('favouriteUsers')->getNormData();
+            $fromUsersData = $form->get('users')->getNormData();
+
+            $fromUsers = $this->taskListHandler->processSharedList(new TaskListUsersRaw($fromUsersData), $taskList);
+            foreach ($fromUsers->notAllowed as $notAllowed) {
+                $this->addFlash('warning', $notAllowed);
+            }
+            foreach ($fromUsers->invitationSent as $invitationSent) {
+                $this->addFlash('success', $invitationSent);
+            }
+            foreach ($fromUsers->invitationExists as $invitationExist) {
+                $this->addFlash('warning', $invitationExist);
+            }
+            $users = array_merge($fromFavourites, $fromUsers->registered);
+
+            $taskList = $this->taskListHandler->updateSharedUsers($taskList, $users);
+        }
+
+        return $this->taskListHandler->edit($taskList);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Constant\TaskListTypes;
 use App\Repository\TaskListRepository;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -108,6 +109,20 @@ class TaskList
      * @ORM\Column(type="string", length=64, nullable=true)
      */
     private $colorLabel;
+
+    /**
+     * @var int|null
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $type;
+
+    /**
+     * @var TaskListData|null
+     *
+     * @ORM\OneToOne(targetEntity=TaskListData::class, mappedBy="taskList", cascade={"persist", "remove"})
+     */
+    private $taskListData;
 
     /**
      *
@@ -403,6 +418,52 @@ class TaskList
     public function setColorLabel(string $colorLabel): TaskList
     {
         $this->colorLabel = $colorLabel;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getType(): ?int
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param int|null $type
+     *
+     * @return $this
+     */
+    public function setType(?int $type): TaskList
+    {
+        // task list type can be set only once and cannot be changed
+        if ($this->type === null) {
+            $this->type = $type;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return TaskListData|null
+     */
+    public function getTaskListData(): ?TaskListData
+    {
+        return $this->taskListData;
+    }
+
+    /**
+     * @param TaskListData|null $taskListData
+     *
+     * @return $this
+     */
+    public function setTaskListData(?TaskListData $taskListData): self
+    {
+        // task list data can be set only once and cannot be changed
+        if ($this->taskListData === null) {
+            $this->taskListData = $taskListData;
+        }
 
         return $this;
     }

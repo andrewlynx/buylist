@@ -99,6 +99,20 @@
     background-color: #f7f7f7;
     border: 1px solid #e7e7e7;
   }
+  &.loading {
+    opacity: 0.8;
+    pointer-events: none;
+    cursor: progress;
+    -webkit-animation: flickerAnimation 1s infinite;
+    -moz-animation: flickerAnimation 1s infinite;
+    -o-animation: flickerAnimation 1s infinite;
+    animation: flickerAnimation 1s infinite;
+  }
+  .ti-counter {
+    border-radius: 15px;
+    color: #fff;
+    background-color: theme-color("primary");
+  }
 }
 #li-modal {
   content: '';
@@ -179,7 +193,7 @@
         margin-bottom: 0;
         border-bottom: 1px dashed #ced4da;
       }
-      div[id^="task_list_taskItems"] {
+      div[id^="task_list_taskItems"], div[id^="task_list_counter_taskItems"] {
         width: 90%;
 
         .form-group {
