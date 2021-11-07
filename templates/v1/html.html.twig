@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% apply spaceless %}
+<html>
+    <head>
+        {% block head %}
+            <title>{% block title %}Welcome!{% endblock %}</title>
+            {% block stylesheets %}
+                {{ encore_entry_link_tags('common') }}
+                {{ encore_entry_link_tags('app') }}
+            {% endblock %}
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}
+        {% endblock %}
+    </body>
+</html>
+{% endapply %}
+{% block javascripts %}
+    {{ encore_entry_script_tags('common') }}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}

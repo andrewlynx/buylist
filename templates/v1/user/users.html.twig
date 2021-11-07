@@ -2,7 +2,7 @@
 
 {% block title %}{{ 'menu.users'|trans }}{% endblock %}
 
-{% block body %}
+{% block content %}
     {{ parent() }}
     {% if users %}
         {% for user in users %}

@@ -1,12 +1,14 @@
 {% extends 'v1/public/base-half-screen.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
+{% block title %}{{ 'pw_restoration'|trans }}{% endblock %}
 
-{% block body %}
-    <h1>Reset your password</h1>
+{% block content %}
+    <div class="login-form">
+        <h1>{{ 'pw_restoration'|trans }}</h1>
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+        {{ form_start(resetForm) }}
+            {{ form_row(resetForm.plainPassword) }}
+            <button class="btn btn-primary">Reset password</button>
+        {{ form_end(resetForm) }}
+    </div>
 {% endblock %}

@@ -1,13 +1,13 @@
 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-    {{ app.request.locale }}
+    {% block lang_display %}{{ app.request.locale }}{% endblock %}
 </a>
 <ul class="dropdown-menu">
     {% for lang in _locales|split('|') %}
         {% if lang != app.request.locale %}
             <li>
                 <a class="btn btn-outline-primary btn-md btn-block" href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': lang})) }}">
-                {{ lang }}
-            </a>
+                    {% block lang_dropdown %}{{ lang }}{% endblock %}
+                </a>
             </li>
         {% endif %}
     {% endfor %}

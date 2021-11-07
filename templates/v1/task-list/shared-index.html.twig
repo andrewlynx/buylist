@@ -2,7 +2,7 @@
 
 {% block title %}{{ 'list.your_lists'|trans }}{% endblock %}
 
-{% block body %}
+{% block content %}
     {% if task_lists %}
         <div class="tls" id="tls">
             {% include 'v1/parts/private/list/shared-list.html.twig' with {

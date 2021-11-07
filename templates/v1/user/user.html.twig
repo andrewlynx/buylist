@@ -2,7 +2,7 @@
 
 {% block title %}{{ 'menu.user'|trans }}{% endblock %}
 
-{% block body %}
+{% block content %}
     {% if app.user.isFavourite(user) %}
         <a class="btn btn-primary" href="{{ path('user_remove_from_favourites', {'email': user.email}) }}">
             {{ 'user.remove_from_favourites'|trans }}

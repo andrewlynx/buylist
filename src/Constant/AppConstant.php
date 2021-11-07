@@ -11,4 +11,9 @@ class AppConstant
         'en',
         'ua',
     ];
+
+    public const APP_LOCALES_EXTENDED = [
+        'en' => 'English',
+        'ua' => 'Українська',
+    ];
 }

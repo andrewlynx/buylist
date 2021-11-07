@@ -75,14 +75,18 @@ search:
   page: 'Пошук'
   result: 'Результати пошуку для'
 security:
+  dont_have_acc: 'Ще не зареєстровані?'
   login: Вхiд
-  or: або
-  please: 'Будь ласка'
-  pw_restoration: 'Відновлення пароля'
-  register: зареєструйтесь
+  pw_restoration: 'Забули пароль?'
   registration: Реєстрацiя
+  reset_password: 'Відновлення вашого пароля'
+  restore_form_help: 'Вкажіть свій email і ми відправимо посилання для зміни паролю'
   restore_pw: 'Відновлення пароля'
-  sign_in: зайдiть
+  send_pw_reset: 'Відправити email для змiни пароля'
+  sign_in: Вхiд
+  sign_in_to: 'Вхiд до'
+  sign_up: Реєстрацiя
+  sign_up_now: 'Зареєструйтесь'
 share_list:
   share: 'Надати доступ'
   user_is_list_author: 'Цей користувач - автор списку'

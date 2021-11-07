@@ -1,27 +1,29 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('common') }}
-        {% endblock %}
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-    </head>
-    <body>
+{% extends 'v1/html.html.twig' %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('common') }}
+{% endblock %}
+{% block javascripts %}
+    {{ encore_entry_script_tags('common') }}
+{% endblock %}
+{% block body %}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-5 wh100 login-wrapper d-none d-xs-none d-md-block">
-                <div class="navbar-header">
-                    <div class="logo">
-                        <a href="{{ path('index') }}">
-                            <img class="img-fluid" src="{{ asset('img/logo.svg') }}" alt="{{ _site_name }}">
-                        </a>
+            <div class="col-md-6 wh100 login-wrapper d-none d-xs-none d-md-block">
+                {% block background %}
+                    <div class="login">
+                        <div class="navbar-header">
+                            <div class="logo">
+                                <a href="{{ path('index') }}">
+                                    <img class="img-fluid" src="{{ asset('img/logo.svg') }}" alt="{{ _site_name }}">
+                                </a>
+                            </div>
+                        </div>
+                        <img class="main-img" src="/img/login/login-bg.png">
                     </div>
-                </div>
+                {% endblock %}
             </div>
-            <div class="col-md-7 wh100 justify-content-center login-main">
+            <div class="col-md-6 wh100 login-main">
                 {% for label, messages in app.flashes %}
                     {% for message in messages %}
                         <div class="alert alert-{{ label }}">
@@ -29,12 +31,13 @@
                         </div>
                     {% endfor %}
                 {% endfor %}
-                {% block body %}{% endblock %}
+                {% block lang_dropdown %}
+                    <div class="lang-dropdown text-right">
+                        {% include 'v1/parts/lang-dropdown-extend.html.twig' %}
+                    </div>
+                {% endblock %}
+                {% block content %}{% endblock %}
             </div>
         </div>
     </div>
-    {% block javascripts %}
-        {{ encore_entry_script_tags('common') }}
-    {% endblock %}
-    </body>
-</html>
+{% endblock %}

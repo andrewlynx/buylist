@@ -5,7 +5,7 @@
  * (and its CSS file) in your base layout (base.html.twig).
  */
 
-import './styles/app.scss';
+import './styles_v1/app.scss';
 import './common';
 
 $( document ).ready(function() {
@@ -22,7 +22,7 @@ $( document ).ready(function() {
         });
 
         return indexed_array;
-    };
+    }
 
     // Common AJAX form processing flow
     function ajaxSendForm(submission, onSuccessCall) {

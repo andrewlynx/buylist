@@ -75,14 +75,18 @@ search:
   page: 'Search'
   result: 'Search results for'
 security:
+  dont_have_acc: "Don't have an account yet?"
   login: Login
-  or: or
-  please: Please
   pw_restoration: 'Password Restoration'
-  register: register
   registration: Registration
-  restore_pw: 'Restore Password'
-  sign_in: 'sign in'
+  reset_password: 'Reset your password'
+  restore_form_help: 'Enter your email address and we we will send you a link to reset your password'
+  restore_pw: 'Forgot Password?'
+  send_pw_reset: 'Send password reset email'
+  sign_in: 'Sign In'
+  sign_in_to: 'Sign In to'
+  sign_up: 'Sign Up'
+  sign_up_now: 'Sign up now'
 share_list:
   share: 'Share List'
   user_is_list_author: 'This user is this List author'

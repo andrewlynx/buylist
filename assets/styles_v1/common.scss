@@ -74,14 +74,15 @@ input {
   @extend input;
 }
 label {
-  margin-bottom: 15px;
-  font-weight: bold;
-  font-size: 16px;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 15px;
   line-height: 16px;
 }
 .form-group {
   padding-right: 0;
   padding-left: 0;
+  margin-bottom: 25px;
 }
 .btn {
   font-weight: 500;
@@ -215,16 +216,10 @@ label {
   display: flex;
   flex-direction: column;
 }
-.login-wrapper {
-  background-color: #6c5dd3;
-  background-image: url('../../public/img/login-bg.png');
-  background-position: center;
-  background-size: cover;
-}
 .logo {
   padding: 22px 16px;
   img {
-    height: 52px;
+    height: 60px;
   }
 }
 
@@ -265,4 +260,3 @@ label {
     padding-right: 45px;
   }
 }
-

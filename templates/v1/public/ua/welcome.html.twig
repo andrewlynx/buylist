@@ -1,7 +1,11 @@
-{% extends 'v1/public/base.html.twig' %}
+{% extends 'v1/public/en/welcome.html.twig' %}
 
 {% block title %}Вітаємо{% endblock %}
 
-{% block body %}
-    Вітаємо
+{% block content %}
+    <h1 class="welcome-header">Вітаємо у <span>{{ _site_name }}!</span></h1>
+    <div class="welcome-info">
+        Це легкий додаток для створення, спільного<br> користування та управління списками.
+    </div>
+    <a class="btn btn-primary sign-in" href="{{ path('app_login') }}">{{ 'security.sign_in'|trans }}</a>
 {% endblock %}

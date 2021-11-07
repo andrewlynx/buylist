@@ -2,7 +2,7 @@
 
 {% block title %}{{ 'notification.your_notifications'|trans }}{% endblock %}
 
-{% block body %}
+{% block content %}
     {% if notifications %}
         {% for notification in notifications %}
             <p class="well">

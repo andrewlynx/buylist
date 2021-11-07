@@ -2,7 +2,7 @@
 
 {% block title %}{{ 'list.your_lists'|trans }}{% endblock %}
 
-{% block body %}
+{% block content %}
     {% include 'v1/common/_search_form.html.twig' %}
     {% if task_lists %}
         <div class="tls" id="tls">

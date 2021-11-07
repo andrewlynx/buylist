@@ -1,17 +1,6 @@
-<!DOCTYPE html>
-{% apply spaceless %}
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('common') }}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-    </head>
-    <body>
+{% extends 'v1/html.html.twig' %}
+
+{% block body %}
     <div class="container-fluid">
         <div class="row wrapper">
             <nav id="sidebar" class="sidebar-wrapper">
@@ -55,17 +44,11 @@
                                 </div>
                             {% endfor %}
                         {% endfor %}
-                        {% block body %}{% endblock %}
+                        {% block content %}{% endblock %}
                     </div>
                 </div>
             </main>
         </div>
     </div>
     {% include 'v1/parts/footer.html.twig' %}
-    </body>
-</html>
-{% endapply %}
-{% block javascripts %}
-    {{ encore_entry_script_tags('common') }}
-    {{ encore_entry_script_tags('app') }}
 {% endblock %}

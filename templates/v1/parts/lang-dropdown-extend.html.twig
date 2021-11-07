@@ -1,0 +1,9 @@
+{% extends 'v1/parts/lang-dropdown.html.twig' %}
+
+{% block lang_dropdown %}
+    {{ constant('App\\Constant\\AppConstant::APP_LOCALES_EXTENDED')[lang] }}
+{% endblock %}
+
+{% block lang_display %}
+    {{ constant('App\\Constant\\AppConstant::APP_LOCALES_EXTENDED')[app.request.locale] }}
+{% endblock %}

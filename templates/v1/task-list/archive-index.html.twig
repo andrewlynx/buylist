@@ -5,7 +5,7 @@
 {% block page_title_upper %}{% endblock %}
 {% block page_title %}{{ 'list.archive'|trans }}{% endblock %}
 
-{% block body %}
+{% block content %}
     {% if task_lists %}
         <form method="post" action="{{ path('task_list_archive_clear') }}" onsubmit="return confirm({{ 'validation.clear_archive'|trans }});">
             <input type="hidden" name="_method" value="POST">

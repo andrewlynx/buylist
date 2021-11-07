@@ -2,37 +2,34 @@
 
 {% block title %}{{ 'security.login'|trans }}{% endblock %}
 
-{% block body %}
-    <form method="post" name="login_form">
+{% block content %}
+    <form method="post" name="login_form" class="login-form">
         {% if error %}
             <div class="alert alert-danger">{{ error.messageKey|trans }}</div>
         {% endif %}
 
-        <h1 class="h3 mb-3 font-weight-normal">{{ 'security.please'|trans }} {{ 'security.sign_in'|trans }} {{ 'security.or'|trans }} <a href="{{ path('app_register') }}">{{ 'security.register'|trans }}</a></h1>
+        <h2 class="mb-3 text-center">{{ 'security.sign_in_to'|trans }} {{ _site_name }}</h2>
         <div class="form-group col-auto">
             <label for="inputEmail">Email</label>
             <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
         </div>
         <div class="form-group col-auto">
-            <label for="inputPassword">Password</label>
-            <input type="password" name="password" id="inputPassword" class="form-control" required>
-
-            <input type="hidden" name="_csrf_token"
-                   value="{{ csrf_token('authenticate') }}"
-            >
-        </div>
-
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" name="_remember_me"> Remember me
+            <label for="inputPassword">
+                Password
+                <a class="forgot-pass" href="{{ path('app_forgot_password_request') }}">
+                    {{ 'security.restore_pw'|trans }}
+                </a>
             </label>
+            <input type="password" name="password" id="inputPassword" class="form-control" required>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
         </div>
 
-        <button class="btn btn-lg btn-primary" type="submit">
-            Sign in
+        <input type="hidden" name="_remember_me" value="1">
+        <button class="btn btn-lg btn-primary sign-in-btn" type="submit">
+            {{ 'security.sign_in'|trans }}
         </button>
     </form>
-    <div class="text-right">
-        <a href="{{ path('app_forgot_password_request') }}">{{ 'security.restore_pw'|trans }}</a>
+    <div class="sign-up-link text-center">
+        {{ 'security.dont_have_acc'|trans }} <a href="{{ path('app_register') }}">{{ 'security.sign_up_now'|trans }}</a>
     </div>
 {% endblock %}

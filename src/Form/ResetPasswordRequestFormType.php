@@ -19,6 +19,7 @@ class ResetPasswordRequestFormType extends AbstractType
                         'message' => 'Please enter your email',
                     ]),
                 ],
+                'help' => 'security.restore_form_help'
             ])
         ;
     }
