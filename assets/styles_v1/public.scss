@@ -3,8 +3,6 @@
   pointer-events: none;
 }
 .public {
-  padding-right: 0;
-  padding-left: 0;
   .btn {
     font-size: 16px;
     border-width: 2px;
@@ -16,10 +14,6 @@
   .navbar {
     padding-top: 0;
     margin-bottom: 154px;
-  }
-  .logo {
-    padding-right: 0;
-    padding-left: 0;
   }
   .welcome-header {
     font-size: 48px;
@@ -33,6 +27,7 @@
     margin-left: 31px;
     font-size: 22px;
     position: relative;
+    color: #757889;
     &:before {
       display: block;
       content: "";
@@ -50,6 +45,7 @@
     padding: 14px 53px;
     font-size: 18px;
     position: relative;
+    z-index: 9;
     &:after {
       display: block;
       content: "";
@@ -60,12 +56,23 @@
       width: 100%;
       border: 1px solid #6c5dd3;
       border-radius: 12px;
+      z-index: -1;
+      transition-duration: 0.3s;
+    }
+    &:hover {
+      &:after {
+        border-color: darken(theme-color("primary"), 10%);
+      }
     }
   }
 }
 .home {
   min-height: 100vh;
   overflow-x: hidden;
+  background-image: url("/public/img/main/main.png");
+  background-repeat: no-repeat;
+  background-size: 1200px;
+  background-position-x: calc(50% + 400px);
   .bg-container {
     position: relative;
     .top-bg {
@@ -78,17 +85,10 @@
       background-repeat: no-repeat;
       background-size: contain;
     }
-    .main-bg {
-      position: absolute;
-      top: 0;
-      right: -380px;
-      background-image: url("/public/img/main/main.png");
-      height: 100vh;
-      width: 100%;
-      background-repeat: no-repeat;
-      background-size: contain;
-      background-position-x: right;
-    }
+  }
+  .logo {
+    padding-right: 0;
+    padding-left: 0;
   }
   .menu {
     display: flex;
@@ -103,7 +103,16 @@
       text-transform: capitalize;
       padding: 12px;
       font-size: 16px;
+      color: theme-color("primary");
+      a {
+        color: theme-color("primary");
+      }
     }
+  }
+  .public {
+    padding-bottom: 200px;
+    padding-right: 0;
+    padding-left: 0;
   }
 }
 .login-wrapper {
@@ -199,6 +208,75 @@
   .public {
     .navbar {
       margin-bottom: 50px;
+    }
+  }
+  .home {
+    background-size: 800px;
+    background-position-y: 170px;
+    background-position-x: calc(50% + 200px);
+  }
+}
+@media (max-width: 768px) {
+  .home .bg-container .top-bg {
+    left: -180px;
+  }
+  .public {
+    .welcome-header {
+      font-size: 36px;
+    }
+    .welcome-info {
+      font-size: 16px;
+    }
+  }
+  .mobile-header {
+    .logo {
+      background-color: theme-color("primary");
+      margin-right: -15px;
+      margin-left: -15px;
+      padding: 10px 0;
+      .img-fluid {
+        height: 40px;
+      }
+    }
+  }
+}
+@media (max-width: 576px) {
+  .home .bg-container .top-bg {
+    display: none;
+  }
+  .public {
+    padding-right: 15px;
+    padding-left: 15px;
+    .btn {
+      font-size: 14px;
+      padding: 6px 14px;
+    }
+    .logo {
+      background-color: theme-color("primary");
+      padding: 10px 0;
+      .img-fluid {
+        height: 40px;
+      }
+    }
+  }
+  .home {
+    .navbar {
+      display: block;
+      margin-bottom: 20px;
+    }
+    .menu {
+      padding-top: 20px;
+      .link {
+        font-size: 14px;
+      }
+    }
+  }
+}
+@media (max-width: 480px) {
+  .login-main {
+    .login-form {
+      padding-left: 0;
+      padding-right: 0;
     }
   }
 }

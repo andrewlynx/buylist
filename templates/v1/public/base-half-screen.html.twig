@@ -7,7 +7,7 @@
     {{ encore_entry_script_tags('common') }}
 {% endblock %}
 {% block body %}
-    <div class="container-fluid">
+    <div class="container-fluid public">
         <div class="row">
             <div class="col-md-6 wh100 login-wrapper d-none d-xs-none d-md-block">
                 {% block background %}
@@ -31,6 +31,15 @@
                         </div>
                     {% endfor %}
                 {% endfor %}
+                {% block mobile_logo %}
+                    <div class="navbar-header mobile-header d-sm-block d-md-none">
+                        <div class="logo">
+                            <a href="{{ path('index') }}">
+                                <img class="img-fluid" src="{{ asset('img/logo.svg') }}" alt="{{ _site_name }}">
+                            </a>
+                        </div>
+                    </div>
+                {% endblock %}
                 {% block lang_dropdown %}
                     <div class="lang-dropdown text-right">
                         {% include 'v1/parts/lang-dropdown-extend.html.twig' %}

@@ -75,6 +75,7 @@ search:
   page: 'Пошук'
   result: 'Результати пошуку для'
 security:
+  already_have_acc: 'Вже зареєстровані?'
   dont_have_acc: 'Ще не зареєстровані?'
   login: Вхiд
   pw_restoration: 'Забули пароль?'
@@ -87,6 +88,7 @@ security:
   sign_in_to: 'Вхiд до'
   sign_up: Реєстрацiя
   sign_up_now: 'Зареєструйтесь'
+  sign_up_to: 'Реєстрація у'
 share_list:
   share: 'Надати доступ'
   user_is_list_author: 'Цей користувач - автор списку'

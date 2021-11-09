@@ -97,6 +97,12 @@ label {
   &[type=submit] {
     margin: 0;
   }
+  &:hover {
+    background-color: darken(theme-color("primary"), 10%);
+  }
+  &:focus {
+    background-color: darken(theme-color("primary"), 10%);
+  }
 }
 
 .orange {
@@ -147,6 +153,10 @@ label {
 .page-content {
   width: calc(100% - #{$sidebar-width});
   background-color: #f7f7f7;
+  .content {
+    padding-right: 0;
+    padding-left: 0;
+  }
 }
 .sub-footer {
   font-size: 14px;
@@ -254,7 +264,7 @@ label {
     width: 100%;
   }
 }
-@media (min-width: 992px) {
+@media (min-width: 480px) {
   .container-fluid.in-frame {
     padding-left: 45px;
     padding-right: 45px;

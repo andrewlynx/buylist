@@ -75,6 +75,7 @@ search:
   page: 'Search'
   result: 'Search results for'
 security:
+  already_have_acc: 'Already have an account?'
   dont_have_acc: "Don't have an account yet?"
   login: Login
   pw_restoration: 'Password Restoration'
@@ -87,6 +88,7 @@ security:
   sign_in_to: 'Sign In to'
   sign_up: 'Sign Up'
   sign_up_now: 'Sign up now'
+  sign_up_to: 'Sign Up to'
 share_list:
   share: 'Share List'
   user_is_list_author: 'This user is this List author'
