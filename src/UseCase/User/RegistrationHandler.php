@@ -2,14 +2,12 @@
 
 namespace App\UseCase\User;
 
+use App\Constant\AppConstant;
 use App\DTO\User\Registration;
 use App\DTO\User\Settings;
-use App\Entity\EmailInvitation;
 use App\Entity\Object\Email;
 use App\Entity\User;
-use App\Repository\EmailInvitationRepository;
 use App\Repository\UserRepository;
-use App\Service\Notification\NotificationService;
 use App\UseCase\InvitationHandler\InvitationHandler;
 use App\Validator\Locale;
 use DateTime;
@@ -90,8 +88,13 @@ class RegistrationHandler
     {
         $user = new User();
         $email = new Email($googleUser->getEmail());
+        $locale = Locale::validateLocale($googleUser->getLocale())
+            ? $googleUser->getLocale()
+            : AppConstant::DEFAULT_LOCALE;
+
         $user->setEmail($email->getValue())
-            ->setNickName($googleUser->getName());
+            ->setNickName($googleUser->getName())
+            ->setLocale($locale);
 
         $this->em->persist($user);
         $this->invitationHandler->sendPendingInvitations($user);

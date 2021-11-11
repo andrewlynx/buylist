@@ -9,6 +9,7 @@ use App\UseCase\User\RegistrationHandler;
 use Exception;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
+use KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
 use League\OAuth2\Client\Provider\GoogleUser;
 use League\OAuth2\Client\Token\AccessToken;
@@ -57,13 +58,11 @@ class OAuthGoogleAuthenticator extends SocialAuthenticator
         UserRepository $userRepository,
         RegistrationHandler $registrationHandler,
         UrlGeneratorInterface $urlGenerator
-    )
-    {
+    ) {
         $this->clientRegistry = $clientRegistry;
         $this->userRepository = $userRepository;
         $this->registrationHandler = $registrationHandler;
         $this->urlGenerator = $urlGenerator;
-
     }
 
     /**
@@ -93,7 +92,7 @@ class OAuthGoogleAuthenticator extends SocialAuthenticator
     /**
      * @param Request $request
      *
-     * @return AccessToken|mixed
+     * @return AccessToken
      */
     public function getCredentials(Request $request): AccessToken
     {
@@ -104,7 +103,7 @@ class OAuthGoogleAuthenticator extends SocialAuthenticator
      * @param mixed                 $credentials
      * @param UserProviderInterface $userProvider
      *
-     * @return User|null|UserInterface
+     * @return User
      *
      * @throws Exception
      */
@@ -121,13 +120,12 @@ class OAuthGoogleAuthenticator extends SocialAuthenticator
      * @param Request $request
      * @param AuthenticationException $exception
      *
-     * @return null|Response|void
+     * @return Response
      */
     public function onAuthenticationFailure(
         Request $request,
         AuthenticationException $exception
-    ): ?Response
-    {
+    ): ?Response {
         return new RedirectResponse(
             $this->urlGenerator->generate('index')
         );
@@ -146,11 +144,9 @@ class OAuthGoogleAuthenticator extends SocialAuthenticator
         Request $request,
         TokenInterface $token,
         $providerKey
-    ): ?Response
-    {
+    ): ?Response {
         /** @var User $user */
         $user = $token->getUser();
-        $this->updateUserLocaleOnFirstLogin($user, $request);
 
         $this->registrationHandler->login($user);
 
@@ -167,9 +163,9 @@ class OAuthGoogleAuthenticator extends SocialAuthenticator
     }
 
     /**
-     * @return OAuth2Client
+     * @return OAuth2ClientInterface
      */
-    public function getGoogleClient(): OAuth2Client
+    public function getGoogleClient(): OAuth2ClientInterface
     {
         return $this->clientRegistry->getClient('google');
     }
@@ -191,31 +187,11 @@ class OAuthGoogleAuthenticator extends SocialAuthenticator
      */
     private function findOrRegisterUser(GoogleUser $googleUser): User
     {
-        /** @var User $user */
         $user = $this->userRepository
             ->findOneBy(['email' => $googleUser->getEmail()]);
 
         if (!$user) {
             $user = $this->registrationHandler->registerFromGoogle($googleUser);
-        }
-
-        return $user;
-    }
-
-    /**
-     * @param User $user
-     * @param Request $request
-     *
-     * @return User
-     *
-     * @throws Exception
-     */
-    private function updateUserLocaleOnFirstLogin(User $user, Request $request): User
-    {
-        if (!$user->getLocale() || true) {
-            $dto = new Settings();
-            $dto->locale = $request->getLocale();
-            $user = $this->registrationHandler->updateSettings($user, $dto);
         }
 
         return $user;
