@@ -5,10 +5,13 @@ namespace App\UseCase\InvitationHandler;
 use App\Entity\EmailInvitation;
 use App\Entity\Object\Email;
 use App\Entity\TaskList;
+use App\Entity\User;
 use App\Repository\EmailInvitationRepository;
+use App\Service\Notification\NotificationService;
 use App\UseCase\Email\InvitationEmailHandler;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use InvalidArgumentException;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
@@ -25,15 +28,23 @@ class InvitationHandler
     private $emailHandler;
 
     /**
+     * @var NotificationService
+     */
+    private $notificationService;
+
+    /**
      * @param EntityManagerInterface $em
      * @param InvitationEmailHandler $emailHandler
+     * @param NotificationService    $notificationService
      */
     public function __construct(
         EntityManagerInterface $em,
-        InvitationEmailHandler $emailHandler
+        InvitationEmailHandler $emailHandler,
+        NotificationService $notificationService
     ) {
         $this->em = $em;
         $this->emailHandler = $emailHandler;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -57,6 +68,32 @@ class InvitationHandler
             $this->emailHandler->sendInvitationEmail($taskList->getCreator(), $email);
         } else {
             throw new InvalidArgumentException();
+        }
+    }
+
+    /**
+     * @param User $user
+     *
+     * @throws Exception
+     */
+    public function sendPendingInvitations(User $user): void
+    {
+        // Check for pending invitations to lists
+        /** @var EmailInvitationRepository $emailInvitationRepo */
+        $emailInvitationRepo = $this->em->getRepository(EmailInvitation::class);
+        $pending = $emailInvitationRepo->getPendingInvitations($user->getEmail());
+        /** @var EmailInvitation $invitation */
+        foreach ($pending as $invitation) {
+            $taskList = $invitation->getTaskList()->addShared($user);
+            $this->em->persist($taskList);
+            $this->em->remove($invitation);
+
+            $this->notificationService->createOrUpdate(
+                NotificationService::EVENT_INVITED,
+                $user,
+                $taskList,
+                $taskList->getCreator()
+            );
         }
     }
 }

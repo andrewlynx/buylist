@@ -78,6 +78,7 @@ security:
   already_have_acc: 'Already have an account?'
   dont_have_acc: "Don't have an account yet?"
   login: Login
+  or: Or
   pw_restoration: 'Password Restoration'
   registration: Registration
   reset_password: 'Reset your password'
@@ -85,6 +86,7 @@ security:
   restore_pw: 'Forgot Password?'
   send_pw_reset: 'Send password reset email'
   sign_in: 'Sign In'
+  sign_in_google: 'Sign in with Google'
   sign_in_to: 'Sign In to'
   sign_up: 'Sign Up'
   sign_up_now: 'Sign up now'

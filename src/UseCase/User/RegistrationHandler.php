@@ -10,11 +10,13 @@ use App\Entity\User;
 use App\Repository\EmailInvitationRepository;
 use App\Repository\UserRepository;
 use App\Service\Notification\NotificationService;
+use App\UseCase\InvitationHandler\InvitationHandler;
 use App\Validator\Locale;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
+use League\OAuth2\Client\Provider\GoogleUser;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationHandler
@@ -25,9 +27,9 @@ class RegistrationHandler
     private $em;
 
     /**
-     * @var NotificationService
+     * @var InvitationHandler
      */
-    private $notificationService;
+    private $invitationHandler;
 
     /**
      * @var UserPasswordEncoderInterface
@@ -37,22 +39,24 @@ class RegistrationHandler
     /**
      * @param EntityManagerInterface       $em
      * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param NotificationService          $notificationService
+     * @param InvitationHandler            $invitationHandler
      */
     public function __construct(
         EntityManagerInterface $em,
         UserPasswordEncoderInterface $passwordEncoder,
-        NotificationService $notificationService
+        InvitationHandler $invitationHandler
     ) {
         $this->em = $em;
         $this->passwordEncoder = $passwordEncoder;
-        $this->notificationService = $notificationService;
+        $this->invitationHandler = $invitationHandler;
     }
 
     /**
      * @param Registration $dto
      *
      * @return User
+     *
+     * @throws Exception
      */
     public function register(Registration $dto): User
     {
@@ -69,25 +73,28 @@ class RegistrationHandler
             ->setNickName($dto->nickName);
 
         $this->em->persist($user);
+        $this->invitationHandler->sendPendingInvitations($user);
+        $this->em->flush();
 
-        // Check for pending invitations to lists
-        /** @var EmailInvitationRepository $emailInvitationRepo */
-        $emailInvitationRepo = $this->em->getRepository(EmailInvitation::class);
-        $pending = $emailInvitationRepo->getPendingInvitations($user->getEmail());
-        /** @var EmailInvitation $invitation */
-        foreach ($pending as $invitation) {
-            $taskList = $invitation->getTaskList()->addShared($user);
-            $this->em->persist($taskList);
-            $this->em->remove($invitation);
+        return $user;
+    }
 
-            $this->notificationService->createOrUpdate(
-                NotificationService::EVENT_INVITED,
-                $user,
-                $taskList,
-                $taskList->getCreator()
-            );
-        }
+    /**
+     * @param GoogleUser $googleUser
+     *
+     * @return User
+     *
+     * @throws Exception
+     */
+    public function registerFromGoogle(GoogleUser $googleUser): User
+    {
+        $user = new User();
+        $email = new Email($googleUser->getEmail());
+        $user->setEmail($email->getValue())
+            ->setNickName($googleUser->getName());
 
+        $this->em->persist($user);
+        $this->invitationHandler->sendPendingInvitations($user);
         $this->em->flush();
 
         return $user;

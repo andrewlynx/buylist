@@ -78,6 +78,7 @@ security:
   already_have_acc: 'Вже зареєстровані?'
   dont_have_acc: 'Ще не зареєстровані?'
   login: Вхiд
+  or: Або
   pw_restoration: 'Забули пароль?'
   registration: Реєстрацiя
   reset_password: 'Відновлення вашого пароля'
@@ -85,6 +86,7 @@ security:
   restore_pw: 'Відновлення пароля'
   send_pw_reset: 'Відправити email для змiни пароля'
   sign_in: Вхiд
+  sign_in_google: 'Вхiд через Google'
   sign_in_to: 'Вхiд до'
   sign_up: Реєстрацiя
   sign_up_now: 'Зареєструйтесь'

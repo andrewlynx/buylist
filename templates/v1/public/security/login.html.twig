@@ -9,13 +9,19 @@
         {% endif %}
 
         <h2 class="mb-3 text-center">{{ 'security.sign_in_to'|trans }} {{ _site_name }}</h2>
+        <div class="text-center">
+            <a class="btn-sm btn btn-outline-primary social" href="{{ path('connect_google_start') }}">
+                {{ 'security.sign_in_google'|trans }}
+            </a>
+            <div class="social-or">{{ 'security.or'|trans }}</div>
+        </div>
         <div class="form-group col-auto">
             <label for="inputEmail">Email</label>
             <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
         </div>
         <div class="form-group col-auto">
             <label for="inputPassword">
-                Password
+                {{ 'user.password'|trans }}
                 <a class="forgot-pass" href="{{ path('app_forgot_password_request') }}">
                     {{ 'security.restore_pw'|trans }}
                 </a>
@@ -25,7 +31,7 @@
         </div>
 
         <input type="hidden" name="_remember_me" value="1">
-        <button class="btn btn-lg btn-primary sign-in-btn" type="submit">
+        <button class="btn btn-lg btn-primary submit" type="submit">
             {{ 'security.sign_in'|trans }}
         </button>
     </form>

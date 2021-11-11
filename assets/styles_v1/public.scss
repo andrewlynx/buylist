@@ -172,16 +172,49 @@
     float: right;
   }
   .btn {
-    width: 100%;
-    margin-top: 3px;
-    padding: 12px 27px;
-    font-size: 16px;
-    margin-left: 0;
-    margin-right: 0;
+    &.social {
+      border-width: 1px;
+      font-size: 12px;
+      font-weight: 400;
+      padding: 10px 20px;
+    }
+    &.submit {
+      width: 100%;
+      margin-top: 3px;
+      padding: 12px 27px;
+      font-size: 16px;
+      margin-left: 0;
+      margin-right: 0;
+    }
   }
   .sign-up-link {
     margin-top: 20px;
     font-weight: 500;
+  }
+  .social-or {
+    margin-top: 24px;
+    margin-bottom: 34px;
+    position: relative;
+    &:before {
+      display: block;
+      content: "";
+      height: 2px;
+      width: 200px;
+      background-color: #e4e4e4;
+      position: absolute;
+      top: 10px;
+      right: calc(50% + 30px);
+    }
+    &:after {
+      display: block;
+      content: "";
+      height: 2px;
+      width: 200px;
+      background-color: #e4e4e4;
+      position: absolute;
+      top: 10px;
+      left: calc(50% + 30px);
+    }
   }
 }
 @media (max-width: 1399.98px) {
