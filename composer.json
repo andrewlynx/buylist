@@ -88,7 +88,16 @@
             "@auto-scripts"
         ],
         "phpstan": "phpstan analyse -c phpstan.neon",
-        "phpcs": "php vendor/bin/phpcs"
+        "phpcs": "php vendor/bin/phpcs",
+        "composer-install": "composer install --no-dev",
+        "doctrine-migrate": "./bin/console d:m:m",
+        "yarn-build": "yarn build",
+        "deploy-master": [
+            "@composer-install",
+            "@doctrine-migrate",
+            "@yarn-build",
+            "@auto-scripts"
+        ]
     },
     "conflict": {
         "symfony/symfony": "*"
