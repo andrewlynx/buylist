@@ -130,6 +130,7 @@
         }
         .close {
           visibility: visible;
+          background: none;
         }
       }
     }
@@ -165,9 +166,12 @@
   .navbar-nav .nf-dropdown, .nav .nf-dropdown {
     padding: 0;
     width: 100%;
-  }
-  .nav .notifications {
-    position: inherit;
+    .nf {
+      .close {
+        visibility: visible;
+        color: theme-color("primary");
+      }
+    }
   }
   .menu-mobile ul {
     list-style: none;
