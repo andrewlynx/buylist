@@ -65,11 +65,9 @@ class TaskItemHandler
             ->setQty($dto->qty)
             ->setTaskList($taskList->setUpdatedAt(new DateTime()));
 
-        $notificationList = array_merge($taskList->getShared()->toArray(), [$taskList->getCreator()]);
-
         $this->notificationService->createForManyUsers(
             NotificationService::EVENT_LIST_CHANGED,
-            $notificationList,
+            $taskList->getAllUsers(),
             $taskList,
             $user
         );
@@ -95,12 +93,11 @@ class TaskItemHandler
         $taskItem = $taskItemRepo->find($dto->id);
         $taskItem->setCompleted(!$dto->completed);
         $taskList = $taskItem->getTaskList();
-
-        $notificationList = array_merge($taskList->getShared()->toArray(), [$taskList->getCreator()]);
+        $this->setTaskListUpdatedTime($taskList);
 
         $this->notificationService->createForManyUsers(
             NotificationService::EVENT_LIST_CHANGED,
-            $notificationList,
+            $taskList->getAllUsers(),
             $taskList,
             $user
         );
@@ -112,9 +109,11 @@ class TaskItemHandler
 
     /**
      * @param TaskItemIncrement $dto
-     * @param User              $user
+     * @param User $user
      *
      * @return TaskItem
+     *
+     * @throws Exception
      */
     public function increment(TaskItemIncrement $dto, User $user): TaskItem
     {
@@ -122,6 +121,8 @@ class TaskItemHandler
         /** @var TaskItem $taskItem */
         $taskItem = $taskItemRepo->find($dto->id);
         $taskItem->incrementQty();
+        $this->setTaskListUpdatedTime($taskItem->getTaskList());
+
         $this->em->flush();
 
         return $taskItem;
@@ -141,12 +142,11 @@ class TaskItemHandler
         $taskItem->setName($dto->name);
         $taskItem->setQty($dto->qty);
         $taskList = $taskItem->getTaskList();
-
-        $notificationList = array_merge($taskList->getShared()->toArray(), [$taskList->getCreator()]);
+        $this->setTaskListUpdatedTime($taskList);
 
         $this->notificationService->createForManyUsers(
             NotificationService::EVENT_LIST_CHANGED,
-            $notificationList,
+            $taskList->getAllUsers(),
             $taskList,
             $user
         );
@@ -154,5 +154,19 @@ class TaskItemHandler
         $this->em->flush();
 
         return $taskItem;
+    }
+
+    /**
+     * @param TaskList $taskList
+     *
+     * @return TaskList
+     *
+     * @throws Exception
+     */
+    private function setTaskListUpdatedTime(TaskList $taskList): TaskList
+    {
+        $taskList->setUpdatedAt(new DateTime());
+
+        return $taskList;
     }
 }

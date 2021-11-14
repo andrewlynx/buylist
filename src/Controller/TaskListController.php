@@ -4,20 +4,17 @@ namespace App\Controller;
 
 use App\Constant\TaskListTypes;
 use App\Controller\Extendable\TranslatableController;
+use App\Controller\Traits\FormCollectionsTrait;
 use App\DTO\TaskList\TaskListUsersRaw;
-use App\Entity\TaskItem;
+use App\Entity\JsonResponse\JsonError;
+use App\Entity\JsonResponse\JsonSuccess;
 use App\Entity\TaskList;
 use App\Entity\User;
 use App\Form\ShareListEmailType;
-use App\Form\ListArchiveType;
-use App\Form\TaskItemCompleteType;
-use App\Form\TaskItemIncrementType;
 use App\Form\TaskListCounterType;
 use App\Form\TaskListType;
-use App\Form\UnsubscribeType;
 use App\Repository\TaskListRepository;
 use App\UseCase\TaskList\TaskListHandler;
-use Doctrine\Common\Collections\Collection;
 use Exception;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,6 +29,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class TaskListController extends TranslatableController
 {
+    use FormCollectionsTrait;
+
     /**
      * @var TaskListHandler
      */
@@ -336,13 +335,12 @@ class TaskListController extends TranslatableController
      * @Route("/{id}", name="view")
      *
      * @param TaskList $taskList
-     * @param Request  $request
      *
      * @return Response
      *
      * @throws Exception
      */
-    public function view(TaskList $taskList, Request $request): Response
+    public function view(TaskList $taskList): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -466,144 +464,29 @@ class TaskListController extends TranslatableController
     }
 
     /**
-     * @param TaskItem $taskItem
+     * @Route("/{id}/hide-completed", name="hide_completed")
      *
-     * @return FormInterface
-     */
-    private function getCompleteItemForm(TaskItem $taskItem): FormInterface
-    {
-        return $this->createForm(TaskItemCompleteType::class, $taskItem, [
-            'action' => $this->generateUrl('task_item_complete'),
-        ]);
-    }
-
-    /**
-     * @param TaskItem $taskItem
-     *
-     * @return FormInterface
-     */
-    private function getIncrementItemForm(TaskItem $taskItem): FormInterface
-    {
-        return $this->createForm(TaskItemIncrementType::class, $taskItem, [
-            'action' => $this->generateUrl('task_item_increment'),
-        ]);
-    }
-
-    /**
-     * @param Collection $taskItems
-     *
-     * @return array
-     */
-    private function getCompleteItemFormsViews(Collection $taskItems): array
-    {
-        $views = [];
-        foreach ($taskItems as $taskItem) {
-            $views[$taskItem->getId()] = $this->getCompleteItemForm($taskItem)->createView();
-        }
-
-        return $views;
-    }
-
-    /**
-     * @param Collection $taskItems
-     *
-     * @return array
-     */
-    private function getIncrementItemFormsViews(Collection $taskItems): array
-    {
-        $views = [];
-        // Return empty array for all Task List types except "counter" type
-        if (!$taskItems->isEmpty() && $taskItems->first()->getTaskList()->getType() !== TaskListTypes::COUNTER) {
-            return $views;
-        }
-        foreach ($taskItems as $taskItem) {
-            $views[$taskItem->getId()] = $this->getIncrementItemForm($taskItem)->createView();
-        }
-
-        return $views;
-    }
-
-    /**
      * @param TaskList $taskList
      *
-     * @return FormInterface
-     */
-    private function getArchiveListForm(TaskList $taskList): FormInterface
-    {
-        return $this->createForm(
-            ListArchiveType::class,
-            ['status' => $taskList->isArchived()],
-            ['action' => $this->generateUrl('task_list_archive_list', ['id' => $taskList->getId()])]
-        );
-    }
-
-    /**
-     * @param iterable $taskItems
+     * @return Response
      *
-     * @return array
+     * @throws Exception
      */
-    private function getArchiveListFormsViews(iterable $taskItems): array
+    public function hideCompleted(TaskList $taskList): Response
     {
-        $views = [];
-        foreach ($taskItems as $taskItem) {
-            $views[$taskItem->getId()] = $this->getArchiveListForm($taskItem)->createView();
-        }
+        /** @var User $user */
+        $user = $this->getUser();
+        try {
+            $this->checkSharedAccess($taskList, $user);
+            $status = $this->taskListHandler->hideCompleted($taskList);
+            $button = $this->translator->trans($status ? 'list.show_completed' : 'list.hide_completed');
 
-        return $views;
-    }
-
-    /**
-     * @param TaskList $taskList
-     *
-     * @return FormInterface
-     */
-    private function getUnsubscribeForm(TaskList $taskList): FormInterface
-    {
-        return $this->createForm(
-            UnsubscribeType::class,
-            ['task_list' => $taskList],
-            ['action' => $this->generateUrl('task_list_unsubscribe', ['id' => $taskList->getId()])]
-        );
-    }
-
-    /**
-     * @param iterable $taskItems
-     *
-     * @return array
-     */
-    private function getUnsubscribeFormsViews(iterable $taskItems): array
-    {
-        $views = [];
-        foreach ($taskItems as $taskItem) {
-            $views[$taskItem->getId()] = $this->getUnsubscribeForm($taskItem)->createView();
-        }
-
-        return $views;
-    }
-
-    /**
-     * @param TaskList $taskList
-     * @param User     $user
-     *
-     * @throws AccessDeniedException
-     */
-    private function checkCreatorAccess(TaskList $taskList, User $user): void
-    {
-        if ($taskList->getCreator() !== $user) {
-            throw new AccessDeniedException();
-        }
-    }
-
-    /**
-     * @param TaskList $taskList
-     * @param User     $user
-     *
-     * @throws AccessDeniedException
-     */
-    private function checkSharedAccess(TaskList $taskList, User $user): void
-    {
-        if (!($taskList->getCreator() === $user || $taskList->getShared()->contains($user))) {
-            throw new AccessDeniedException();
+            return new JsonSuccess(json_encode([
+                'status' => $status,
+                'button' => $button,
+            ]));
+        } catch (Exception $e) {
+            return new JsonError($e->getMessage());
         }
     }
 
@@ -637,5 +520,32 @@ class TaskListController extends TranslatableController
         }
 
         return $this->taskListHandler->edit($taskList);
+    }
+
+
+    /**
+     * @param TaskList $taskList
+     * @param User     $user
+     *
+     * @throws AccessDeniedException
+     */
+    protected function checkCreatorAccess(TaskList $taskList, User $user): void
+    {
+        if ($taskList->getCreator() !== $user) {
+            throw new AccessDeniedException();
+        }
+    }
+
+    /**
+     * @param TaskList $taskList
+     * @param User     $user
+     *
+     * @throws AccessDeniedException
+     */
+    protected function checkSharedAccess(TaskList $taskList, User $user): void
+    {
+        if (!($taskList->getCreator() === $user || $taskList->getShared()->contains($user))) {
+            throw new AccessDeniedException();
+        }
     }
 }

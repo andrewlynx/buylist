@@ -1,16 +1,10 @@
-/*
- * Welcome to your app's main JavaScript file!
- *
- * We recommend including the built version of this JavaScript file
- * (and its CSS file) in your base layout (base.html.twig).
- */
-
-import './styles_v1/app.scss';
-import './common';
-
 $( document ).ready(function() {
     const msgSuccess = 'success';
     const emailPattern = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
+
+    function getCurrentLink() {
+        return location.protocol+'//'+location.host+location.pathname;
+    }
 
     // converts form data to indexed array for sending as JSON via AJAX
     function getFormData($form){
@@ -157,7 +151,6 @@ $( document ).ready(function() {
 
         let description = $(this),
             form = $(this).find("form"),
-            id = $(form).find('input[name="task_item_complete[id]"]').val(),
             data = getFormData(form);
 
         description.addClass(classLoading);
@@ -170,19 +163,7 @@ $( document ).ready(function() {
             description.removeClass(classLoading);
 
             if (msg.status === msgSuccess) {
-                let selector = '#item-id-' + id;
-                let response = $.parseJSON(msg.data);
-
-                if (response.id === parseInt(id)) {
-                    $(form).find('input[name="task_item_complete[completed]"]').val(response.completed ? 1 : 0);
-                    if (response.completed === true) {
-                        $(selector).addClass('completed');
-                    } else {
-                        $(selector).removeClass('completed');
-                    }
-                } else {
-                    alert( 'Error' );
-                }
+                $("#list-items").html(msg.data);
             } else {
                 alert( msg.data );
             }
@@ -322,7 +303,20 @@ $( document ).ready(function() {
             $(this).hasClass('active') ? 1 : 0
         );
         $(this).blur();
-        console.log('werwer');
+    });
+
+    // Hide completed items
+    $(document).on("click", '.btn.hide-completed', function(e) {
+        var link = getCurrentLink() + '/hide-completed';
+        $.get( link, function( data ) {
+            if (data.status === msgSuccess) {
+                let response = $.parseJSON(data.data);
+                $(".btn.hide-completed").text(response.button);
+                $("#task-list-view").toggleClass('hidden-completed');
+            } else {
+                alert(data.data);
+            }
+        });
     });
 
     // Add index for creating Task Items form

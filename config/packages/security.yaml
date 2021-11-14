@@ -29,6 +29,7 @@ security:
                 path: app_logout
 
             remember_me:
+                always_remember_me: true
                 secret: '%kernel.secret%'
                 path: /
 

@@ -31,6 +31,7 @@ list:
   created: 'List created'
   description: Description
   edit: Edit
+  hide_completed: 'Hide completed'
   last_update: 'Last update'
   list_archived: 'List archived'
   list_restored: 'List restored'
@@ -38,6 +39,7 @@ list:
   name: Name
   restore: Restore
   shared: 'shared'
+  show_completed: 'Show completed'
   simple: 'Simple list'
   unsubscribe: Unsubscribe
   unsubscribed: 'You successfully unsubscribed from list'

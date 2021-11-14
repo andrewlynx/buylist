@@ -264,6 +264,16 @@ form[name="task_list"] {
     }
   }
 }
+.hidden-completed {
+  .ti.completed {
+    display: none;
+  }
+}
+.hide-completed {
+  margin-bottom: 15px;
+  margin-right: 0;
+  margin-left: 0;
+}
 @media (max-width: 991.98px) {
   .btn {
     min-width: 0;

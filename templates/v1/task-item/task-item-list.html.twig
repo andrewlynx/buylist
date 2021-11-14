@@ -1,0 +1,3 @@
+{% for taskItem in task_list.taskItems %}
+    {% include 'v1/task-item/task-item.html.twig' with {'task_item': taskItem, 'complete_item_forms': complete_item_forms} %}
+{% endfor %}

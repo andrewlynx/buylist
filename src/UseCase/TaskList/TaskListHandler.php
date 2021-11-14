@@ -59,7 +59,6 @@ class TaskListHandler
     public function create(User $user): TaskList
     {
         $taskList = (new TaskList())
-            ->setName('New List')
             ->setCreator($user)
             ->setType(TaskListTypes::DEFAULT)
             ->setCreatedAt(new DateTime())
@@ -255,5 +254,20 @@ class TaskListHandler
             $this->em->remove($taskList);
         }
         $this->em->flush();
+    }
+
+    /**
+     * @param TaskList $taskList
+     *
+     * @return bool
+     */
+    public function hideCompleted(TaskList $taskList): bool
+    {
+        $hideCompletedState = !$taskList->isHideCompleted();
+
+        $taskList->setHideCompleted($hideCompletedState);
+        $this->em->flush();
+
+        return $hideCompletedState;
     }
 }

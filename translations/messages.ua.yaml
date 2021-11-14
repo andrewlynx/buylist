@@ -31,6 +31,7 @@ list:
   created: Created
   description: Деталi
   edit: Редагувати
+  hide_completed: 'Сховати виконані'
   last_update: 'Останнє оновлення'
   list_archived: 'Список Архівовано'
   list_restored: 'Список Відновлено'
@@ -39,6 +40,7 @@ list:
   restore: Відновити
   simple: 'Звичайний список'
   shared: 'Спільний'
+  show_completed: 'Показати виконані'
   unsubscribe: Відписатися
   unsubscribed: 'Ви успішно скасували підписку на list'
   updated: 'Список оновлено'

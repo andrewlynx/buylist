@@ -125,6 +125,13 @@ class TaskList
     private $taskListData;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $hideCompleted = false;
+
+    /**
      *
      */
     public function __construct()
@@ -273,9 +280,17 @@ class TaskList
     }
 
     /**
+     * @return array
+     */
+    public function getAllUsers(): array
+    {
+        return array_merge($this->shared->toArray(), [$this->creator]);
+    }
+
+    /**
      * @return DateTimeInterface|null
      */
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
@@ -285,7 +300,7 @@ class TaskList
      *
      * @return $this
      */
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -295,7 +310,7 @@ class TaskList
     /**
      * @return DateTimeInterface|null
      */
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
@@ -305,7 +320,7 @@ class TaskList
      *
      * @return $this
      */
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
@@ -464,6 +479,26 @@ class TaskList
         if ($this->taskListData === null) {
             $this->taskListData = $taskListData;
         }
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHideCompleted(): bool
+    {
+        return $this->hideCompleted;
+    }
+
+    /**
+     * @param bool $hideCompleted
+     *
+     * @return $this
+     */
+    public function setHideCompleted(bool $hideCompleted): TaskList
+    {
+        $this->hideCompleted = $hideCompleted;
 
         return $this;
     }

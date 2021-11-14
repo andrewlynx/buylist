@@ -3,15 +3,23 @@
 {% block title %}{{ task_list.name }}{% endblock %}
 
 {% block content %}
-    <div class="row">
+    <div class="row {{ task_list.hideCompleted ? 'hidden-completed' : '' }}" id="task-list-view">
         <div class="col-sm-8">
-            {% block task_items_list %}
+            {% block task_list_title %}
                 <h4>{{ task_list.name }}</h4>
                 <p>{{ task_list.description|auto_url|raw|nl2br }}</p>
+            {% endblock %}
+            {% block hide_completed %}
+                <div class="text-right">
+                    <button class="hide-completed btn btn-primary">
+                        {{ (task_list.hideCompleted ? 'list.show_completed' : 'list.hide_completed')|trans }}
+                    </button>
+                </div>
+            {% endblock %}
+            {% block task_items_list %}
                 <div id="list-items">
-                    {% for taskItem in task_list.taskItems %}
-                        {% include 'v1/task-item/task-item.html.twig' with {'task_item': taskItem, 'complete_item_forms': complete_item_forms} %}
-                    {% endfor %}
+                    {% include 'v1/task-item/task-item-list.html.twig'
+                        with {'task_items': task_list.taskItems, 'complete_item_forms': complete_item_forms} %}
                 </div>
             {% endblock %}
             {% block task_items_modal %}

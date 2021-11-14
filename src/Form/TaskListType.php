@@ -42,7 +42,9 @@ class TaskListType extends AbstractType
         $builder
             ->add('name', null, [
                 'label' => 'list.name',
-                'attr' => ['maxlength' => 64],
+                'attr' => [
+                    'maxlength' => 64,
+                ],
             ])
             ->add('description', TextareaType::class, [
                 'required' => false,

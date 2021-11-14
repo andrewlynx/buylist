@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Controller\Extendable\TranslatableController;
+use App\Controller\Traits\FormCollectionsTrait;
 use App\DTO\TaskItem\TaskItemComplete;
 use App\DTO\TaskItem\TaskItemCreate;
 use App\DTO\TaskItem\TaskItemEdit;
@@ -22,21 +23,38 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Exception\ValidatorException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/{_locale}/task-item", name="task_item_", locale="en", requirements={"_locale": "[a-z]{2}"})
  */
 class TaskItemController extends TranslatableController
 {
+    use FormCollectionsTrait;
+
+    /**
+     * @var TaskItemHandler
+     */
+    private $taskItemHandler;
+
+    /**
+     * @param TranslatorInterface $translator
+     * @param TaskItemHandler     $taskItemHandler
+     */
+    public function __construct(TranslatorInterface $translator, TaskItemHandler $taskItemHandler)
+    {
+        parent::__construct($translator);
+        $this->taskItemHandler = $taskItemHandler;
+    }
+
     /**
      * @Route("/create", name="create", methods={"POST"})
      *
-     * @param Request         $request
-     * @param TaskItemHandler $taskItemHandler
+     * @param Request $request
      *
      * @return Response
      */
-    public function create(Request $request, TaskItemHandler $taskItemHandler): Response
+    public function create(Request $request): Response
     {
         try {
             $taskItemCreateData = new TaskItemCreate(
@@ -48,11 +66,9 @@ class TaskItemController extends TranslatableController
 
             /** @var User $user */
             $user = $this->getUser();
-            $taskItem = $taskItemHandler->create($taskItemCreateData, $user);
+            $taskItem = $this->taskItemHandler->create($taskItemCreateData, $user);
 
-            $completeForm = $this->createForm(TaskItemCompleteType::class, $taskItem, [
-                'action' => $this->generateUrl('task_item_complete'),
-            ]);
+            $completeForm = $this->getCompleteItemForm($taskItem);
 
             return new JsonSuccess(
                 $this->renderView(
@@ -75,19 +91,14 @@ class TaskItemController extends TranslatableController
     /**
      * @Route("/complete", name="complete", methods={"POST"})
      *
-     * @param Request             $request
-     * @param SerializerInterface $serializer
-     * @param TaskItemHandler     $taskItemHandler
+     * @param Request $request
      *
      * @return Response
      *
      * @throws Exception
      */
-    public function complete(
-        Request $request,
-        SerializerInterface $serializer,
-        TaskItemHandler $taskItemHandler
-    ): Response {
+    public function complete(Request $request): Response
+    {
         try {
             $taskItemCompleteData = new TaskItemComplete(
                 $this->jsonDecode($request->getContent())
@@ -97,10 +108,17 @@ class TaskItemController extends TranslatableController
             }
             /** @var User $user */
             $user = $this->getUser();
-            $taskItem = $taskItemHandler->complete($taskItemCompleteData, $user);
+            $taskItem = $this->taskItemHandler->complete($taskItemCompleteData, $user);
+            $taskList = $taskItem->getTaskList();
 
             return new JsonSuccess(
-                $serializer->serialize($taskItem, 'json', [AbstractNormalizer::ATTRIBUTES => ['id', 'completed']])
+                $this->renderView(
+                    'v1/task-item/task-item-list.html.twig',
+                    [
+                        'task_list' => $taskList,
+                        'complete_item_forms' => $this->getCompleteItemFormsViews($taskList->getTaskItems()),
+                    ]
+                )
             );
         } catch (Exception $e) {
             return new JsonError(
@@ -114,7 +132,6 @@ class TaskItemController extends TranslatableController
      *
      * @param Request             $request
      * @param SerializerInterface $serializer
-     * @param TaskItemHandler     $taskItemHandler
      *
      * @return Response
      *
@@ -122,8 +139,7 @@ class TaskItemController extends TranslatableController
      */
     public function increment(
         Request $request,
-        SerializerInterface $serializer,
-        TaskItemHandler $taskItemHandler
+        SerializerInterface $serializer
     ): Response {
         try {
             $taskItemIncrementData = new TaskItemIncrement(
@@ -134,7 +150,7 @@ class TaskItemController extends TranslatableController
             }
             /** @var User $user */
             $user = $this->getUser();
-            $taskItem = $taskItemHandler->increment($taskItemIncrementData, $user);
+            $taskItem = $this->taskItemHandler->increment($taskItemIncrementData, $user);
 
             return new JsonSuccess(
                 $serializer->serialize($taskItem, 'json', [AbstractNormalizer::ATTRIBUTES => ['id', 'qty']])
@@ -179,13 +195,12 @@ class TaskItemController extends TranslatableController
     /**
      * @Route("/edit/{id}", name="edit")
      *
-     * @param TaskItem        $taskItem
-     * @param Request         $request
-     * @param TaskItemHandler $taskItemHandler
+     * @param TaskItem $taskItem
+     * @param Request  $request
      *
      * @return Response
      */
-    public function edit(TaskItem $taskItem, Request $request, TaskItemHandler $taskItemHandler): Response
+    public function edit(TaskItem $taskItem, Request $request): Response
     {
         try {
             $taskItemEditData = new TaskItemEdit(
@@ -198,7 +213,7 @@ class TaskItemController extends TranslatableController
 
             /** @var User $user */
             $user = $this->getUser();
-            $taskItem = $taskItemHandler->edit($taskItemEditData, $user);
+            $taskItem = $this->taskItemHandler->edit($taskItemEditData, $user);
             $completeForm = $this->createForm(TaskItemCompleteType::class, $taskItem, [
                 'action' => $this->generateUrl('task_item_complete'),
             ]);
