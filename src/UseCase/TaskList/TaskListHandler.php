@@ -77,7 +77,6 @@ class TaskListHandler
     public function createCounter(User $user): TaskList
     {
         $taskList = (new TaskList())
-            ->setName('New Counter List')
             ->setCreator($user)
             ->setType(TaskListTypes::COUNTER)
             ->setCreatedAt(new DateTime())

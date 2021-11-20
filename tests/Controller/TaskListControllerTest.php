@@ -125,6 +125,10 @@ class TaskListControllerTest extends WebTestCase
         $client = static::createClient();
         $client = ControllerTestHelper::logInUser($client);
 
+        /** @var TaskListRepository $listRepository */
+        $listRepository = static::$container->get(TaskListRepository::class);
+        $count = $listRepository->count([]);
+
         $client->request(
             'DELETE',
             ControllerTestHelper::generateRoute('task_list_delete', 1),
@@ -134,9 +138,7 @@ class TaskListControllerTest extends WebTestCase
         );
         $this->assertResponseStatusCodeSame(302);
 
-        /** @var TaskListRepository $listRepository */
-        $listRepository = static::$container->get(TaskListRepository::class);
-        $this->assertCount(0, $listRepository->findAll());
+        $this->assertCount($count - 1, $listRepository->findAll());
     }
 
     public function testLoadMore()
@@ -209,19 +211,7 @@ class TaskListControllerTest extends WebTestCase
         $crawler = $client->request(
             'POST',
             static::$container->get('router')->generate('task_list_create'),
-            [
-                'task_list' => [
-                    '_token' => ControllerTestHelper::getToken('task_list'),
-                    'name' => 'cool name',
-                    'description' => 'nice description',
-                    'users' => [
-                        1 => [
-                            'email' => 'test4_test.test',
-                            'active' => 1,
-                        ],
-                    ],
-                ],
-            ]
+            $this->getInvalidPostData('task_list')
         );
 
         $this->assertResponseIsSuccessful();
@@ -263,6 +253,24 @@ class TaskListControllerTest extends WebTestCase
         );
     }
 
+    public function testCreateCounterPost()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+
+        $crawler = $client->request(
+            'POST',
+            static::$container->get('router')->generate('task_list_create_counter'),
+            $this->getInvalidPostData('task_list_counter')
+        );
+
+        $this->assertResponseIsSuccessful();
+        $this->assertContains(
+            'Incorrect Email',
+            $client->getResponse()->getContent()
+        );
+    }
+
     public function testEdit()
     {
         $client = static::createClient();
@@ -299,90 +307,97 @@ class TaskListControllerTest extends WebTestCase
         $this->assertEquals('awesome description', $taskList->getDescription());
     }
 
-//    public function TaskListInviteUser()
-//    {
-//        $client = static::createClient();
-//        $client = ControllerTestHelper::logInUser($client);
-//
-//        $client->request(
-//            'POST',
-//            ControllerTestHelper::generateRoute('task_list_share', 1),
-//            [],
-//            [],
-//            [],
-//            json_encode([
-//                'share_list_email[_token]' => ControllerTestHelper::getToken(TaskListShare::FORM_NAME),
-//                'share_list_email[email]' => 'non-existing-user@example.com'
-//            ])
-//        );
-//        $responseArray = json_decode($client->getResponse()->getContent(), true);
-//        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
-//        $this->assertEquals(
-//            $responseArray['data'],
-//            'User not found. The registration invitation was send on this email'
-//        );
-//    }
+    public function testEditCounter()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
 
-//    public function testArchiveListAndNotifications()
-//    {
-//        $client = $this->testTaskListShareExistingUser();
-//        $client = ControllerTestHelper::logInUser($client);
-//
-//        /** @var TaskList $taskList */
-//        $taskList = static::$container->get(TaskListRepository::class)->find(1);
-//        $this->assertFalse($taskList->isArchived());
-//
-//        $crawler = $client->request('GET', ControllerTestHelper::generateRoute('task_list_view', 1));
-//        $form = $crawler->filter('form[name="list_archive"]')->form();
-//
-//        $client->submit($form);
-//        $client->followRedirect();
-//
-//        $this->assertContains(
-//            'List archived',
-//            $client->getResponse()->getContent()
-//        );
-//
-//        /** @var TaskList $taskList */
-//        $taskList = static::$container->get(TaskListRepository::class)->find(1);
-//        $this->assertTrue($taskList->isArchived());
-//
-//        $client = ControllerTestHelper::logInUser($client, 'user2@example.com');
-//        $crawler = $client->request(
-//            'GET',
-//            ControllerTestHelper::generateRoute('task_list_index')
-//        );
-//        $this->assertContains(
-//            '<u>user1</u> archived list <l>New Task List</l>',
-//            $client->getResponse()->getContent()
-//        );
-//
-//        /** @var TaskList $taskList */
-//        $taskList = static::$container->get(NotificationRepository::class)->findOneBy([
-//            'event' => NotificationService::EVENT_LIST_ARCHIVED
-//        ]);
-//
-//        $client->request(
-//            'POST',
-//            ControllerTestHelper::generateRoute('notification_read', 3),
-//            [],
-//            [],
-//            [],
-//            json_encode([
-//                '_token' => ControllerTestHelper::getToken('read_notification3'),
-//            ])
-//        );
-//
-//        $responseArray = json_decode($client->getResponse()->getContent(), true);
-//        $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_SUCCESS);
-//
-//        $client->request(
-//            'GET',
-//            ControllerTestHelper::generateRoute('task_list_index')
-//        );
-//        $this->assertNotContains(
-//            'user1@example.com archived list New Task List',
-//            $client->getResponse()->getContent()
-//        );
-//    }
+        /** @var TaskList $taskList */
+        $taskList = static::$container->get(TaskListRepository::class)->find(2);
+
+        $this->assertEquals('New Counter List', $taskList->getName());
+
+        $crawler = $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('task_list_edit', 2)
+        );
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->filter('form[name="task_list_counter"]')->form();
+        $form->setValues([
+            'task_list_counter[name]' => 'new cool name',
+            'task_list_counter[description]' => 'awesome description',
+        ]);
+        $client->submit($form);
+        $client->followRedirect();
+        $this->assertResponseIsSuccessful();
+        $this->assertContains(
+            'List updated',
+            $client->getResponse()->getContent()
+        );
+    }
+
+    public function testHideCompleted()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+
+        $crawler = $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('task_list_view', 1)
+        );
+        $this->assertResponseIsSuccessful();
+        $this->assertNotContains(
+            'hidden-completed',
+            $client->getResponse()->getContent()
+        );
+
+        $crawler = $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('task_list_hide_completed', 1)
+        );
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('task_list_view', 1)
+        );
+        $this->assertContains(
+            'hidden-completed',
+            $client->getResponse()->getContent()
+        );
+    }
+
+    public function testHideCompletedNotAuthor()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client, 'user2@example.com');
+
+        $crawler = $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('task_list_hide_completed', 1)
+        );
+        $this->assertResponseIsSuccessful();
+        $this->assertContains(
+            'Access Denied.',
+            $client->getResponse()->getContent()
+        );
+    }
+
+    private function getInvalidPostData(string $formName): array
+    {
+        return [
+            $formName => [
+                '_token' => ControllerTestHelper::getToken($formName),
+                'name' => 'cool name',
+                'description' => 'nice description',
+                'users' => [
+                    1 => [
+                        'email' => 'test4_test.test',
+                        'active' => 1,
+                    ],
+                ],
+            ],
+        ];
+    }
 }

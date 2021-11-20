@@ -5,10 +5,8 @@
 {% block content %}
     {{ form_start(form) }}
         <div class="row t-l-create">
-            <div class="col-sm-8">
-                {% block create_form %}
-                {% endblock %}
-            </div>
+            {% block create_form %}
+            {% endblock %}
             <div class="col-sm-4 col-sm-4 t-l-sidebar">
                 {% if form.users is defined %}
                     <h5>{{ 'share_list.share'|trans }}</h5>

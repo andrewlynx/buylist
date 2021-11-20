@@ -7,7 +7,9 @@ use App\DTO\TaskItem\TaskItemComplete;
 use App\DTO\TaskItem\TaskItemCreate;
 use App\Entity\TaskItem;
 use App\Entity\TaskList;
+use App\Repository\TaskItemRepository;
 use App\Repository\TaskListRepository;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskItemControllerTest extends WebTestCase
@@ -57,19 +59,8 @@ class TaskItemControllerTest extends WebTestCase
         $client = static::createClient();
         $client = ControllerTestHelper::logInUser($client);
 
-        $client->request(
-            'POST',
-            ControllerTestHelper::generateRoute('task_item_create', 1),
-            [],
-            [],
-            [],
-            json_encode([
-                'task_item_create[_token]' => ControllerTestHelper::getToken(TaskItemCreate::FORM_NAME),
-                'task_item_create[name]' => 'some item',
-                'task_item_create[qty]' => '2',
-                'task_item_create[list_id]' => 1,
-            ])
-        );
+        $client = $this->createTaskItem($client);
+
         $responseArray = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_SUCCESS);
 
@@ -145,5 +136,24 @@ class TaskItemControllerTest extends WebTestCase
         $responseArray = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
         $this->assertEquals($responseArray['data'], 'Invalid CSRF token');
+    }
+
+    private function createTaskItem(KernelBrowser $client): KernelBrowser
+    {
+        $client->request(
+            'POST',
+            ControllerTestHelper::generateRoute('task_item_create', 1),
+            [],
+            [],
+            [],
+            json_encode([
+                'task_item_create[_token]' => ControllerTestHelper::getToken(TaskItemCreate::FORM_NAME),
+                'task_item_create[name]' => 'some item',
+                'task_item_create[qty]' => '2',
+                'task_item_create[list_id]' => 1,
+            ])
+        );
+
+        return $client;
     }
 }

@@ -2,10 +2,13 @@
 
 namespace App\DataFixtures;
 
+use App\Constant\AppConstant;
+use App\Constant\TaskListTypes;
 use App\Entity\TaskList;
 use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ObjectManager;
 use Exception;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -16,6 +19,11 @@ class UserFixtures extends Fixture
      * @var UserPasswordEncoderInterface
      */
     private $passwordEncoder;
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
 
     /**
      * @param UserPasswordEncoderInterface $passwordEncoder
@@ -32,6 +40,8 @@ class UserFixtures extends Fixture
      */
     public function load(ObjectManager $manager): void
     {
+        $this->em = $manager;
+
         for ($i = 1; $i < 5; $i++) {
             $name = 'user'.$i;
             $$name = new User();
@@ -42,7 +52,7 @@ class UserFixtures extends Fixture
                 'test'
             ));
 
-            $manager->persist($$name);
+            $this->em->persist($$name);
         }
 
         // Create Admin
@@ -54,19 +64,60 @@ class UserFixtures extends Fixture
         ));
         $admin->addRole(User::ROLE_ADMIN);
         $admin->setHelpers(false);
-        $manager->persist($admin);
+        $this->em->persist($admin);
 
-        $manager->flush();
+        $this->em->flush();
 
-        $user = $manager->getRepository(User::class)->find(1);
+        /** @var User $user */
+        $user = $this->em->getRepository(User::class)->find(1);
+
+        $this->createTaskListByType(TaskListTypes::DEFAULT, $user);
+        $this->createTaskListByType(TaskListTypes::COUNTER, $user);
+
+        $this->em->flush();
+    }
+
+    /**
+     * @param int  $type
+     * @param User $user
+     *
+     * @return TaskList
+     *
+     * @throws Exception
+     */
+    private function createTaskListByType(int $type, User $user): TaskList
+    {
         $taskList = (new TaskList())
-            ->setName('New Task List')
-            ->setCreator($user)
+            ->setName($this->getTaskListName($type))
             ->setDescription('Simple Description')
             ->setCreatedAt(new DateTime())
-            ->setUpdatedAt(new DateTime());
+            ->setUpdatedAt(new DateTime())
+            ->setCreator($user)
+            ->setType($type);
 
-        $manager->persist($taskList);
-        $manager->flush();
+        $this->em->persist($taskList);
+
+        return $taskList;
+    }
+
+    /**
+     * @param int $type
+     *
+     * @return string
+     */
+    private function getTaskListName(int $type): string
+    {
+        switch ($type) {
+            case TaskListTypes::COUNTER:
+                $name = 'New Counter List';
+                break;
+            case TaskListTypes::TODO:
+                $name = 'New Todo List';
+                break;
+            default:
+                $name = 'New Task List';
+        }
+
+        return $name;
     }
 }

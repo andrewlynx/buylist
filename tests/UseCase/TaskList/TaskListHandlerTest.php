@@ -33,7 +33,7 @@ class TaskListHandlerTest extends WebTestCase
         $this->assertEquals($user, $taskList->getCreator());
         $this->assertEquals(TaskListTypes::DEFAULT, $taskList->getType());
         $this->assertNull($taskList->getDescription());
-        $this->assertEquals('New List', $taskList->getName());
+        $this->assertNull($taskList->getName());
     }
 
     public function testUpdateSharedUsers()

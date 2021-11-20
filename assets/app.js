@@ -99,6 +99,21 @@ $( document ).ready(function() {
         }
     }
 
+    function addTaskListUsers(e, selector) {
+        let emailField = '.add-user-email';
+        if (emailPattern.test($(emailField).val())) {
+            let $collectionHolderClass = $(e.currentTarget).data('collectionHolderClass');
+            let index = addFormToCollection($collectionHolderClass);
+            $(['email']).each(function (i, current) {
+                let input =  selector + '[users][' + index + '][' + current + ']';
+                $('input[name="' + input + '"]').val($(emailField).val());
+                $(emailField).val('');
+            });
+        } else {
+            $(emailField).focus();
+        }
+    }
+
     // Add 'data-index' tad for multi-select forms
     function addDataIndex($selector, $count = 1) {
         $($selector).attr('data-index', $($selector).find('input').length / $count);
@@ -263,21 +278,15 @@ $( document ).ready(function() {
     });
 
     // Add new task list users inputs
-    $(document).on('click', '.add-t-l-user', function(e) {
+    $(document).on('click', '#task_list .add-t-l-user', function(e) {
         e.preventDefault();
+        addTaskListUsers(e, 'task_list');
+    });
 
-        let emailField = '.add-user-email';
-        if (emailPattern.test($(emailField).val())) {
-            let $collectionHolderClass = $(e.currentTarget).data('collectionHolderClass');
-            let index = addFormToCollection($collectionHolderClass);
-            $(['email']).each(function (i, current) {
-                let input =  'task_list[users][' + index + '][' + current + ']';
-                $('input[name="' + input + '"]').val($(emailField).val());
-                $(emailField).val('');
-            });
-        } else {
-            $(emailField).focus();
-        }
+    // Add new counter list users inputs
+    $(document).on('click', '#task_list_counter .add-t-l-user', function(e) {
+        e.preventDefault();
+        addTaskListUsers(e, 'task_list_counter');
     });
 
     // Check favourite users input

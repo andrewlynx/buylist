@@ -223,22 +223,19 @@ class TaskListController extends TranslatableController
      * @throws Exception
      * @throws TransportExceptionInterface
      */
-    public function create(Request $request, TaskList $taskList = null): Response
+    public function createOrEdit(Request $request, TaskList $taskList = null): Response
     {
         $isUpdate = $taskList instanceof TaskList;
         /** @var User $user */
         $user = $this->getUser();
         $taskList = $taskList ?? $this->taskListHandler->create($user);
-        if ($taskList->getId() && !(is_null($taskList->getType()) || $taskList->getType() === TaskListTypes::DEFAULT)) {
-            return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
-        }
 
         $form = $this->createForm(TaskListType::class, $taskList, ['attr' => ['id' => 'task_list']])
             ->handleRequest($request);
 
-        $shareListForm = $this->createForm(ShareListEmailType::class);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+
                 $taskList = $this->processCreateForm($form, $taskList);
                 $this->addFlash('success', $isUpdate ? 'list.updated' : 'list.created');
 
@@ -253,7 +250,7 @@ class TaskListController extends TranslatableController
             [
                 'task_list' => $taskList,
                 'form' => $form->createView(),
-                'task_list_share' => $shareListForm->createView(),
+                'task_list_share' => $this->createForm(ShareListEmailType::class)->createView(),
                 'complete_item_forms' => $this->getCompleteItemFormsViews($taskList->getTaskItems()),
             ]
         );
@@ -269,20 +266,16 @@ class TaskListController extends TranslatableController
      *
      * @throws TransportExceptionInterface
      */
-    public function createCounter(Request $request, TaskList $taskList = null): Response
+    public function createOrEditCounter(Request $request, TaskList $taskList = null): Response
     {
         $isUpdate = $taskList instanceof TaskList;
         /** @var User $user */
         $user = $this->getUser();
         $taskList = $taskList ?? $this->taskListHandler->createCounter($user);
-        if ($taskList->getId() && ($taskList->getType() !== TaskListTypes::COUNTER)) {
-            return $this->redirectToRoute('task_list_view', ['id' => $taskList->getId()]);
-        }
 
         $form = $this->createForm(TaskListCounterType::class, $taskList, ['attr' => ['id' => 'task_list_counter']])
             ->handleRequest($request);
 
-        $shareListForm = $this->createForm(ShareListEmailType::class);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $taskList = $this->processCreateForm($form, $taskList);
@@ -299,7 +292,7 @@ class TaskListController extends TranslatableController
             [
                 'task_list' => $taskList,
                 'form' => $form->createView(),
-                'task_list_share' => $shareListForm->createView(),
+                'task_list_share' => $this->createForm(ShareListEmailType::class)->createView(),
                 'complete_item_forms' => $this->getCompleteItemFormsViews($taskList->getTaskItems()),
             ]
         );
@@ -324,10 +317,10 @@ class TaskListController extends TranslatableController
 
         switch ($taskList->getType()) {
             case TaskListTypes::COUNTER:
-                return $this->createCounter($request, $taskList);
+                return $this->createOrEditCounter($request, $taskList);
 
             default:
-                return $this->create($request, $taskList);
+                return $this->createOrEdit($request, $taskList);
         }
     }
 
@@ -491,6 +484,32 @@ class TaskListController extends TranslatableController
     }
 
     /**
+     * @param TaskList $taskList
+     * @param User     $user
+     *
+     * @throws AccessDeniedException
+     */
+    protected function checkCreatorAccess(TaskList $taskList, User $user): void
+    {
+        if ($taskList->getCreator() !== $user) {
+            throw new AccessDeniedException();
+        }
+    }
+
+    /**
+     * @param TaskList $taskList
+     * @param User     $user
+     *
+     * @throws AccessDeniedException
+     */
+    protected function checkSharedAccess(TaskList $taskList, User $user): void
+    {
+        if (!($taskList->getCreator() === $user || $taskList->getShared()->contains($user))) {
+            throw new AccessDeniedException();
+        }
+    }
+
+    /**
      * @param FormInterface $form
      * @param TaskList $taskList
      *
@@ -520,32 +539,5 @@ class TaskListController extends TranslatableController
         }
 
         return $this->taskListHandler->edit($taskList);
-    }
-
-
-    /**
-     * @param TaskList $taskList
-     * @param User     $user
-     *
-     * @throws AccessDeniedException
-     */
-    protected function checkCreatorAccess(TaskList $taskList, User $user): void
-    {
-        if ($taskList->getCreator() !== $user) {
-            throw new AccessDeniedException();
-        }
-    }
-
-    /**
-     * @param TaskList $taskList
-     * @param User     $user
-     *
-     * @throws AccessDeniedException
-     */
-    protected function checkSharedAccess(TaskList $taskList, User $user): void
-    {
-        if (!($taskList->getCreator() === $user || $taskList->getShared()->contains($user))) {
-            throw new AccessDeniedException();
-        }
     }
 }

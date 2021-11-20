@@ -75,7 +75,7 @@ class RegistrationEmailHandler extends AbstractEmailHandler
         $email = (new TemplatedEmail())
             ->to($user->getEmail())
             ->subject('Your password reset request')
-            ->htmlTemplate('public/reset_password/email.html.twig')
+            ->htmlTemplate('v1/public/reset_password/email.html.twig')
             ->context([
                 'resetToken' => $token,
             ])
