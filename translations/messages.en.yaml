@@ -16,6 +16,7 @@ form:
 header:
   hello: Hello
   hi: Hi
+  its: "It's"
   logout: Logout
   welcome_back: 'Welcome back'
 helper:
@@ -31,12 +32,14 @@ list:
   created: 'List created'
   description: Description
   edit: Edit
+  editing: editing
   hide_completed: 'Hide completed'
   last_update: 'Last update'
   list_archived: 'List archived'
   list_restored: 'List restored'
   load_more: 'Load More'
   name: Name
+  new: 'New list'
   restore: Restore
   shared: 'shared'
   show_completed: 'Show completed'
@@ -46,6 +49,9 @@ list:
   updated: 'List updated'
   users: 'Added users'
   your_lists: 'Your lists'
+list_type:
+  new_counter: 'New counter list'
+  new_list: 'New personal list'
 menu:
   about: About
   about_us: 'About Us'
@@ -76,6 +82,7 @@ task_item:
 search:
   page: 'Search'
   result: 'Search results for'
+  searching: 'Searching'
 security:
   already_have_acc: 'Already have an account?'
   dont_have_acc: "Don't have an account yet?"

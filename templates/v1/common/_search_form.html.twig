@@ -1,4 +1,5 @@
 <form class="sf" method="post" action="{{ path('search_index') }}">
     <input type="hidden" name="_token" value="{{ csrf_token('search') }}">
-    <input type="text" name="value" minlength="3" placeholder="{{ "form.search"|trans }}">
+    <input type="text" name="value" minlength="3" placeholder="{{ "form.search"|trans }}"
+           value="{{ search_phrase is defined ? search_phrase : '' }}">
 </form>

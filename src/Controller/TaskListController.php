@@ -235,7 +235,6 @@ class TaskListController extends TranslatableController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-
                 $taskList = $this->processCreateForm($form, $taskList);
                 $this->addFlash('success', $isUpdate ? 'list.updated' : 'list.created');
 

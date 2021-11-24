@@ -2,13 +2,11 @@
 
 namespace App\DataFixtures;
 
-use App\Constant\AppConstant;
 use App\Constant\TaskListTypes;
 use App\Entity\TaskList;
 use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ObjectManager;
 use Exception;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -21,7 +19,7 @@ class UserFixtures extends Fixture
     private $passwordEncoder;
 
     /**
-     * @var EntityManager
+     * @var ObjectManager
      */
     private $em;
 

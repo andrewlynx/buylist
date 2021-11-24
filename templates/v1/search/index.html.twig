@@ -1,9 +1,17 @@
 {% extends 'v1/base.html.twig' %}
 
-{% block title %}{{ 'search.page'|trans }}{% endblock %}
+{% block title %}{{ 'search.searching'|trans }} {{ search_phrase }}{% endblock %}
+
+{% block page_title_upper %}
+    {{ 'search.searching'|trans }}
+{% endblock %}
+
+{% block page_title %}
+    {{ search_phrase }}
+{% endblock %}
 
 {% block content %}
-    {% include 'v1/common/_search_form.html.twig' %}
+    {% include 'v1/common/_search_form.html.twig' with {'search_phrase': search_phrase} %}
     <h3>{{ 'search.result'|trans }} "{{ search_phrase }}"</h3>
     {% if task_lists %}
         <div class="tls" id="tls">

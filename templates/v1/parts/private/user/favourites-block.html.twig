@@ -1,4 +1,4 @@
-{% if app.user.favouriteUsers %}
+{% if app.user.favouriteUsers|length > 0 %}
     <ul class="u-links">
     {% for user in app.user.favouriteUsers %}
         {% include 'v1/parts/private/user/user-block.html.twig' %}

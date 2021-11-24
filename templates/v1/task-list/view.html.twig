@@ -2,6 +2,10 @@
 
 {% block title %}{{ task_list.name }}{% endblock %}
 
+{% block page_title %}
+    {{ 'header.its'|trans }} {{ task_list.name }}
+{% endblock %}
+
 {% block content %}
     <div class="row {{ task_list.hideCompleted ? 'hidden-completed' : '' }}" id="task-list-view">
         <div class="col-sm-8">
@@ -52,6 +56,9 @@
                     </a>
                     {% if app.user == task_list.creator %}
                         {{ form(task_list_archive) }}
+                    {% endif %}
+                    {% if app.user == task_list.creator %}
+                        {% include 'v1/common/_delete_form.html.twig' with {'item': task_list, 'path': 'task_list_delete'} %}
                     {% endif %}
                     <div class="clearfix"></div>
                     {% if task_list.isArchived %}

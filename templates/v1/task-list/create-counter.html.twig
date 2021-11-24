@@ -1,6 +1,12 @@
 {% extends 'v1/task-list/create-base.html.twig' %}
 
-{% block title %}{{ task_list.name }}{% endblock %}
+{% block page_title %}
+    {% if task_list.id is not null %}
+        {{ 'header.its'|trans }} {{ task_list.name }}
+    {% else %}
+        {{ 'list_type.new_counter'|trans }}
+    {% endif %}
+{% endblock %}
 
 {% block create_form %}
     <div class="col-sm-8">

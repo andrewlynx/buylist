@@ -85,7 +85,7 @@ class TaskList
     /**
      * @var Collection<EmailInvitation>
      *
-     * @ORM\OneToMany(targetEntity=EmailInvitation::class, mappedBy="taskList")
+     * @ORM\OneToMany(targetEntity=EmailInvitation::class, mappedBy="taskList", cascade={"persist", "remove"})
      */
     private $emailInvitations;
 

@@ -1,6 +1,20 @@
 {% extends 'v1/base.html.twig' %}
 
-{% block title %}{{ task_list.name }}{% endblock %}
+{% block title %}
+    {% if task_list.id is not null %}
+        {{ task_list.name }} {{ 'list.editing'|trans }}
+    {% else %}
+        {{ 'list.new'|trans }}
+    {% endif %}
+{% endblock %}
+
+{% block page_title %}
+    {% if task_list.id is not null %}
+        {{ 'header.its'|trans }} {{ task_list.name }}
+    {% else %}
+        {{ 'list_type.new_list'|trans }}
+    {% endif %}
+{% endblock %}
 
 {% block content %}
     {{ form_start(form) }}
