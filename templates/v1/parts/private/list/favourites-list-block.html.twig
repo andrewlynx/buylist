@@ -1,0 +1,11 @@
+<div class="tl">
+    <a href="{{ path('task_list_view', {'id': task_list.id}) }}" class="link mr-auto">
+        {{ task_list.name }}
+    </a>
+    {% if task_list.shared|length > 0 %}
+        <span class="iconly-brokenUser label shared"></span>
+    {% endif %}
+    {% include 'v1/buttons/add-list-to-favourites.html.twig' with {
+        'task_list': task_list
+    } %}
+</div>

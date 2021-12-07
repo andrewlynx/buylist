@@ -39,10 +39,8 @@
         </div>
         <div class="col-sm-4 t-l-sidebar">
             {% block task_list_sidebar %}
-                <div class="shared-users t-l-s-block">
-                    <h5>{{ 'list.users'|trans }}</h5>
-                    {% include 'v1/parts/private/list/shared-user.html.twig' %}
-                </div>
+                {% include 'v1/parts/private/list/shared-user.html.twig' %}
+
                 <div class="t-l-s-block">
                     <p>{{ 'list.created'|trans }}: {{ task_list.createdAt|date }}</p>
                     <p>{{ 'list.last_update'|trans }}: {{ task_list.updatedAt|date }}</p>
@@ -60,6 +58,7 @@
                     {% if app.user == task_list.creator %}
                         {% include 'v1/common/_delete_form.html.twig' with {'item': task_list, 'path': 'task_list_delete'} %}
                     {% endif %}
+                    {% include 'v1/buttons/add-list-to-favourites.html.twig' with {'task_list': task_list} %}
                     <div class="clearfix"></div>
                     {% if task_list.isArchived %}
                         <div class="alert alert-warning">

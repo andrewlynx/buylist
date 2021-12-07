@@ -1,7 +1,10 @@
-{% if task_list.shared %}
-    <ul class="u-links">
-        {% for user in task_list.shared %}
-            {% include 'v1/parts/private/user/user-block.html.twig' with {'email': true} %}
-        {% endfor %}
-    </ul>
+{% if task_list.shared|length > 0 %}
+    <div class="shared-users t-l-s-block">
+        <h5>{{ 'list.users'|trans }}</h5>
+        <ul class="u-links">
+            {% for user in task_list.shared %}
+                {% include 'v1/parts/private/user/user-block.html.twig' with {'email': true} %}
+            {% endfor %}
+        </ul>
+    </div>
 {% endif %}

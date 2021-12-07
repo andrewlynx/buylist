@@ -115,6 +115,47 @@ class TaskListRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param User $user
+     * @param int|null $page
+     *
+     * @return array
+     */
+    public function getFavourites(User $user, ?int $page = null): array
+    {
+        try {
+            $conn = $this->getEntityManager()->getConnection();
+
+            $sql = '
+                SELECT DISTINCT t.id FROM task_list t
+                LEFT JOIN favourite_lists fl ON fl.task_list_id = t.id
+                LEFT JOIN `user` u ON fl.user_id = u.id
+                WHERE u.id = :user
+            ';
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(['user' => $user->getId()]);
+
+            $ids = array_column($stmt->fetchAllAssociative(), 'id');
+        } catch (\Throwable $e) {
+            //@todo log exception
+            $ids = [];
+        }
+        $qb = $this->createQueryBuilder('t')
+            ->where('t.id IN (:ids)')
+            ->addSelect("(CASE WHEN t.creator = :user THEN 1 ELSE 0 END) AS HIDDEN creator")
+            ->setParameter('user', $user)
+            ->orderBy('t.creator')
+            ->addOrderBy('t.createdAt', 'DESC')
+            ->setParameter('ids', $ids)
+            ->setMaxResults(self::PER_PAGE);
+
+        if ($page !== null) {
+            $qb->setFirstResult(intval($page * self::PER_PAGE));
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
      * @param UserInterface $user
      * @param bool $archived
      * @param int|null $page

@@ -17,6 +17,7 @@ use App\Repository\TaskListRepository;
 use App\UseCase\TaskList\TaskListHandler;
 use Exception;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -210,6 +211,53 @@ class TaskListController extends TranslatableController
         $this->addFlash('danger', 'validation.invalid_submission');
 
         return $this->redirectToRoute('task_list_archive');
+    }
+
+    /**
+     * @Route("/favourites", name="favourites")
+     *
+     * @param TaskListRepository $taskListRepository
+     *
+     * @return Response
+     */
+    public function indexFavourite(TaskListRepository $taskListRepository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $taskLists = $taskListRepository->getFavourites($user);
+
+        return $this->render(
+            'v1/task-list/favourites-index.html.twig',
+            [
+                'task_lists' => $taskLists,
+                'unsubscribe_forms' => $this->getUnsubscribeFormsViews($taskLists),
+                'load_more_link' => $this->generateUrl('task_list_load_more_favourites', ['page' => 1]),
+            ]
+        );
+    }
+
+    /**
+     * @Route("/load-more-favourites/{page}", name="load_more_favourites")
+     *
+     * @param int                $page
+     * @param TaskListRepository $taskListRepository
+     *
+     * @return Response
+     */
+    public function loadMoreFavourite(int $page, TaskListRepository $taskListRepository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $taskLists = $taskListRepository->getFavourites($user, $page);
+
+        return $this->render(
+            'v1/parts/private/list/favourites-list.html.twig',
+            [
+                'task_lists' => $taskLists,
+                'unsubscribe_forms' => $this->getUnsubscribeFormsViews($taskLists),
+                'load_more_link' => $this->generateUrl('task_list_load_more_favourites', ['page' => ++$page]),
+            ]
+        );
     }
 
     /**
@@ -480,6 +528,25 @@ class TaskListController extends TranslatableController
         } catch (Exception $e) {
             return new JsonError($e->getMessage());
         }
+    }
+
+    /**
+     * @Route("/{id}/favourites", name="toggle_favourites")
+     *
+     * @param TaskList $taskList
+     * @param Request  $request
+     *
+     * @return Response
+     *
+     * @throws Exception
+     */
+    public function toggleFavourites(TaskList $taskList, Request $request): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $this->taskListHandler->toggleUsersFavourites($taskList, $user);
+
+        return new RedirectResponse($request->headers->get('referer'));
     }
 
     /**

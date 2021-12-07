@@ -23,6 +23,7 @@ helper:
   turn_off: 'This helpers could be turned off in settings'
 list:
   activate_list_to_edit: 'This list is archived. Activate the list to make changes'
+  add_to_favourites: 'Add to favourites'
   archive: Archive
   archive_clear: 'Remove all'
   archive_cleared: 'Archive cleared successfully'
@@ -40,6 +41,7 @@ list:
   load_more: 'Load More'
   name: Name
   new: 'New list'
+  remove_from_favourites: 'Remove from favourites'
   restore: Restore
   shared: 'shared'
   show_completed: 'Show completed'
@@ -58,6 +60,7 @@ menu:
   archive: Archive
   credentials: Credentials
   lists: 'My Lists'
+  lists_favourites: 'Favourite Lists'
   lists_shared: 'Shared Lists'
   notifications: Notifications
   privacy_policy: 'Privacy Policy'

@@ -80,6 +80,14 @@ class User implements UserInterface
     private $taskLists;
 
     /**
+     * @ORM\ManyToMany(targetEntity=TaskList::class, mappedBy="favourite")
+     * @ORM\JoinTable(name="favourite_lists")
+     *
+     * @var Collection<TaskList>
+     */
+    private $favourite;
+
+    /**
      * @ORM\Column(type="string", length=2, nullable=true)
      *
      * @var string|null
@@ -398,6 +406,43 @@ class User implements UserInterface
     {
         if ($this->taskLists->removeElement($taskList)) {
             $taskList->removeShared($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getFavourites(): Collection
+    {
+        return $this->favourite;
+    }
+
+    /**
+     * @param TaskList $taskList
+     *
+     * @return User
+     */
+    public function addToFavourites(TaskList $taskList): User
+    {
+        if (!$this->favourite->contains($taskList)) {
+            $this->favourite[] = $taskList;
+            $taskList->addToFavourite($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param TaskList $taskList
+     *
+     * @return $this
+     */
+    public function removeFromFavourites(TaskList $taskList): self
+    {
+        if ($this->favourite->removeElement($taskList)) {
+            $taskList->removeFromFavourites($this);
         }
 
         return $this;

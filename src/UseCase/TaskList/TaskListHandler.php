@@ -269,4 +269,22 @@ class TaskListHandler
 
         return $hideCompletedState;
     }
+
+    /**
+     * @param TaskList $taskList
+     * @param User     $user
+     *
+     * @return TaskList
+     */
+    public function toggleUsersFavourites(TaskList $taskList, User $user): TaskList
+    {
+        if ($taskList->isInFavourites($user)) {
+            $user->removeFromFavourites($taskList);
+        } else {
+            $user->addToFavourites($taskList);
+        }
+        $this->em->flush();
+
+        return $taskList;
+    }
 }

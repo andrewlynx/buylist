@@ -61,6 +61,9 @@ final class Builder implements ContainerAwareInterface
             ->addChild('menu.lists_shared', ['route' => 'task_list_index_shared'])
             ->setLinkAttribute('class', 'iconly-brokenUser menu-item');
         $menu
+            ->addChild('menu.lists_favourites', ['route' => 'task_list_favourites'])
+            ->setLinkAttribute('class', 'iconly-brokenHeart menu-item');
+        $menu
             ->addChild('menu.archive', ['route' => 'task_list_archive'])
             ->setLinkAttribute('class', 'iconly-brokenBookmark menu-item');
         $menu

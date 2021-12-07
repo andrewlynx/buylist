@@ -23,6 +23,7 @@ helper:
   turn_off: 'Ці підказки можна вимкнути у Налаштуваннях'
 list:
   activate_list_to_edit: 'Цей список заархівовано. Активуйте список, щоб внести зміни'
+  add_to_favourites: 'Додати до обраних'
   archive: Архівувати
   archive_clear: 'Видалити все'
   archive_cleared: 'Архів успішно очищено'
@@ -40,6 +41,7 @@ list:
   load_more: 'Більше'
   name: Назва
   new: 'Новий список'
+  remove_from_favourites: 'Видалити з обраних'
   restore: Відновити
   simple: 'Звичайний список'
   shared: 'Спільний'
@@ -58,6 +60,7 @@ menu:
   archive: Архів
   credentials: 'Доступи'
   lists: 'Мої списки'
+  lists_favourites: 'Обрані списки'
   lists_shared: 'Спільні списки'
   notifications: Повідомлення
   privacy_policy: 'Політика конфіденційності'

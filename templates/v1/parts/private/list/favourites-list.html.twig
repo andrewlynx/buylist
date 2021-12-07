@@ -1,0 +1,19 @@
+{% set author = '' %}
+{% for task_list in task_lists %}
+    {% if task_list.creator.nickname != author %}
+        {% set author = task_list.creator.nickname %}
+
+        By <a href="{{ path('user_user', {'email': task_list.creator.email}) }}">
+            {{ author }} ({{ task_list.creator.email }})
+        </a>
+    {% endif %}
+    {% include 'v1/parts/private/list/favourites-list-block.html.twig' with {
+        'task_list': task_list
+    } %}
+{% endfor %}
+{% if task_lists|length == constant('App\\Repository\\TaskListRepository::PER_PAGE') %}
+    {% set last_list = task_lists|last %}
+    <div id="loader" data-url="{{ load_more_link }}" class="text-center">
+        <button class="btn-primary btn">{{ 'list.load_more'|trans }}</button>
+    </div>
+{% endif %}

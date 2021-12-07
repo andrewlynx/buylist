@@ -27,6 +27,10 @@
         background-color: #e7f5f9;
         color: #7dc2d7;
       }
+      &.favourite {
+        background-color: #ffe6de;
+        color: #cb664f;
+      }
     }
     .list-archive.btn, .list-delete.btn {
       &:before {

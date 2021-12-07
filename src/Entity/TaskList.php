@@ -61,6 +61,14 @@ class TaskList
     private $shared;
 
     /**
+     * @var Collection<User>
+     *
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="favourite", cascade={"persist"})
+     * @ORM\JoinTable(name="favourite_lists")
+     */
+    private $favourite;
+
+    /**
      * @var DateTimeInterface
      *
      * @ORM\Column(type="datetime")
@@ -262,6 +270,42 @@ class TaskList
         $this->shared->removeElement($shared);
 
         return $this;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return $this
+     */
+    public function addToFavourite(User $user): self
+    {
+        if (!$this->favourite->contains($user)) {
+            $this->favourite[] = $user;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return $this
+     */
+    public function removeFromFavourites(User $user): self
+    {
+        $this->favourite->removeElement($user);
+
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return bool
+     */
+    public function isInFavourites(User $user): bool
+    {
+        return $this->favourite->contains($user);
     }
 
     /**
