@@ -12,7 +12,7 @@
         'unsubscribe_forms': unsubscribe_forms
     } %}
 {% endfor %}
-{% if task_lists|length == constant('App\\Repository\\TaskListRepository::PER_PAGE') %}
+{% if task_lists|length == constant('App\\Repository\\Mutators\\Pagination::PER_PAGE') %}
     {% set last_list = task_lists|last %}
     <div id="loader" data-url="{{ load_more_link }}" class="text-center">
         <button class="btn-primary btn">{{ 'list.load_more'|trans }}</button>

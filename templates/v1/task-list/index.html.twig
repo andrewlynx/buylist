@@ -4,6 +4,11 @@
 
 {% block content %}
     {% include 'v1/common/_search_form.html.twig' %}
+    {% block type_filters %}
+        <a class="type-filter" href="#">All</a>
+        <a class="type-filter" href="#">Simple</a>
+        <a class="type-filter" href="#">Counter</a>
+    {% endblock %}
     {% if task_lists %}
         <div class="tls" id="tls">
             {% include 'v1/parts/private/list/list.html.twig' with {

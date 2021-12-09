@@ -1,0 +1,16 @@
+{% extends 'v1/parts/private/list/list-block.html.twig' %}
+
+{% block tl_custom %}
+    {% if task_list.creator != app.user %}
+        {{ task_list.creator.nickname }}
+    {% endif %}
+{% endblock %}
+
+{% block tl_archive %}
+    {% if task_list.archived %}
+        ({{ 'list.archived'|trans }})
+    {% endif %}
+{% endblock %}
+
+{% block tl_remove %}
+{% endblock %}

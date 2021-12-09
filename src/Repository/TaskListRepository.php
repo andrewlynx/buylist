@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\TaskItem;
 use App\Entity\TaskList;
 use App\Entity\User;
+use App\Repository\Mutators\Pagination;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -17,8 +18,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class TaskListRepository extends ServiceEntityRepository
 {
-    public const PER_PAGE = 10;
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TaskList::class);
@@ -63,14 +62,11 @@ class TaskListRepository extends ServiceEntityRepository
             ->orderBy('t.creator')
             ->orderBy('favourites', 'DESC')
             ->addOrderBy('t.createdAt', 'DESC')
-            ->setMaxResults(self::PER_PAGE)
         ;
 
-        if ($page !== null) {
-            $qb->setFirstResult(intval($page * self::PER_PAGE));
-        }
+        $query = (new Pagination())->paginate($qb->getQuery(), $page);
 
-        return $qb->getQuery()->getResult();
+        return $query->getResult();
     }
 
     /**
@@ -146,13 +142,11 @@ class TaskListRepository extends ServiceEntityRepository
             ->orderBy('t.creator')
             ->addOrderBy('t.createdAt', 'DESC')
             ->setParameter('ids', $ids)
-            ->setMaxResults(self::PER_PAGE);
+        ;
 
-        if ($page !== null) {
-            $qb->setFirstResult(intval($page * self::PER_PAGE));
-        }
+        $query = (new Pagination())->paginate($qb->getQuery(), $page);
 
-        return $qb->getQuery()->getResult();
+        return $query->getResult();
     }
 
     /**
@@ -170,13 +164,10 @@ class TaskListRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->setParameter('archived', intval($archived))
             ->orderBy('t.id', 'DESC')
-            ->setMaxResults(self::PER_PAGE)
         ;
 
-        if ($page !== null) {
-            $qb->setFirstResult(intval($page * self::PER_PAGE));
-        }
+        $query = (new Pagination())->paginate($qb->getQuery(), $page);
 
-        return $qb->getQuery()->getResult();
+        return $query->getResult();
     }
 }

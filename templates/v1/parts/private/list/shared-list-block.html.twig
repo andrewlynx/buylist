@@ -1,6 +1,11 @@
-<div class="tl">
-    <a href="{{ path('task_list_view', {'id': task_list.id}) }}" class="link mr-auto">
-        {{ task_list.name }}
-    </a>
+{% extends 'v1/parts/private/list/list-block.html.twig' %}
+
+{% block tl_archive %}
+{% endblock %}
+
+{% block tl_remove %}
+{% endblock %}
+
+{% block tl_custom %}
     {{ form(unsubscribe_forms[task_list.id]) }}
-</div>
+{% endblock %}
