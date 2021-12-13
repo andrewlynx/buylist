@@ -2,7 +2,7 @@
 
 namespace App\Repository\Mutators;
 
-use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 
 class Pagination
 {
@@ -22,12 +22,12 @@ class Pagination
     }
 
     /**
-     * @param Query    $query
-     * @param int|null $page
+     * @param QueryBuilder $query
+     * @param int|null     $page
      *
-     * @return Query
+     * @return QueryBuilder
      */
-    public function paginate(Query $query, ?int $page): Query
+    public function paginate(QueryBuilder $query, ?int $page): QueryBuilder
     {
         $query->setMaxResults($this->perPage);
 

@@ -5,6 +5,7 @@
 {% block page_title %}{{ 'menu.lists_favourites'|trans }}{% endblock %}
 
 {% block content %}
+    {% include 'v1/parts/private/list/type-filters.html.twig' with {'page': 'task_list_favourites'} %}
     {% if task_lists %}
         <div class="tls" id="tls">
             {% include 'v1/parts/private/list/favourites-list.html.twig' with {

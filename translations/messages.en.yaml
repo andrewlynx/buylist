@@ -52,8 +52,11 @@ list:
   users: 'Added users'
   your_lists: 'Your lists'
 list_type:
+  all: All
+  counter: Counter
   new_counter: 'New counter list'
-  new_list: 'New personal list'
+  new_list: 'New simple list'
+  simple: Simple
 menu:
   about: About
   about_us: 'About Us'

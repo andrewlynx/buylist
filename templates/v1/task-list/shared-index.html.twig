@@ -5,6 +5,7 @@
 {% block page_title %}{{ 'menu.lists_shared'|trans }}{% endblock %}
 
 {% block content %}
+    {% include 'v1/parts/private/list/type-filters.html.twig' with {'page': 'task_list_index_shared'} %}
     {% if task_lists %}
         <div class="tls" id="tls">
             {% include 'v1/parts/private/list/shared-list.html.twig' with {

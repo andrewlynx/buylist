@@ -52,8 +52,11 @@ list:
   users: 'Додані користувачі'
   your_lists: 'Ваші списки'
 list_type:
+  all: Всі
+  counter: Лічильники
   new_counter: 'Новий список-лічильник'
   new_list: 'Новий список'
+  simple: Прості
 menu:
   about: 'Про сайт'
   about_us: 'Про нас'

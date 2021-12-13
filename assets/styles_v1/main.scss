@@ -278,6 +278,25 @@ form[name="task_list"] {
   margin-right: 0;
   margin-left: 0;
 }
+.type-filters {
+  margin-bottom: 24px;
+  .type-filter {
+    padding: 6px 15px;
+    border: 2px solid #fcbc6f;
+    border-radius: 10px;
+    margin-right: 14px;
+    font-weight: 500;
+    color: theme-color("text");
+    display: inline-block;
+    min-width: 88px;
+    text-align: center;
+    &.active {
+      color: #fff;
+      background-color: theme-color("primary");
+      border-color: theme-color("primary");
+    }
+  }
+}
 @media (max-width: 991.98px) {
   .btn {
     min-width: 0;

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\TaskItem;
 use App\Entity\TaskList;
 use App\Entity\User;
+use App\Repository\Mutators\ListType;
 use App\Repository\Mutators\Pagination;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -18,9 +19,19 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class TaskListRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @var ListType
+     */
+    private $listTypeFilter;
+
+    /**
+     * @param ManagerRegistry $registry
+     * @param ListType        $listTypeFilter
+     */
+    public function __construct(ManagerRegistry $registry, ListType $listTypeFilter)
     {
         parent::__construct($registry, TaskList::class);
+        $this->listTypeFilter = $listTypeFilter;
     }
 
     /**
@@ -64,9 +75,10 @@ class TaskListRepository extends ServiceEntityRepository
             ->addOrderBy('t.createdAt', 'DESC')
         ;
 
-        $query = (new Pagination())->paginate($qb->getQuery(), $page);
+        $query = (new Pagination())->paginate($qb, $page);
+        $query = $this->listTypeFilter->filter($query);
 
-        return $query->getResult();
+        return $query->getQuery()->getResult();
     }
 
     /**
@@ -144,9 +156,10 @@ class TaskListRepository extends ServiceEntityRepository
             ->setParameter('ids', $ids)
         ;
 
-        $query = (new Pagination())->paginate($qb->getQuery(), $page);
+        $query = (new Pagination())->paginate($qb, $page);
+        $query = $this->listTypeFilter->filter($query);
 
-        return $query->getResult();
+        return $query->getQuery()->getResult();
     }
 
     /**
@@ -166,8 +179,9 @@ class TaskListRepository extends ServiceEntityRepository
             ->orderBy('t.id', 'DESC')
         ;
 
-        $query = (new Pagination())->paginate($qb->getQuery(), $page);
+        $query = (new Pagination())->paginate($qb, $page);
+        $query = $this->listTypeFilter->filter($query);
 
-        return $query->getResult();
+        return $query->getQuery()->getResult();
     }
 }

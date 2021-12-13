@@ -1,0 +1,8 @@
+{% set query = constant('App\\Constant\\TaskListTypes::QUERY') %}
+{% set page = page is defined ? page : 'task_list_index' %}
+{% set type = app.request.query.get(query) %}
+<div class="type-filters">
+    <a class="type-filter {{ type is null ? 'active' : '' }}" href="{{ url(page) }}">{{ 'list_type.all'|trans }}</a>
+    <a class="type-filter {{ type == '0' ? 'active' : '' }}" href="{{ url(page, { (query): '0'}) }}">{{ 'list_type.simple'|trans }}</a>
+    <a class="type-filter {{ type == '1' ? 'active' : '' }}" href="{{ url(page, { (query) : '1'}) }}">{{ 'list_type.counter'|trans }}</a>
+</div>
