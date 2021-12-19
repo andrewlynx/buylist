@@ -23,6 +23,7 @@ helper:
   turn_off: 'Ці підказки можна вимкнути у Налаштуваннях'
 list:
   activate_list_to_edit: 'Цей список заархівовано. Активуйте список, щоб внести зміни'
+  add_label: 'Додати колір'
   add_to_favourites: 'Додати до обраних'
   archive: Архівувати
   archive_clear: 'Видалити все'

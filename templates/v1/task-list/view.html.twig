@@ -10,7 +10,8 @@
     <div class="row {{ task_list.hideCompleted ? 'hidden-completed' : '' }}" id="task-list-view">
         <div class="col-sm-8">
             {% block task_list_title %}
-                <h4>{{ task_list.name }}</h4>
+                <div class="label-box label-{{ task_list.colorLabel }}"></div>
+                <h4 class="t-l-title">{{ task_list.name }}</h4>
                 <p>{{ task_list.description|auto_url|raw|nl2br }}</p>
             {% endblock %}
             {% block hide_completed %}

@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Constant\TaskListColorLabel;
 use App\Entity\TaskItem;
 use App\Entity\TaskList;
 use App\Entity\User;
@@ -40,6 +41,22 @@ class TaskListType extends AbstractType
         $taskList = $options['data'];
 
         $builder
+            ->add('colorLabel', ChoiceType::class, [
+                'label' => 'list.add_label',
+                'choices' => TaskListColorLabel::getFreeLabels(),
+                'expanded' => true,
+                'multiple' => false,
+                'required' => false,
+                'choice_label' => function ($choice, $key, $value) {
+                    return $value;
+                },
+                'choice_name' => function ($choice) {
+                    return $choice;
+                },
+                'attr' => [
+                    'class' => 'color-label-select',
+                ],
+            ])
             ->add('name', null, [
                 'label' => 'list.name',
                 'attr' => [

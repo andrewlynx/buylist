@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Constant\TaskListTypes;
 use App\Controller\Extendable\TranslatableController;
-use App\Controller\Traits\FormCollectionsTrait;
+use App\Controller\Traits\FormsTrait;
 use App\DTO\TaskList\TaskListUsersRaw;
 use App\Entity\JsonResponse\JsonError;
 use App\Entity\JsonResponse\JsonSuccess;
@@ -30,12 +30,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class TaskListController extends TranslatableController
 {
-    use FormCollectionsTrait;
+    use FormsTrait;
 
     /**
      * @var TaskListHandler
      */
-    protected $taskListHandler;
+    private $taskListHandler;
 
     /**
      * @param TranslatorInterface $translator

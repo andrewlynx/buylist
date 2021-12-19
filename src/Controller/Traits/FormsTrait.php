@@ -11,8 +11,9 @@ use App\Form\TaskItemIncrementType;
 use App\Form\UnsubscribeType;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
-trait FormCollectionsTrait
+trait FormsTrait
 {
     /**
      * @param TaskItem $taskItem
@@ -128,5 +129,16 @@ trait FormCollectionsTrait
         }
 
         return $views;
+    }
+
+    /**
+     * @param string      $formName
+     * @param string|null $token
+     */
+    protected function checkCsrf(string $formName, ?string $token): void
+    {
+        if (!$this->isCsrfTokenValid($formName, $token)) {
+            throw new ValidatorException('validation.invalid_csrf');
+        }
     }
 }

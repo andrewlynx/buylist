@@ -1,11 +1,12 @@
 .tls {
   .tl {
     background-color: #fff;
-    padding: 11px 20px;
+    padding: 11px 20px 11px 30px;
     border-radius: 10px;
     margin-bottom: 15px;
     display: flex;
     align-items: center;
+    position: relative;
     .link {
       display: flex;
       color: theme-color("text");
@@ -16,7 +17,7 @@
       margin-bottom: 0;
     }
     .label {
-      padding: 5px;
+      padding: 7px;
       border-radius: 10px;
       height: 32px;
       width: 32px;
@@ -35,6 +36,25 @@
     .list-archive.btn, .list-delete.btn {
       &:before {
         font-size: 0;
+      }
+    }
+    .color-label {
+      display: block;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 15px;
+      border-bottom-left-radius: 10px;
+      border-top-left-radius: 10px;
+      &.label-1 {
+        background-color: color('red');
+      }
+      &.label-2 {
+        background-color: color('yellow');
+      }
+      &.label-3 {
+        background-color: color('light-green');
       }
     }
   }
@@ -224,6 +244,27 @@
     }
   }
 }
+.t-l-title {
+  padding-bottom: 10px;
+}
+.label-box {
+  float: right;
+  width: 42px;
+  height: 42px;
+  background-color: #fff;
+  border-radius: 10px;
+  margin-left: 15px;
+  margin-bottom: 15px;
+  &.label-1 {
+    background-color: color('red');
+  }
+  &.label-2 {
+    background-color: color('yellow');
+  }
+  &.label-3 {
+    background-color: color('light-green');
+  }
+}
 .task-list-users {
   list-style: none;
   padding-left: 0;
@@ -294,6 +335,41 @@ form[name="task_list"] {
       color: #fff;
       background-color: theme-color("primary");
       border-color: theme-color("primary");
+    }
+  }
+}
+.color-label-select {
+  .form-check {
+    display: inline-block;
+    padding-left: 0;
+    label {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 40px;
+      background-color: #fff;
+      border-radius: 10px;
+      margin-right: 10px;
+      font-size: 0;
+      border: 1px solid #fff;
+      &[for$="1"] {
+        background-color: color('red');
+        border-color: color('red');
+      }
+      &[for$="2"] {
+        background-color: color('yellow');
+        border-color: color('yellow');
+      }
+      &[for$="3"] {
+        background-color: color('light-green');
+        border-color: color('light-green');
+      }
+    }
+    input {
+      display: none;
+      &:checked+label {
+        border-color: theme-color("primary");
+      }
     }
   }
 }

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Controller\Extendable\TranslatableController;
-use App\Controller\Traits\FormCollectionsTrait;
+use App\Controller\Traits\FormsTrait;
 use App\DTO\TaskItem\TaskItemComplete;
 use App\DTO\TaskItem\TaskItemCreate;
 use App\DTO\TaskItem\TaskItemEdit;
@@ -30,7 +30,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class TaskItemController extends TranslatableController
 {
-    use FormCollectionsTrait;
+    use FormsTrait;
 
     /**
      * @var TaskItemHandler
@@ -60,9 +60,7 @@ class TaskItemController extends TranslatableController
             $taskItemCreateData = new TaskItemCreate(
                 $this->jsonDecode($request->getContent())
             );
-            if (!$this->isCsrfTokenValid(TaskItemCreate::FORM_NAME, $taskItemCreateData->token)) {
-                throw new ValidatorException('validation.invalid_csrf');
-            }
+            $this->checkCsrf(TaskItemCreate::FORM_NAME, $taskItemCreateData->token);
 
             /** @var User $user */
             $user = $this->getUser();
@@ -103,9 +101,7 @@ class TaskItemController extends TranslatableController
             $taskItemCompleteData = new TaskItemComplete(
                 $this->jsonDecode($request->getContent())
             );
-            if (!$this->isCsrfTokenValid(TaskItemComplete::FORM_NAME, $taskItemCompleteData->token)) {
-                throw new ValidatorException('validation.invalid_csrf');
-            }
+            $this->checkCsrf(TaskItemComplete::FORM_NAME, $taskItemCompleteData->token);
             /** @var User $user */
             $user = $this->getUser();
             $taskItem = $this->taskItemHandler->complete($taskItemCompleteData, $user);
@@ -145,9 +141,7 @@ class TaskItemController extends TranslatableController
             $taskItemIncrementData = new TaskItemIncrement(
                 $this->jsonDecode($request->getContent())
             );
-            if (!$this->isCsrfTokenValid(TaskItemIncrement::FORM_NAME, $taskItemIncrementData->token)) {
-                throw new ValidatorException('validation.invalid_csrf');
-            }
+            $this->checkCsrf(TaskItemIncrement::FORM_NAME, $taskItemIncrementData->token);
             /** @var User $user */
             $user = $this->getUser();
             $taskItem = $this->taskItemHandler->increment($taskItemIncrementData, $user);

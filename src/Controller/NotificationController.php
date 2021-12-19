@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Controller\Extendable\TranslatableController;
+use App\Controller\Traits\FormsTrait;
 use App\Entity\AdminNotification;
 use App\Entity\JsonResponse\JsonError;
 use App\Entity\JsonResponse\JsonSuccess;
@@ -24,6 +25,8 @@ use Throwable;
  */
 class NotificationController extends TranslatableController
 {
+    use FormsTrait;
+
     /**
      * @Route("/", name="index")
      *
@@ -72,10 +75,7 @@ class NotificationController extends TranslatableController
                     $this->translator->trans('validation.invalid_json_request', ['error' => json_last_error_msg()])
                 );
             }
-
-            if (!$this->isCsrfTokenValid('read_notification'.$notification->getId(), $dataArray['_token'])) {
-                throw new ValidatorException('validation.invalid_csrf');
-            }
+            $this->checkCsrf('read_notification'.$notification->getId(), $dataArray['_token']);
 
             $notificationHandler->read($notification);
 

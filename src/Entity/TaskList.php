@@ -112,9 +112,9 @@ class TaskList
     private $archived = false;
 
     /**
-     * @var string|null
+     * @var int|null
      *
-     * @ORM\Column(type="string", length=64, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $colorLabel;
 
@@ -462,19 +462,19 @@ class TaskList
     }
 
     /**
-     * @return string
+     * @return int|null
      */
-    public function getColorLabel(): string
+    public function getColorLabel(): ?int
     {
         return $this->colorLabel;
     }
 
     /**
-     * @param string $colorLabel
+     * @param int|null $colorLabel
      *
      * @return $this
      */
-    public function setColorLabel(string $colorLabel): TaskList
+    public function setColorLabel(?int $colorLabel): TaskList
     {
         $this->colorLabel = $colorLabel;
 

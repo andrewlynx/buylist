@@ -31,7 +31,7 @@ class TaskListTest extends WebTestCase
             ->setCreatedAt($date3)
             ->setDescription('description')
             ->setCreator($user)
-            ->setColorLabel('red')
+            ->setColorLabel(2)
             ->addEmailInvitations($emailInvitation);
 
         $this->assertNull($taskList->getId());
@@ -43,7 +43,7 @@ class TaskListTest extends WebTestCase
         $this->assertSame($date3, $taskList->getCreatedAt());
         $this->assertSame('description', $taskList->getDescription());
         $this->assertSame($user, $taskList->getCreator());
-        $this->assertSame('red', $taskList->getColorLabel());
+        $this->assertSame(2, $taskList->getColorLabel());
         $this->assertSame($emailInvitation, $taskList->getEmailInvitations()->first());
         $this->assertEmpty($taskList->getNotifications());
         $this->assertSame(['email' => 'test@email.qwe'], $taskList->getSimpleUsersEmails()[0]);

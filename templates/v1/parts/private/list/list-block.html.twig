@@ -1,4 +1,7 @@
 <div class="{% block tl_class %}tl{% endblock %}">
+    {% block color_label %}
+        <span class="color-label label-{{ task_list.colorLabel }}"></span>
+    {% endblock %}
     <a href="{{ path('task_list_view', {'id': task_list.id}) }}" class="link mr-auto">
         {{ task_list.name }}
     </a>

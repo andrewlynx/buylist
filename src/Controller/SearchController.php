@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Controller\Extendable\TranslatableController;
+use App\Controller\Traits\FormsTrait;
 use App\Entity\User;
 use App\Repository\TaskListRepository;
 use App\Repository\UserRepository;
@@ -17,6 +18,8 @@ use Symfony\Component\Validator\Exception\ValidatorException;
  */
 class SearchController extends TranslatableController
 {
+    use FormsTrait;
+
     /**
      * @Route("/", name="index")
      *
@@ -34,9 +37,7 @@ class SearchController extends TranslatableController
         /** @var User $user */
         $user = $this->getUser();
 
-        if (!$this->isCsrfTokenValid('search', $request->request->get('_token'))) {
-            throw new ValidatorException('validation.invalid_csrf');
-        }
+        $this->checkCsrf('search', $request->request->get('_token'));
 
         $searchPhrase = $request->request->get('value');
 
