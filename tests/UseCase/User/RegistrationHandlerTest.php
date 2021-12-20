@@ -7,23 +7,15 @@ use App\DTO\User\Registration;
 use App\DTO\User\Settings;
 use App\Entity\EmailInvitation;
 use App\Entity\TaskList;
-use App\Entity\User;
-use App\Repository\TaskListRepository;
-use App\Repository\UserRepository;
+use App\Tests\TestTrait;
 use App\UseCase\User\RegistrationHandler;
 use DateTime;
 use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationHandlerTest extends WebTestCase
 {
-    protected function setUp(): void
-    {
-        if (null === static::$kernel) {
-            self::bootKernel();
-        }
-    }
+    use TestTrait;
 
     public function testRegisterInvalidEmail()
     {
@@ -41,8 +33,7 @@ class RegistrationHandlerTest extends WebTestCase
 
     public function testRegister()
     {
-        /** @var TaskList $taskList */
-        $taskList = static::$container->get(TaskListRepository::class)->find(1);
+        $taskList = $this->getTaskList(1);
 
         $dto = new Registration();
         $dto->email = 'some_valid@email.com';
@@ -98,10 +89,10 @@ class RegistrationHandlerTest extends WebTestCase
         $this->assertNotEquals($oldPass, $updatedUser->getPassword());
     }
 
-    private function getUser(int $id): User
+    protected function setUp(): void
     {
-        $userRepository = static::$container->get(UserRepository::class);
-
-        return $userRepository->find($id);
+        if (null === static::$kernel) {
+            self::bootKernel();
+        }
     }
 }

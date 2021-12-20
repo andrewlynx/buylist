@@ -2,18 +2,15 @@
 
 namespace App\Tests\Controller;
 
-use App\Constant\AppConstant;
-use App\DTO\TaskList\TaskListShare;
 use App\Entity\TaskList;
-use App\Form\TaskListType;
-use App\Repository\NotificationRepository;
 use App\Repository\TaskListRepository;
-use App\Repository\UserRepository;
-use App\Service\Notification\NotificationService;
+use App\Tests\TestTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskListControllerTest extends WebTestCase
 {
+    use TestTrait;
+
     public function testIndex()
     {
         $client = static::createClient();
@@ -99,8 +96,7 @@ class TaskListControllerTest extends WebTestCase
         $client = ControllerTestHelper::logInUser($client);
         $client->request('GET', ControllerTestHelper::generateRoute('task_list_delete', 1));
 
-        /** @var TaskList $taskList */
-        $taskList = static::$container->get(TaskListRepository::class)->find(1);
+        $taskList = $this->getTaskList(1);
         $this->assertEquals(1, $taskList->getId());
     }
 
@@ -276,8 +272,7 @@ class TaskListControllerTest extends WebTestCase
         $client = static::createClient();
         $client = ControllerTestHelper::logInUser($client);
 
-        /** @var TaskList $taskList */
-        $taskList = static::$container->get(TaskListRepository::class)->find(1);
+        $taskList = $this->getTaskList(1);
 
         $this->assertNotEquals('new cool name', $taskList->getName());
         $this->assertNotEquals('awesome description', $taskList->getDescription());
@@ -301,8 +296,7 @@ class TaskListControllerTest extends WebTestCase
             $client->getResponse()->getContent()
         );
 
-        /** @var TaskList $taskList */
-        $taskList = static::$container->get(TaskListRepository::class)->find(1);
+        $taskList = $this->getTaskList(1);
         $this->assertEquals('new cool name', $taskList->getName());
         $this->assertEquals('awesome description', $taskList->getDescription());
     }
@@ -312,9 +306,7 @@ class TaskListControllerTest extends WebTestCase
         $client = static::createClient();
         $client = ControllerTestHelper::logInUser($client);
 
-        /** @var TaskList $taskList */
-        $taskList = static::$container->get(TaskListRepository::class)->find(2);
-
+        $taskList = $this->getTaskList(2);
         $this->assertEquals('New Counter List', $taskList->getName());
 
         $crawler = $client->request(

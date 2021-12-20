@@ -5,9 +5,8 @@ namespace App\Tests\Service;
 use App\Entity\Notification;
 use App\Entity\TaskList;
 use App\Entity\User;
-use App\Repository\TaskListRepository;
-use App\Repository\UserRepository;
 use App\Service\Notification\NotificationService;
+use App\Tests\TestTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\UsageTrackingTokenStorage;
@@ -15,6 +14,8 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class NotificationServiceTest extends WebTestCase
 {
+    use TestTrait;
+
     /**
      * @var User
      */
@@ -47,10 +48,9 @@ class NotificationServiceTest extends WebTestCase
     public function testCreateOrUpdate()
     {
         $notificationService = $this->getNS();
-        $taskListRepository = static::$container->get(TaskListRepository::class);
-        $taskList = $taskListRepository->find(1);
-        $userRepository = static::$container->get(UserRepository::class);
-        $user2 = $userRepository->find(2);
+
+        $taskList = $this->getTaskList(1);
+        $user2 = $this->getUser(2);
         $notification = $notificationService->createOrUpdate(2, $this->user, $taskList, $user2);
 
         $this->assertEquals(1, $notification->getId());
@@ -97,8 +97,7 @@ class NotificationServiceTest extends WebTestCase
         $client = static::createClient();
         $session = static::$container->get('session');
 
-        $userRepository = static::$container->get(UserRepository::class);
-        $this->user = $userRepository->find(1);
+        $this->user = $this->getUser(1);
 
         $firewallName = 'secure_area';
         $firewallContext = 'secured_area';

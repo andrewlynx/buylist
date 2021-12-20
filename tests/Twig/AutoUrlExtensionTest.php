@@ -12,8 +12,6 @@ class AutoUrlExtensionTest extends WebTestCase
 {
     public function testGetFilters()
     {
-        //$token = $this->createMock(TokenStorageInterface::class);
-        //$translator = $this->createMock(TranslatorInterface::class);
         $helperExtension = new AutoUrlExtension();
         $this->assertTrue($helperExtension->getFilters()[0] instanceof TwigFilter);
     }

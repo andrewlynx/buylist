@@ -2,24 +2,18 @@
 
 namespace App\Tests\Controller;
 
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DomCrawler\Form;
 
 class SecurityControllerTest extends WebTestCase
 {
     public function testLoginIncorrectEmail()
     {
         $client = static::createClient();
-        $crawler = $client->request(
-            'GET',
-            ControllerTestHelper::generateRoute('app_login')
-        );
-        $this->assertResponseIsSuccessful();
+        $form = $this->getForm($client);
 
-        $form = $crawler->filter('form[name="login_form"]')->form();
-        $form->setValues([
-            'email' => 'some_invalid_email',
-            'password' => 'some_password',
-        ]);
+        $form->setValues($this->getInvalidData());
         $client->submit($form);
         $client->followRedirect();
 
@@ -32,21 +26,41 @@ class SecurityControllerTest extends WebTestCase
     public function testLogin()
     {
         $client = static::createClient();
-        $crawler = $client->request(
-            'GET',
-            ControllerTestHelper::generateRoute('app_login')
-        );
-        $this->assertResponseIsSuccessful();
+        $form = $this->getForm($client);
 
-        $form = $crawler->filter('form[name="login_form"]')->form();
-        $form->setValues([
-            'email' => 'user1@example.com',
-            'password' => 'test',
-        ]);
+        $form->setValues($this->getValidData());
         $client->submit($form);
         $client->followRedirect();
         $client->followRedirect();
 
         $this->assertSame('/en/task-list/', $client->getResponse()->headers->get('Location'));
+    }
+
+    private function getForm(KernelBrowser $client): Form
+    {
+        $crawler = $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('app_login')
+        );
+        $this->assertResponseIsSuccessful();
+        $form = $crawler->filter('form[name="login_form"]')->form();
+
+        return $form;
+    }
+
+    private function getValidData(): array
+    {
+        return [
+            'email' => 'user1@example.com',
+            'password' => 'test',
+        ];
+    }
+
+    private function getInvalidData(): array
+    {
+        return [
+            'email' => 'some_invalid_email',
+            'password' => 'some_password',
+        ];
     }
 }

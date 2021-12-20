@@ -3,13 +3,15 @@
 namespace App\Tests\Controller;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
+use App\Tests\TestTrait;
 use App\UseCase\User\UserHandler;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserControllerTest extends WebTestCase
 {
+    use TestTrait;
+
     public function testSettings()
     {
         $client = static::createClient();
@@ -20,8 +22,7 @@ class UserControllerTest extends WebTestCase
         );
         $this->assertResponseIsSuccessful();
 
-        $userRepository = static::$container->get(UserRepository::class);
-        $testUser = $userRepository->find(1);
+        $testUser = $this->getUser(1);
         $this->assertNull($testUser->getLocale());
 
         $form = $crawler->filter('form[name="user_settings"]')->form();
@@ -31,7 +32,7 @@ class UserControllerTest extends WebTestCase
         $client->submit($form);
         $this->assertSame('/ua/user/settings', $client->getResponse()->headers->get('Location'));
 
-        $testUser = $userRepository->find(1);
+        $testUser = $this->getUser(1);
         $this->assertEquals('ua', $testUser->getLocale());
     }
 
@@ -101,11 +102,8 @@ class UserControllerTest extends WebTestCase
         );
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
 
-        $userRepository = static::$container->get(UserRepository::class);
-
-        /** @var User $testUser */
-        $testUser = $userRepository->find(1);
-        $favouriteUser = $userRepository->find(2);
+        $testUser = $this->getUser(1);
+        $favouriteUser = $this->getUser(2);
         $this->assertContains($favouriteUser, $testUser->getFavouriteUsers());
     }
 
@@ -128,13 +126,12 @@ class UserControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $client = ControllerTestHelper::logInUser($client);
-        $userRepository = static::$container->get(UserRepository::class);
         /** @var UserHandler $userHandler */
         $userHandler = static::$container->get(UserHandler::class);
 
         /** @var User $testUser */
-        $testUser = $userRepository->find(1);
-        $favouriteUser = $userRepository->find(2);
+        $testUser = $this->getUser(1);
+        $favouriteUser = $this->getUser(2);
         $userHandler->addToFavourites($testUser, $favouriteUser);
 
         $client->request(
@@ -143,8 +140,8 @@ class UserControllerTest extends WebTestCase
         );
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
 
-        $testUser = $userRepository->find(1);
-        $favouriteUser = $userRepository->find(2);
+        $testUser = $this->getUser(1);
+        $favouriteUser = $this->getUser(2);
         $this->assertNotContains($favouriteUser, $testUser->getFavouriteUsers());
     }
 

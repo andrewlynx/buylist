@@ -5,11 +5,8 @@ namespace App\Tests\UseCase\TaskItem;
 use App\DTO\TaskItem\TaskItemComplete;
 use App\DTO\TaskItem\TaskItemCreate;
 use App\DTO\TaskItem\TaskItemEdit;
-use App\Entity\TaskList;
-use App\Entity\User;
-use App\Repository\TaskItemRepository;
-use App\Repository\TaskListRepository;
-use App\Repository\UserRepository;
+use App\Entity\TaskItem;
+use App\Tests\TestTrait;
 use App\UseCase\TaskItem\TaskItemHandler;
 use App\UseCase\TaskList\TaskListHandler;
 use Exception;
@@ -17,12 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskItemHandlerTest extends WebTestCase
 {
-    protected function setUp(): void
-    {
-        if (null === static::$kernel) {
-            self::bootKernel();
-        }
-    }
+    use TestTrait;
 
     public function testCreateWrongUser()
     {
@@ -51,8 +43,7 @@ class TaskItemHandlerTest extends WebTestCase
 
     public function testCreateArchived()
     {
-        $taskListRepository = static::$container->get(TaskListRepository::class);
-        $taskList = $taskListRepository->find(1);
+        $taskList = $this->getTaskList(1);
 
         /** @var TaskListHandler $taskListHandler */
         $taskListHandler = static::$container->get(TaskListHandler::class);
@@ -64,7 +55,7 @@ class TaskItemHandlerTest extends WebTestCase
         $taskItemHandler = $this->getTaskItemHandler();
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('list.activate_list_to_edit');
-        $taskItem = $taskItemHandler->create($dto, $testUser);
+        $taskItemHandler->create($dto, $testUser);
     }
 
     public function testComplete()
@@ -77,13 +68,7 @@ class TaskItemHandlerTest extends WebTestCase
 
         $this->assertFalse($taskItem->isCompleted());
 
-        $dataArray = [
-            'task_item_complete[completed]' => false,
-            'task_item_complete[id]' => $taskItem->getId(),
-            'task_item_complete[_token]' => 'some_token',
-        ];
-
-        $dto = new TaskItemComplete($dataArray);
+        $dto = new TaskItemComplete($this->getCompleteData($taskItem));
         $taskItemHandler->complete($dto, $testUser);
         $this->assertTrue($taskItem->isCompleted());
     }
@@ -109,6 +94,13 @@ class TaskItemHandlerTest extends WebTestCase
         $this->assertEquals('new qty', $editedTaskItem->getQty());
     }
 
+    protected function setUp(): void
+    {
+        if (null === static::$kernel) {
+            self::bootKernel();
+        }
+    }
+
     private function getTaskItemDto(): TaskItemCreate
     {
         $dataArray = [
@@ -121,16 +113,18 @@ class TaskItemHandlerTest extends WebTestCase
         return new TaskItemCreate($dataArray);
     }
 
-    private function getUser(int $id): User
-    {
-        $userRepository = static::$container->get(UserRepository::class);
-
-        return $userRepository->find($id);
-    }
-
     private function getTaskItemHandler(): TaskItemHandler
     {
         /** @var TaskItemHandler */
         return static::$container->get(TaskItemHandler::class);
+    }
+
+    private function getCompleteData(TaskItem $taskItem): array
+    {
+        return [
+            'task_item_complete[completed]' => false,
+            'task_item_complete[id]' => $taskItem->getId(),
+            'task_item_complete[_token]' => 'some_token',
+        ];
     }
 }

@@ -3,50 +3,69 @@
 namespace App\Tests\Command;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
+use App\Tests\TestTrait;
+use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class CreateAdminTest extends KernelTestCase
 {
+    use TestTrait;
+
+    /**
+     * @var CommandTester|null
+     */
+    protected $commandTester;
+
+    /**
+     * @var ObjectManager|null
+     */
+    protected $entityManager;
+
     public function testExecuteFail()
     {
-        $kernel = static::createKernel();
-        $application = new Application($kernel);
-
-        $command = $application->find('app:create-admin');
-        $commandTester = new CommandTester($command);
         $this->expectExceptionMessage('Not enough arguments (missing: "user").');
-        $commandTester->execute([]);
+        $this->commandTester->execute([]);
     }
 
     public function testExecute()
     {
-        $kernel = static::bootKernel();
-        $application = new Application($kernel);
-
-        $userRepository = static::$container->get(UserRepository::class);
-        /** @var User $user */
-        $user = $userRepository->find(1);
+        $user = $this->getUser(1);
         $this->assertNotContains(User::ROLE_ADMIN, $user->getRoles());
 
-        $command = $application->find('app:create-admin');
-        $commandTester = new CommandTester($command);
-
-        $commandTester->execute(['user' => $user->getEmail()]);
+        $this->commandTester->execute(['user' => $user->getEmail()]);
 
         $this->assertContains(User::ROLE_ADMIN, $user->getRoles());
     }
 
     public function testUnexistingUser()
     {
-        $kernel = static::createKernel();
-        $application = new Application($kernel);
+        $this->commandTester->execute(['user' => 'some@wrong.email']);
 
+        $this->assertStringContainsString(
+            'Error: User some@wrong.email not found',
+            $this->commandTester->getDisplay()
+        );
+    }
+
+    protected function setUp(): void
+    {
+        $kernel = self::bootKernel();
+
+        $application = new Application($kernel);
         $command = $application->find('app:create-admin');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(['user' => 'some@wrong.email']);
-        $this->assertStringContainsString('Error: User some@wrong.email not found', $commandTester->getDisplay());
+        $this->commandTester = new CommandTester($command);
+
+        $this->entityManager = $kernel->getContainer()
+            ->get('doctrine')
+            ->getManager();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->entityManager = null;
     }
 }

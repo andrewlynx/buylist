@@ -2,15 +2,16 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\AdminNotification;
 use App\Entity\User;
 use App\Repository\AdminNotificationRepository;
-use App\Repository\UserRepository;
+use App\Tests\TestTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class AdminControllerTest extends WebTestCase
 {
+    use TestTrait;
+
     public function testIndexNotLogged()
     {
         $client = static::createClient();
@@ -44,14 +45,12 @@ class AdminControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $userRepository = static::$container->get(UserRepository::class);
-        /** @var User $user */
-        $user = $userRepository->find(1);
+        $user = $this->getUser(1);
         $this->assertCount(0, $user->getAdminNotifications());
 
         $this->createAdminNotification($client);
 
-        $user = $userRepository->find(1);
+        $user = $this->getUser(1);
         $adminNotification = $user->getAdminNotifications()->first();
         $this->assertEquals('Test Notification', $adminNotification->getText());
     }
@@ -64,10 +63,7 @@ class AdminControllerTest extends WebTestCase
         $client = static::createClient();
         $this->createAdminNotification($client);
 
-        /** @var UserRepository $userRepository */
-        $userRepository = static::$container->get(UserRepository::class);
-        /** @var User $admin */
-        $admin = $userRepository->findUser('admin@example.com');
+        $admin = $this->findUser('admin@example.com');
         $this->assertFalse($admin->getAdminNotifications()->first()->isSeen());
 
         $client->request(
@@ -88,7 +84,7 @@ class AdminControllerTest extends WebTestCase
         );
 
         /** @var User $admin */
-        $admin = $userRepository->findUser('admin@example.com');
+        $admin = $this->findUser('admin@example.com');
         $this->assertTrue($admin->getAdminNotifications()->first()->isSeen());
 
         $client->request(

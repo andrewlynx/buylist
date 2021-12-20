@@ -6,14 +6,14 @@ use App\Constant\AppConstant;
 use App\DTO\TaskItem\TaskItemComplete;
 use App\DTO\TaskItem\TaskItemCreate;
 use App\Entity\TaskItem;
-use App\Entity\TaskList;
-use App\Repository\TaskItemRepository;
-use App\Repository\TaskListRepository;
+use App\Tests\TestTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskItemControllerTest extends WebTestCase
 {
+    use TestTrait;
+
     public function testTaskItemCreateJsonFail()
     {
         $client = static::createClient();
@@ -64,11 +64,10 @@ class TaskItemControllerTest extends WebTestCase
         $responseArray = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_SUCCESS);
 
-        /** @var TaskList $taskList */
-        $taskList = static::$container->get(TaskListRepository::class)->find(1);
-
+        $taskList = $this->getTaskList(1);
         /** @var TaskItem $taskItem */
         $taskItem = $taskList->getTaskItems()->first();
+
         $this->assertEquals(1, $taskItem->getId());
         $this->assertEquals('some item', $taskItem->getName());
         $this->assertEquals('2', $taskItem->getQty());
@@ -90,9 +89,7 @@ class TaskItemControllerTest extends WebTestCase
 
         $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_SUCCESS);
 
-        /** @var TaskList $taskList */
-        $taskList = static::$container->get(TaskListRepository::class)->find(1);
-
+        $taskList = $this->getTaskList(1);
         /** @var TaskItem $taskItem */
         $taskItem = $taskList->getTaskItems()->first();
         $this->assertEquals(true, $taskItem->isCompleted());

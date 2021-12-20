@@ -9,7 +9,14 @@ class TaskListUsersRawTest extends WebTestCase
 {
     public function testMethods()
     {
-        $testData = [
+        $taskListUsersDTO = new TaskListUsersRaw($this->getData());
+
+        $this->assertEquals(1, count($taskListUsersDTO->users));
+    }
+
+    private function getData()
+    {
+        return [
             [
                 "email" => "test4@test.test",
                 "active" => "1"
@@ -22,8 +29,5 @@ class TaskListUsersRawTest extends WebTestCase
                 "email" => "test@test.test"
             ],
         ];
-        $taskListUsersDTO = new TaskListUsersRaw($testData);
-
-        $this->assertEquals(1, count($taskListUsersDTO->users));
     }
 }
