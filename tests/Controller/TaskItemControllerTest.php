@@ -19,14 +19,8 @@ class TaskItemControllerTest extends WebTestCase
         $client = static::createClient();
         $client = ControllerTestHelper::logInUser($client);
 
-        $client->request(
-            'POST',
-            ControllerTestHelper::generateRoute('task_item_create', 1),
-            [],
-            [],
-            [],
-            'not-json'
-        );
+        $client = $this->createTaskItemJsonFail($client);
+
         $responseArray = json_decode($client->getResponse()->getContent(), true);
         $this->assertArrayHasKey('status', $responseArray);
         $this->assertArrayHasKey('data', $responseArray);
@@ -38,17 +32,8 @@ class TaskItemControllerTest extends WebTestCase
         $client = static::createClient();
         $client = ControllerTestHelper::logInUser($client);
 
-        $client->request(
-            'POST',
-            ControllerTestHelper::generateRoute('task_item_create', 1),
-            [],
-            [],
-            [],
-            json_encode([
-                'task_item_create[_token]' => 'wrong_token',
-                'task_item_create[name]' => 'some item'
-            ])
-        );
+        $client = $this->createTaskItemTokenFail($client);
+
         $responseArray = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
         $this->assertEquals($responseArray['data'], 'Invalid CSRF token');
@@ -73,18 +58,7 @@ class TaskItemControllerTest extends WebTestCase
         $this->assertEquals('2', $taskItem->getQty());
         $this->assertEquals(false, $taskItem->isCompleted());
 
-        $client->request(
-            'POST',
-            ControllerTestHelper::generateRoute('task_item_complete', 1),
-            [],
-            [],
-            [],
-            json_encode([
-                'task_item_complete[_token]' => ControllerTestHelper::getToken(TaskItemComplete::FORM_NAME),
-                'task_item_complete[completed]' => false,
-                'task_item_complete[id]' => 1,
-            ])
-        );
+        $client = $this->completeTaskItem($client);
         $responseArray = json_decode($client->getResponse()->getContent(), true);
 
         $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_SUCCESS);
@@ -100,14 +74,8 @@ class TaskItemControllerTest extends WebTestCase
         $client = static::createClient();
         $client = ControllerTestHelper::logInUser($client);
 
-        $client->request(
-            'POST',
-            ControllerTestHelper::generateRoute('task_item_complete', 1),
-            [],
-            [],
-            [],
-            'not-json'
-        );
+        $client = $this->completeTaskItemJsonFail($client);
+
         $responseArray = json_decode($client->getResponse()->getContent(), true);
         $this->assertArrayHasKey('status', $responseArray);
         $this->assertArrayHasKey('data', $responseArray);
@@ -118,18 +86,8 @@ class TaskItemControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $client = ControllerTestHelper::logInUser($client);
+        $client = $this->completeTaskItemTokenFail($client);
 
-        $client->request(
-            'POST',
-            ControllerTestHelper::generateRoute('task_item_complete', 1),
-            [],
-            [],
-            [],
-            json_encode([
-                'task_item_create[_token]' => 'wrong_token',
-                'task_item_complete[id]' => 1,
-            ])
-        );
         $responseArray = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
         $this->assertEquals($responseArray['data'], 'Invalid CSRF token');
@@ -148,6 +106,86 @@ class TaskItemControllerTest extends WebTestCase
                 'task_item_create[name]' => 'some item',
                 'task_item_create[qty]' => '2',
                 'task_item_create[list_id]' => 1,
+            ])
+        );
+
+        return $client;
+    }
+
+    private function createTaskItemJsonFail(KernelBrowser $client): KernelBrowser
+    {
+        $client->request(
+            'POST',
+            ControllerTestHelper::generateRoute('task_item_create', 1),
+            [],
+            [],
+            [],
+            'not-json'
+        );
+
+        return $client;
+    }
+
+    private function createTaskItemTokenFail(KernelBrowser $client): KernelBrowser
+    {
+        $client->request(
+            'POST',
+            ControllerTestHelper::generateRoute('task_item_create', 1),
+            [],
+            [],
+            [],
+            json_encode([
+                'task_item_create[_token]' => 'wrong_token',
+                'task_item_create[name]' => 'some item'
+            ])
+        );
+
+        return $client;
+    }
+
+    private function completeTaskItem(KernelBrowser $client): KernelBrowser
+    {
+        $client->request(
+            'POST',
+            ControllerTestHelper::generateRoute('task_item_complete', 1),
+            [],
+            [],
+            [],
+            json_encode([
+                'task_item_complete[_token]' => ControllerTestHelper::getToken(TaskItemComplete::FORM_NAME),
+                'task_item_complete[completed]' => false,
+                'task_item_complete[id]' => 1,
+            ])
+        );
+
+        return $client;
+    }
+
+    private function completeTaskItemJsonFail(KernelBrowser $client): KernelBrowser
+    {
+        $client->request(
+            'POST',
+            ControllerTestHelper::generateRoute('task_item_complete', 1),
+            [],
+            [],
+            [],
+            'not-json'
+        );
+
+        return $client;
+    }
+
+    private function completeTaskItemTokenFail(KernelBrowser $client): KernelBrowser
+    {
+        $client->request(
+            'POST',
+            ControllerTestHelper::generateRoute('task_item_complete', 1),
+            [],
+            [],
+            [],
+            json_encode([
+                'task_item_create[_token]' => 'wrong_token',
+                'task_item_complete[id]' => 1,
             ])
         );
 

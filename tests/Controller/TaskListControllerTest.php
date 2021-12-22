@@ -2,7 +2,6 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\TaskList;
 use App\Repository\TaskListRepository;
 use App\Tests\TestTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -15,18 +14,12 @@ class TaskListControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request(
-            'GET',
-            $client->getContainer()->get('router')->generate('task_list_index')
-        );
+        $client = $this->getSimpleRoute($client, 'task_list_index');
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $this->assertSame('/en/login', $client->getResponse()->headers->get('Location'));
 
         $client = ControllerTestHelper::logInUser($client);
-        $client->request(
-            'GET',
-            $client->getContainer()->get('router')->generate('task_list_index')
-        );
+        $client = $this->getSimpleRoute($client, 'task_list_index');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 
@@ -34,18 +27,12 @@ class TaskListControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request(
-            'GET',
-            $client->getContainer()->get('router')->generate('task_list_index_shared')
-        );
+        $client = $this->getSimpleRoute($client, 'task_list_index_shared');
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $this->assertSame('/en/login', $client->getResponse()->headers->get('Location'));
 
         $client = ControllerTestHelper::logInUser($client);
-        $client->request(
-            'GET',
-            $client->getContainer()->get('router')->generate('task_list_index_shared')
-        );
+        $client = $this->getSimpleRoute($client, 'task_list_index_shared');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 
@@ -53,18 +40,12 @@ class TaskListControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request(
-            'GET',
-            $client->getContainer()->get('router')->generate('task_list_archive')
-        );
+        $client = $this->getSimpleRoute($client, 'task_list_archive');
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $this->assertSame('/en/login', $client->getResponse()->headers->get('Location'));
 
         $client = ControllerTestHelper::logInUser($client);
-        $client->request(
-            'GET',
-            $client->getContainer()->get('router')->generate('task_list_archive')
-        );
+        $client = $this->getSimpleRoute($client, 'task_list_archive');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 
@@ -204,7 +185,7 @@ class TaskListControllerTest extends WebTestCase
         $client = static::createClient();
         $client = ControllerTestHelper::logInUser($client);
 
-        $crawler = $client->request(
+        $client->request(
             'POST',
             static::$container->get('router')->generate('task_list_create'),
             $this->getInvalidPostData('task_list')
@@ -216,30 +197,10 @@ class TaskListControllerTest extends WebTestCase
             $client->getResponse()->getContent()
         );
 
-        $crawler = $client->request(
+        $client->request(
             'POST',
             static::$container->get('router')->generate('task_list_create'),
-            [
-                'task_list' => [
-                    '_token' => ControllerTestHelper::getToken('task_list'),
-                    'name' => 'cool name',
-                    'description' => 'nice description',
-                    'users' => [
-                        0 => [
-                            'email' => 'test4@test.test',
-                            'active' => 1,
-                        ],
-                        1 => [
-                            'email' => 'user1@example.com',
-                            'active' => 1,
-                        ],
-                        2 => [
-                            'email' => 'test66@test.test',
-                            'active' => 1,
-                        ],
-                    ],
-                ],
-            ]
+            $this->getPostData()
         );
 
         $client->followRedirect();
@@ -254,7 +215,7 @@ class TaskListControllerTest extends WebTestCase
         $client = static::createClient();
         $client = ControllerTestHelper::logInUser($client);
 
-        $crawler = $client->request(
+        $client->request(
             'POST',
             static::$container->get('router')->generate('task_list_create_counter'),
             $this->getInvalidPostData('task_list_counter')
@@ -334,7 +295,7 @@ class TaskListControllerTest extends WebTestCase
         $client = static::createClient();
         $client = ControllerTestHelper::logInUser($client);
 
-        $crawler = $client->request(
+        $client->request(
             'GET',
             ControllerTestHelper::generateRoute('task_list_view', 1)
         );
@@ -344,13 +305,13 @@ class TaskListControllerTest extends WebTestCase
             $client->getResponse()->getContent()
         );
 
-        $crawler = $client->request(
+        $client->request(
             'GET',
             ControllerTestHelper::generateRoute('task_list_hide_completed', 1)
         );
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->request(
+        $client->request(
             'GET',
             ControllerTestHelper::generateRoute('task_list_view', 1)
         );
@@ -365,7 +326,7 @@ class TaskListControllerTest extends WebTestCase
         $client = static::createClient();
         $client = ControllerTestHelper::logInUser($client, 'user2@example.com');
 
-        $crawler = $client->request(
+        $client->request(
             'GET',
             ControllerTestHelper::generateRoute('task_list_hide_completed', 1)
         );
@@ -386,6 +347,31 @@ class TaskListControllerTest extends WebTestCase
                 'users' => [
                     1 => [
                         'email' => 'test4_test.test',
+                        'active' => 1,
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    private function getPostData(): array
+    {
+        return [
+            'task_list' => [
+                '_token' => ControllerTestHelper::getToken('task_list'),
+                'name' => 'cool name',
+                'description' => 'nice description',
+                'users' => [
+                    0 => [
+                        'email' => 'test4@test.test',
+                        'active' => 1,
+                    ],
+                    1 => [
+                        'email' => 'user1@example.com',
+                        'active' => 1,
+                    ],
+                    2 => [
+                        'email' => 'test66@test.test',
                         'active' => 1,
                     ],
                 ],

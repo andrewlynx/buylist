@@ -6,6 +6,7 @@ use App\Entity\TaskList;
 use App\Entity\User;
 use App\Repository\TaskListRepository;
 use App\Repository\UserRepository;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 trait TestTrait
 {
@@ -37,5 +38,15 @@ trait TestTrait
         $taskListRepository = self::getContainer()->get(TaskListRepository::class);
 
         return $taskListRepository->find($id);
+    }
+
+    public function getSimpleRoute(KernelBrowser $client, string $route): KernelBrowser
+    {
+        $client->request(
+            'GET',
+            $client->getContainer()->get('router')->generate($route)
+        );
+
+        return $client;
     }
 }
