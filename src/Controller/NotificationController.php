@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Exception\ValidatorException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
 /**
@@ -26,6 +27,21 @@ use Throwable;
 class NotificationController extends TranslatableController
 {
     use FormsTrait;
+
+    /**
+     * @var NotificationHandler
+     */
+    private $notificationHandler;
+
+    /**
+     * @param TranslatorInterface $translator
+     * @param NotificationHandler $notificationHandler
+     */
+    public function __construct(TranslatorInterface $translator, NotificationHandler $notificationHandler)
+    {
+        parent::__construct($translator);
+        $this->notificationHandler = $notificationHandler;
+    }
 
     /**
      * @Route("/", name="index")
@@ -38,12 +54,13 @@ class NotificationController extends TranslatableController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $taskLists = $repository->getUsersNotifications($user);
+        $notifications = $repository->getUsersNotifications($user);
+        $this->notificationHandler->readAll($user);
 
         return $this->render(
             'v1/notification/index.html.twig',
             [
-                'notifications' => $taskLists,
+                'notifications' => $notifications,
             ]
         );
     }
@@ -53,17 +70,11 @@ class NotificationController extends TranslatableController
      *
      * @param Notification        $notification
      * @param Request             $request
-     * @param NotificationHandler $notificationHandler
      *
      * @return Response
-     *
-     * @throws Exception
      */
-    public function read(
-        Notification $notification,
-        Request $request,
-        NotificationHandler $notificationHandler
-    ): Response {
+    public function read(Notification $notification, Request $request): Response
+    {
         try {
             if ($notification->getUser() !== $this->getUser()) {
                 throw new ValidatorException('validation.invalid_submission');
@@ -77,7 +88,7 @@ class NotificationController extends TranslatableController
             }
             $this->checkCsrf('read_notification'.$notification->getId(), $dataArray['_token']);
 
-            $notificationHandler->read($notification);
+            $this->notificationHandler->read($notification);
 
             return new JsonSuccess(
                 'read'
@@ -90,9 +101,28 @@ class NotificationController extends TranslatableController
     }
 
     /**
+     * @Route("/clear", name="clear")
+     *
+     * @return Response
+     */
+    public function clearAll()
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $this->notificationHandler->clearAll($user);
+
+        return $this->render(
+            'v1/notification/index.html.twig',
+            [
+                'notifications' => [],
+            ]
+        );
+    }
+
+    /**
      * @Route("/read-notification/{id}", name="read_admin")
      *
-     * @param AdminNotification|null $notification
+     * @param AdminNotification|null   $notification
      * @param AdminNotificationHandler $notificationHandler
      *
      * @return Response

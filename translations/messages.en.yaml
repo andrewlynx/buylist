@@ -72,6 +72,7 @@ menu:
   users: Users
 notification:
   all_btn: 'See All Incoming Activity'
+  clear: 'Clear all'
   invitation: '<u>%user%</u> invited you to list <l>%list%</l>'
   list_archived: '<u>%user%</u> archived list <l>%list%</l>'
   list_changed: '<u>%user%</u> made changes in list <l>%list%</l>'
@@ -113,6 +114,7 @@ share_list:
   user_not_found: 'User not found. The registration invitation was send on this email'
 validation:
   clear_archive: 'Are you sure you want to remove all archived lists?'
+  clear_notification_prompt: 'Are you sure you want to clear all notifications?'
   delete_prompt: 'Are you sure you want to delete this list?'
   email_not_found: 'Email could not be found'
   incorrect_email: 'Incorrect Email'

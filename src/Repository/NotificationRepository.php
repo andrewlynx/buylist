@@ -79,4 +79,31 @@ class NotificationRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * @param UserInterface $user
+     */
+    public function readAll(UserInterface $user): void
+    {
+        $qb = $this->createQueryBuilder('n')
+            ->update()
+            ->set('n.seen', true)
+            ->Where('n.user = :user')
+            ->setParameter('user', $user);
+
+        $qb->getQuery()->execute();
+    }
+
+    /**
+     * @param UserInterface $user
+     */
+    public function clearAll(UserInterface $user): void
+    {
+        $qb = $this->createQueryBuilder('n')
+            ->delete()
+            ->Where('n.user = :user')
+            ->setParameter('user', $user);
+
+        $qb->getQuery()->execute();
+    }
 }

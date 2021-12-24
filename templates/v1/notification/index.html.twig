@@ -2,7 +2,22 @@
 
 {% block title %}{{ 'notification.your_notifications'|trans }}{% endblock %}
 
+{% block page_title_upper %}
+{% endblock %}
+
+{% block page_title %}
+    {{ 'notification.your_notifications'|trans }}
+{% endblock %}
+
 {% block content %}
+    <div class="clear-notifications text-right">
+        <a class="btn btn-outline-primary"
+           href="{{ path('notification_clear') }}"
+           onclick="return confirm('{{ 'validation.clear_notification_prompt'|trans }}')"
+        >
+            {{ 'notification.clear'|trans }}
+        </a>
+    </div>
     {% if notifications %}
         {% for notification in notifications %}
             <p class="well">

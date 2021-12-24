@@ -72,6 +72,7 @@ menu:
   users: Користувачі
 notification:
   all_btn: 'Дивитись Всю Активність'
+  clear: 'Видалили все'
   invitation: '<u>%user%</u> запросив вас у список <l>%list%</l>'
   list_archived: '<u>%user%</u> архівував список <l>%list%</l>'
   list_changed: '<u>%user%</u> вніс зміни у список <l>%list%</l>'
@@ -113,6 +114,7 @@ share_list:
   user_not_found: 'Користувача не знайдено. Було надіслано листа з запрошенням на цей email'
 validation:
   clear_archive: 'Ви впевнені, що хочете видалити всі заархівовані списки?'
+  clear_notification_prompt: 'Ви впевнені, що хочете видалити всі повідомлення?'
   delete_prompt: 'Ви впевнені, що хочете видалити цей список?'
   email_not_found: 'Email не знайдено'
   incorrect_email: 'Невірний email'
