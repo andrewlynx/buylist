@@ -40,30 +40,8 @@ class UserFixtures extends Fixture
     {
         $this->em = $manager;
 
-        for ($i = 1; $i < 5; $i++) {
-            $name = 'user'.$i;
-            $$name = new User();
-
-            $$name->setEmail($name.'@example.com');
-            $$name->setPassword($this->passwordEncoder->encodePassword(
-                $$name,
-                'test'
-            ));
-
-            $this->em->persist($$name);
-        }
-
-        // Create Admin
-        $admin = new User();
-        $admin->setEmail('admin@example.com');
-        $admin->setPassword($this->passwordEncoder->encodePassword(
-            $admin,
-            'test'
-        ));
-        $admin->addRole(User::ROLE_ADMIN);
-        $admin->setHelpers(false);
-        $this->em->persist($admin);
-
+        $this->makeUsers();
+        $this->makeAdmin();
         $this->em->flush();
 
         /** @var User $user */
@@ -117,5 +95,34 @@ class UserFixtures extends Fixture
         }
 
         return $name;
+    }
+
+    private function makeUsers(): void
+    {
+        for ($i = 1; $i < 5; $i++) {
+            $name = 'user'.$i;
+            $$name = new User();
+
+            $$name->setEmail($name.'@example.com');
+            $$name->setPassword($this->passwordEncoder->encodePassword(
+                $$name,
+                'test'
+            ));
+
+            $this->em->persist($$name);
+        }
+    }
+
+    private function makeAdmin(): void
+    {
+        $admin = new User();
+        $admin->setEmail('admin@example.com');
+        $admin->setPassword($this->passwordEncoder->encodePassword(
+            $admin,
+            'test'
+        ));
+        $admin->addRole(User::ROLE_ADMIN);
+        $admin->setHelpers(false);
+        $this->em->persist($admin);
     }
 }

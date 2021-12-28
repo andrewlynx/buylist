@@ -299,7 +299,7 @@ form[name="task_list"] {
     position: absolute;
     padding: 15px;
     background: #fff;
-    border: 1px solid #434345;
+    border: 1px solid theme-color("text");
     border-radius: 15px;
     z-index: 99;
   }
@@ -373,6 +373,48 @@ form[name="task_list"] {
     }
   }
 }
+.clear-notifications {
+  margin-bottom: 24px;
+}
+.notifications {
+  .date {
+    width: 68px;
+    float: left;
+    text-align: center;
+    font-weight: 500;
+    font-size: 18px;
+    margin-right: 16px;
+    p {
+      margin-bottom: 8px;
+    }
+  }
+  .notification-block {
+    float: left;
+    border-left: 2px solid #e7e7e7;
+    width: calc(100% - 84px);
+    .notification {
+      width: 100%;
+      padding: 22px 38px;
+      .username {
+        color: theme-color("text");
+        margin-top: 10px;
+        display: inline-block;
+        font-weight: 600;
+      }
+      .nf-info {
+        font-size: 12px;
+        font-weight: 500;
+        color: #aeb0bd;
+      }
+      .tl-name {
+        color: theme-color("link");
+        display: inline-block;
+        margin-left: 5px;
+        margin-right: 40px;
+      }
+    }
+  }
+}
 @media (max-width: 991.98px) {
   .btn {
     min-width: 0;
@@ -386,6 +428,22 @@ form[name="task_list"] {
         &:before {
           font-size: 18px;
         }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .notifications {
+    padding: 10px;
+    .date {
+      width: 48px;
+      font-size: 14px;
+      margin-right: 6px;
+    }
+    .notification-block {
+      .notification {
+        padding: 5px 15px;
       }
     }
   }

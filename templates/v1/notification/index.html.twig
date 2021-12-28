@@ -19,29 +19,48 @@
         </a>
     </div>
     {% if notifications %}
+
+        {% set date = '' %}
         {% for notification in notifications %}
-            <p class="well">
+            {% if date != notification.date|date('ydm') %}
+                {% if date != '' %}
+                    {% include 'v1/notification/block-end.html.twig' %}
+                    {% include 'v1/notification/block-start.html.twig' %}
+                {% else %}
+                    {% include 'v1/notification/block-start.html.twig' %}
+                {% endif %}
+                {% set date = notification.date|date('ydm') %}
+                {% include 'v1/notification/block-date.html.twig' %}
+                <div class="notification-block">
+            {% endif %}
+            <div class="notification">
+                <a href="{{ path('user_user', {'email': notification.userInvolved.email}) }}">
+                    <div class="user-box small {{ notification.userInvolved.color }} float-left">
+                        {{ notification.userInvolved.nickname|first|capitalize }}
+                    </div>
+                    <span class="username">{{ notification.userInvolved.nickname }}</span>
+                </a>
                 {% if notification.taskList %}
                     <a href="{{ path('task_list_view', {'id': notification.taskList.id}) }}">
-                        {{ notification.getDescription()|trans({
-                            '%app%': _site_name,
-                            '%user%': notification.userInvolved.nickname,
-                            '%list%': notification.taskList.name ?? '',
-                            '%text%': notification.text
-                        })|raw }}
-                    </a>
                 {% else %}
                     <a href="#" onclick="return">
-                        {{ notification.getDescription()|trans({
-                            '%app%': _site_name,
-                            '%user%': notification.userInvolved.nickname,
-                            '%text%': notification.text
-                        })|raw }}
-                    </a>
                 {% endif %}
-                <small class="text-muted">{{ notification.date|date }}</small>
-            </p>
+                        <div class="nf-info">
+                            {{ notification.getDescription()|trans({
+                                '%app%': _site_name,
+                                '%user%': '',
+                                '%list%': '',
+                                '%text%': notification.text
+                            })|raw }}
+                            <span class="tl-name">{{ notification.taskList.name ?? '' }}</span>
+                            {{ notification.date|date('h:m') }}
+                        </div>
+                    </a>
+            </div>
         {% endfor %}
+        {% if date != '' %}
+            {% include 'v1/notification/block-end.html.twig' %}
+        {% endif %}
     {% else %}
         {% include 'v1/common/no-result.html.twig' only %}
     {% endif %}
