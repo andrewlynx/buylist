@@ -1,10 +1,10 @@
 <div class="col-md-12 ti {{  task_item.completed ? 'completed' }}" id="item-id-{{ task_item.id }}">
     <div class="row">
         <div class="col-md-6">
-            <div class="tin">{{ task_item.name }}</div>
+            <div class="tin">{{ task_item.name|auto_url|raw }}</div>
         </div>
         <div class="tid col-md-6">
-            <div class="tiq">{{ task_item.qty }}</div>
+            <div class="tiq">{{ task_item.qty|auto_url|raw }}</div>
             {{ form(complete_item_forms[task_item.id]) }}
         </div>
     </div>

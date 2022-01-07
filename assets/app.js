@@ -156,7 +156,7 @@ $( document ).ready(function() {
     });
 
     // Task item completion call handler
-    $(document).on("click", '#list-items > .ti', function(e) {
+    $(document).on("click", '#list-items > .ti:not(.ti-counter)', function(e) {
         e.preventDefault();
 
         const classLoading = 'loading';
@@ -186,7 +186,7 @@ $( document ).ready(function() {
     });
 
     // Task item increment call handler
-    $(document).on("click", '#list-items > .ti .ti-counter', function(e) {
+    $(document).on("click", '#list-items > .ti.ti-counter', function(e) {
         e.stopPropagation();
 
         const classLoading = 'loading';
@@ -222,6 +222,10 @@ $( document ).ready(function() {
                 alert( msg.data );
             }
         });
+    });
+
+    $(document).on("click", '#list-items > .ti a', function(e) {
+        e.stopPropagation();
     });
 
     // Task item edit call handler

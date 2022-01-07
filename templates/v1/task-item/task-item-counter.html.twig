@@ -1,14 +1,10 @@
-<div class="col-md-12 ti {{  task_item.completed ? 'completed' }}" id="item-id-{{ task_item.id }}">
+<div class="col-md-12 ti ti-counter{{  task_item.completed ? 'completed' }}" id="item-id-{{ task_item.id }}">
     <div class="row">
         <div class="col-md-6">
             <div class="tin">{{ task_item.name }}</div>
         </div>
         <div class="tid col-md-3">
             <div class="tiq">{{ task_item.qty }}</div>
-            {{ form(complete_item_forms[task_item.id]) }}
-        </div>
-        <div class="ti-counter col-md-3 text-center">
-            +
             {{ form(increment_item_forms[task_item.id]) }}
         </div>
     </div>
