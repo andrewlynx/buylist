@@ -48,8 +48,8 @@ security:
         - { path: ^/(%locales%)/login, role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
         - { path: ^/(%locales%)/register, role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET,POST] }
         - { path: ^/logout, role: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
-        - { path: ^/(%locales%)/task.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ] }
-        - { path: ^/(%locales%)/user.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ] }
-        - { path: ^/(%locales%)/notification.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ] }
-        - { path: ^/(%locales%)/search.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ] }
-        - { path: ^/(%locales%)/master.*, roles: [ ROLE_ADMIN ] }
+        - { path: ^/(%locales%)/task.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ], methods: [GET] }
+        - { path: ^/(%locales%)/user.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ], methods: [GET] }
+        - { path: ^/(%locales%)/notification.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ], methods: [GET] }
+        - { path: ^/(%locales%)/search.*, roles: [ IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED ], methods: [GET] }
+        - { path: ^/(%locales%)/master.*, roles: [ ROLE_ADMIN ], methods: [GET] }

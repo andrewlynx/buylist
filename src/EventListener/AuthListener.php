@@ -53,6 +53,7 @@ final class AuthListener implements EventSubscriberInterface
         if ($token !== null) {
             $user = $token->getUser();
             if ($user instanceof User) {
+                $user->setPreviousVisitTime($user->getLastLogin());
                 $user->setLastLogin(new DateTime());
                 $this->em->flush();
             }

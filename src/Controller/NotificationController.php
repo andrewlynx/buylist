@@ -143,4 +143,27 @@ class NotificationController extends TranslatableController
             );
         }
     }
+
+    /**
+     * @Route("/check-updates", name="check_updates")
+     *
+     * @param NotificationRepository $repository
+     *
+     * @return Response
+     */
+    public function checkUpdates(NotificationRepository $repository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $haveUpdates = false;
+
+        try {
+            $haveUpdates = $repository->checkUpdates($user);
+        } catch (Exception $e) {
+            //@todo handle exception
+        }
+        $response = $haveUpdates ? new JsonSuccess(true) : new JsonError(false);
+
+        return $response;
+    }
 }

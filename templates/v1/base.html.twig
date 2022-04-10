@@ -51,4 +51,7 @@
         </div>
     </div>
     {% include 'v1/parts/footer.html.twig' %}
+    <div id="app-data"
+        data-update-notofications="{{ path('notification_check_updates') }}"
+    ></div>
 {% endblock %}

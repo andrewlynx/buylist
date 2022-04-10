@@ -117,6 +117,7 @@
   cursor: pointer;
   .tiq, .tin {
     padding: 8px 15px;
+    word-break: break-word;
   }
   &.completed {
     opacity: 0.5;
@@ -376,7 +377,7 @@ form[name="task_list"] {
 .clear-notifications {
   margin-bottom: 24px;
 }
-.notifications {
+.content .notifications {
   .date {
     width: 68px;
     float: left;

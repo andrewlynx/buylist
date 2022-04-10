@@ -145,6 +145,11 @@ class User implements UserInterface
     private $bannedUsers;
 
     /**
+     * @var DateTimeInterface
+     */
+    private $previousVisitTime;
+
+    /**
      *
      */
     public function __construct()
@@ -617,6 +622,26 @@ class User implements UserInterface
     public function removeFromBan(User $user): self
     {
         $this->bannedUsers->removeElement($user);
+
+        return $this;
+    }
+
+    /**
+     * @return DateTimeInterface
+     */
+    public function getPreviousVisitTime(): DateTimeInterface
+    {
+        return $this->previousVisitTime;
+    }
+
+    /**
+     * @param DateTimeInterface|null $previousVisitTime
+     *
+     * @return $this
+     */
+    public function setPreviousVisitTime(?DateTimeInterface $previousVisitTime): User
+    {
+        $this->previousVisitTime = $previousVisitTime;
 
         return $this;
     }

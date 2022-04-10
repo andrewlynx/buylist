@@ -138,6 +138,16 @@
       margin-top: 15px;
     }
   }
+  .have-updates {
+    display: none;
+    font-size: 22px;
+   .refresh-icon {
+      color: red;
+    }
+    &.active {
+      display: block;
+    }
+  }
 }
 .nav {
   flex: 0 0 100%;

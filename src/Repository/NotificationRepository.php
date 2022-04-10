@@ -65,11 +65,11 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param UserInterface $user
+     * @param User $user
      *
      * @return array
      */
-    public function getUsersNotifications(UserInterface $user): array
+    public function getUsersNotifications(User $user): array
     {
         $qb = $this->createQueryBuilder('n')
             ->Where('n.user = :user')
@@ -81,29 +81,49 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param UserInterface $user
+     * @param User $user
      */
-    public function readAll(UserInterface $user): void
+    public function readAll(User $user): void
     {
         $qb = $this->createQueryBuilder('n')
             ->update()
             ->set('n.seen', true)
-            ->Where('n.user = :user')
+            ->where('n.user = :user')
             ->setParameter('user', $user);
 
         $qb->getQuery()->execute();
     }
 
     /**
-     * @param UserInterface $user
+     * @param User $user
      */
-    public function clearAll(UserInterface $user): void
+    public function clearAll(User $user): void
     {
         $qb = $this->createQueryBuilder('n')
             ->delete()
-            ->Where('n.user = :user')
+            ->where('n.user = :user')
             ->setParameter('user', $user);
 
         $qb->getQuery()->execute();
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return bool
+     *
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
+    public function checkUpdates(User $user): bool
+    {
+        $qb = $this->createQueryBuilder('n')
+            ->select('COUNT(n)')
+            ->where('n.user = :user')
+            ->andWhere('n.date > :date')
+            ->setParameter('user', $user)
+            ->setParameter('date', $user->getPreviousVisitTime());
+
+        return $qb->getQuery()->getSingleScalarResult() > 0;
     }
 }

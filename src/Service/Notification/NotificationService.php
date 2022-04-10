@@ -6,6 +6,8 @@ use App\Entity\AdminNotification;
 use App\Entity\Notification;
 use App\Entity\TaskList;
 use App\Entity\User;
+use DateTime;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -83,6 +85,17 @@ class NotificationService
     }
 
     /**
+     * @param Collection<Notification> $notifications
+     */
+    public function save(Collection $notifications)
+    {
+        foreach ($notifications->getIterator() as $notification) {
+            $this->em->persist($notification);
+        }
+        $this->em->flush();
+    }
+
+    /**
      * @param int $event
      * @param User $user
      * @param TaskList|null $taskList
@@ -113,35 +126,43 @@ class NotificationService
 
     /**
      * @param int           $event
-     * @param array         $users
+     * @param User          $user
      * @param TaskList|null $taskList
      * @param User|null     $userInvolved
      * @param string|null   $text
      *
+     * @return Notification
+     *
      * @throws Exception
      */
-    public function createForManyUsers(
+    public function getOrCreate(
         int $event,
-        array $users,
+        User $user,
         ?TaskList $taskList = null,
         ?User $userInvolved = null,
         ?string $text = null
-    ): void {
-        foreach ($users as $user) {
-            // do not add notification for current user
-            if ($user === $this->getUser()) {
-                continue;
-            }
-            $notification = $this->getOrCreate(
-                $event,
-                $user,
-                $taskList,
-                $userInvolved,
-                $text
-            );
-            $this->em->persist($notification);
+    ): Notification {
+        /** @var Notification $notification */
+        $notification = $this->em->getRepository(Notification::class)->findOneBy([
+            'event' => $event,
+            'user' => $user->getId(),
+            'taskList' => $taskList ? $taskList->getId() : null,
+            'userInvolved' => $userInvolved,
+            'text' => $text,
+            'seen' => false
+        ]);
+        if (!$notification) {
+            $notification = (new Notification())
+                ->setEvent($event)
+                ->setUser($user)
+                ->setTaskList($taskList)
+                ->setUserInvolved($userInvolved)
+                ->setText($text);
         }
-        $this->em->flush();
+
+        $notification->setDate(new DateTime());
+
+        return $notification;
     }
 
     /**
@@ -193,45 +214,6 @@ class NotificationService
             default:
                 return null;
         }
-    }
-
-    /**
-     * @param int           $event
-     * @param User          $user
-     * @param TaskList|null $taskList
-     * @param User|null     $userInvolved
-     * @param string|null   $text
-     *
-     * @return Notification
-     *
-     * @throws Exception
-     */
-    private function getOrCreate(
-        int $event,
-        User $user,
-        ?TaskList $taskList = null,
-        ?User $userInvolved = null,
-        ?string $text = null
-    ): Notification {
-        $notification = $this->em->getRepository(Notification::class)->findOneBy([
-            'event' => $event,
-            'user' => $user->getId(),
-            'taskList' => $taskList ? $taskList->getId() : null,
-            'userInvolved' => $userInvolved,
-            'text' => $text,
-            'seen' => false
-        ]);
-        if (!$notification) {
-            $notification = NotificationFactory::make(
-                $event,
-                $user,
-                $taskList,
-                $userInvolved,
-                $text
-            );
-        }
-
-        return $notification;
     }
 
     /**

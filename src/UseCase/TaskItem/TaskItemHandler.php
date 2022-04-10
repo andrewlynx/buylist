@@ -9,12 +9,10 @@ use App\DTO\TaskItem\TaskItemIncrement;
 use App\Entity\TaskItem;
 use App\Entity\TaskList;
 use App\Entity\User;
-use App\Service\Notification\NotificationService;
+use App\Service\Notification\ListChangedNotification;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Doctrine\ORM\ORMException;
-use Doctrine\ORM\OptimisticLockException;
 
 class TaskItemHandler
 {
@@ -24,18 +22,18 @@ class TaskItemHandler
     private $em;
 
     /**
-     * @var NotificationService
+     * @var ListChangedNotification
      */
-    private $notificationService;
+    private $listChangedNotification;
 
     /**
-     * @param EntityManagerInterface $em
-     * @param NotificationService    $notificationService
+     * @param EntityManagerInterface  $em
+     * @param ListChangedNotification $listChangedNotification
      */
-    public function __construct(EntityManagerInterface $em, NotificationService $notificationService)
+    public function __construct(EntityManagerInterface $em, ListChangedNotification $listChangedNotification)
     {
         $this->em = $em;
-        $this->notificationService = $notificationService;
+        $this->listChangedNotification = $listChangedNotification;
     }
 
     /**
@@ -65,12 +63,11 @@ class TaskItemHandler
             ->setQty($dto->qty)
             ->setTaskList($taskList->setUpdatedAt(new DateTime()));
 
-        $this->notificationService->createForManyUsers(
-            NotificationService::EVENT_LIST_CHANGED,
-            $taskList->getAllUsers(),
-            $taskList,
-            $user
-        );
+        $this->listChangedNotification
+            ->forUsers($taskList->getAllUsers())
+            ->aboutTaskList($taskList)
+            ->setUserInvolved($user)
+            ->createOrUpdate();
 
         $this->em->persist($taskItem);
         $this->em->flush();
@@ -95,12 +92,11 @@ class TaskItemHandler
         $taskList = $taskItem->getTaskList();
         $this->setTaskListUpdatedTime($taskList);
 
-        $this->notificationService->createForManyUsers(
-            NotificationService::EVENT_LIST_CHANGED,
-            $taskList->getAllUsers(),
-            $taskList,
-            $user
-        );
+        $this->listChangedNotification
+            ->forUsers($taskList->getAllUsers())
+            ->aboutTaskList($taskList)
+            ->setUserInvolved($user)
+            ->createOrUpdate();
 
         $this->em->flush();
 
@@ -144,12 +140,11 @@ class TaskItemHandler
         $taskList = $taskItem->getTaskList();
         $this->setTaskListUpdatedTime($taskList);
 
-        $this->notificationService->createForManyUsers(
-            NotificationService::EVENT_LIST_CHANGED,
-            $taskList->getAllUsers(),
-            $taskList,
-            $user
-        );
+        $this->listChangedNotification
+            ->forUsers($taskList->getAllUsers())
+            ->aboutTaskList($taskList)
+            ->setUserInvolved($user)
+            ->createOrUpdate();
 
         $this->em->flush();
 

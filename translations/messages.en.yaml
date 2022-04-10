@@ -21,6 +21,7 @@ header:
   welcome_back: 'Welcome back'
 helper:
   turn_off: 'This helpers could be turned off in settings'
+  updates_notifications: 'You have updates. Refresh the page to see them'
 list:
   activate_list_to_edit: 'This list is archived. Activate the list to make changes'
   add_label: 'Add Label'

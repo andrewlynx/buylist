@@ -9,7 +9,9 @@ use App\Entity\Object\Email;
 use App\Entity\TaskList;
 use App\Entity\User;
 use App\Repository\TaskListRepository;
-use App\Service\Notification\NotificationService;
+use App\Service\Notification\ListArchivedNotification;
+use App\Service\Notification\ListRemovedNotification;
+use App\Service\Notification\UserUnsubscribedNotification;
 use App\UseCase\InvitationHandler\InvitationHandler;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,23 +32,39 @@ class TaskListHandler
     private $invitationHandler;
 
     /**
-     * @var NotificationService
+     * @var ListArchivedNotification
      */
-    private $notificationService;
+    private $listArchivedNotification;
 
     /**
-     * @param EntityManagerInterface $em
-     * @param InvitationHandler      $invitationHandler
-     * @param NotificationService    $notificationService
+     * @var ListRemovedNotification
+     */
+    private $listRemovedNotification;
+
+    /**
+     * @var UserUnsubscribedNotification
+     */
+    private $userUnsubscribedNotification;
+
+    /**
+     * @param EntityManagerInterface       $em
+     * @param InvitationHandler            $invitationHandler
+     * @param ListArchivedNotification     $listArchivedNotification
+     * @param ListRemovedNotification      $listRemovedNotification
+     * @param UserUnsubscribedNotification $userUnsubscribedNotification
      */
     public function __construct(
         EntityManagerInterface $em,
         InvitationHandler $invitationHandler,
-        NotificationService $notificationService
+        ListArchivedNotification $listArchivedNotification,
+        ListRemovedNotification $listRemovedNotification,
+        UserUnsubscribedNotification $userUnsubscribedNotification
     ) {
         $this->em = $em;
         $this->invitationHandler = $invitationHandler;
-        $this->notificationService = $notificationService;
+        $this->listArchivedNotification = $listArchivedNotification;
+        $this->listRemovedNotification = $listRemovedNotification;
+        $this->userUnsubscribedNotification = $userUnsubscribedNotification;
     }
 
     /**
@@ -125,12 +143,11 @@ class TaskListHandler
 
             if ($user && $user !== $taskList->getCreator() && !$user->isBanned($taskList->getCreator())) {
                 $taskList->addShared($user);
-                $this->notificationService->createOrUpdate(
-                    NotificationService::EVENT_INVITED,
-                    $user,
-                    $taskList,
-                    $taskList->getCreator()
-                );
+                $this->listArchivedNotification
+                    ->for($user)
+                    ->aboutTaskList($taskList)
+                    ->setUserInvolved($taskList->getCreator())
+                    ->createOrUpdate();
 
                 $usersDTO->addRegistered($user);
             } elseif ($user === $taskList->getCreator()) {
@@ -181,12 +198,11 @@ class TaskListHandler
         $taskList->setArchived($status);
         $this->em->flush();
 
-        $this->notificationService->createForManyUsers(
-            NotificationService::EVENT_LIST_ARCHIVED,
-            $taskList->getShared()->toArray(),
-            $taskList,
-            $taskList->getCreator()
-        );
+        $this->listArchivedNotification
+            ->forUsers($taskList->getShared()->toArray())
+            ->aboutTaskList($taskList)
+            ->setUserInvolved($taskList->getCreator())
+            ->createOrUpdate();
 
         return $taskList;
     }
@@ -204,12 +220,10 @@ class TaskListHandler
         $taskList->removeShared($user);
         $this->em->flush();
 
-        $this->notificationService->createOrUpdate(
-            NotificationService::EVENT_UNSUBSCRIBED,
-            $taskList->getCreator(),
-            $taskList,
-            $user
-        );
+        $this->userUnsubscribedNotification
+            ->for($taskList->getCreator())
+            ->aboutTaskList($taskList)
+            ->setUserInvolved($user);
 
         return $taskList;
     }
@@ -231,13 +245,11 @@ class TaskListHandler
         $this->em->remove($taskList);
         $this->em->flush();
 
-        $this->notificationService->createForManyUsers(
-            NotificationService::EVENT_LIST_REMOVED,
-            $shared,
-            null,
-            $creator,
-            $name
-        );
+        $this->listRemovedNotification
+            ->forUsers($shared)
+            ->setUserInvolved($creator)
+            ->addText($name)
+            ->createOrUpdate();
     }
 
     /**

@@ -119,6 +119,22 @@ $( document ).ready(function() {
         $($selector).attr('data-index', $($selector).find('input').length / $count);
     }
 
+    // Get notifications updates for loaded page
+    var getNotificationsUpdate = function getNotificationsUpdate() {
+        let url = $('#app-data').attr('data-update-notofications');
+        $.ajax({
+            url: url,
+            method: 'GET'
+        }).done(function( msg ) {
+            console.log(msg.status);
+            if (msg.status === msgSuccess) {
+                $(".have-updates").addClass('active');
+            }
+        });
+    };
+    var notificationsUpdateInterval = 1000 * 60 * 2; //2 minutes
+    setInterval(getNotificationsUpdate, notificationsUpdateInterval);
+
     // Process success result of share_list_email call
     window.shareListByEmailSuccess = function(msg, form) {
         $('#shared-users').append(msg.data);
