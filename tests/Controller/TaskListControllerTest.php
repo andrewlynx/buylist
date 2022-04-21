@@ -23,6 +23,15 @@ class TaskListControllerTest extends WebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 
+    public function testIndexListType()
+    {
+        $client = static::createClient();
+
+        $client = ControllerTestHelper::logInUser($client);
+        $client = $this->getSimpleRouteWithParams($client, 'task_list_index', '?list_type=0');
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
     public function testShared()
     {
         $client = static::createClient();
@@ -49,12 +58,62 @@ class TaskListControllerTest extends WebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 
+    public function testArchiveClear()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+        $crawler = $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('task_list_index')
+        );
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->filter('form[name="list_archive"]')->first()->form();
+        $client->submit($form);
+
+        $crawler = $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('task_list_archive')
+        );
+        $this->assertContains(
+            'New Counter List',
+            $client->getResponse()->getContent()
+        );
+
+        $form = $crawler->selectButton('Remove all')->form();
+        $client->submit($form);
+        $client->followRedirect();
+
+        $this->assertContains(
+            'Archive cleared successfully',
+            $client->getResponse()->getContent()
+        );
+
+        $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('task_list_archive')
+        );
+        $this->assertNotContains(
+            '<div class="tl">',
+            $client->getResponse()->getContent()
+        );
+    }
+
+    public function testArchiveClearInvalid()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+        $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('task_list_archive_clear')
+        );
+        $this->assertResponseRedirects();
+    }
+
     public function testView()
     {
         $client = static::createClient();
-
         $client = ControllerTestHelper::logInUser($client);
-
         $client->request('GET', ControllerTestHelper::generateRoute('task_list_view', 1));
         $this->assertResponseIsSuccessful();
     }

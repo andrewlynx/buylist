@@ -3,6 +3,9 @@
 namespace App\Tests\Service;
 
 use App\Entity\Notification;
+use App\Entity\NotificationInvited;
+use App\Entity\NotificationListArchived;
+use App\Entity\NotificationListRemoved;
 use App\Entity\TaskList;
 use App\Entity\User;
 use App\Service\Notification\NotificationService;
@@ -45,50 +48,13 @@ class NotificationServiceTest extends WebTestCase
         $this->assertEquals(0, $notificationService->countUnreadAdminNotifications());
     }
 
-    public function testCreateOrUpdate()
-    {
-        $notificationService = $this->getNS();
-
-        $taskList = $this->getTaskList(1);
-        $user2 = $this->getUser(2);
-        $notification = $notificationService->createOrUpdate(2, $this->user, $taskList, $user2);
-
-        $this->assertEquals(1, $notification->getId());
-        $this->assertEquals($this->user, $notification->getUser());
-        $this->assertEquals($user2, $notification->getUserInvolved());
-    }
-
-    public function testGetDescription()
-    {
-        $notification = (new Notification())->setEvent(1);
-        $this->assertEquals('notification.welcome', NotificationService::getDescription($notification));
-
-        $notification = (new Notification())->setEvent(2);
-        $this->assertEquals('notification.invitation', NotificationService::getDescription($notification));
-
-        $notification = (new Notification())->setEvent(3);
-        $this->assertEquals('notification.list_changed', NotificationService::getDescription($notification));
-
-        $notification = (new Notification())->setEvent(4);
-        $this->assertEquals('notification.list_archived', NotificationService::getDescription($notification));
-
-        $notification = (new Notification())->setEvent(5);
-        $this->assertEquals('notification.list_removed', NotificationService::getDescription($notification));
-
-        $notification = (new Notification())->setEvent(6);
-        $this->assertEquals('notification.unsubscribed', NotificationService::getDescription($notification));
-
-        $notification = (new Notification())->setEvent(-20);
-        $this->assertEquals('notification.not_found', NotificationService::getDescription($notification));
-    }
-
     public function testGetUrlParams()
     {
         $taskList = new TaskList();
-        $notification = (new Notification())->setEvent(4)->setTaskList($taskList);
+        $notification = (new NotificationListArchived())->setTaskList($taskList);
         $this->assertEquals(0, NotificationService::getUrlParams($notification)['id']);
 
-        $notification = (new Notification())->setEvent(1);
+        $notification = (new NotificationListRemoved());
         $this->assertNull(NotificationService::getUrlParams($notification));
     }
 

@@ -49,4 +49,14 @@ trait TestTrait
 
         return $client;
     }
+
+    public function getSimpleRouteWithParams(KernelBrowser $client, string $route, string $params): KernelBrowser
+    {
+        $client->request(
+            'GET',
+            $client->getContainer()->get('router')->generate($route).$params
+        );
+
+        return $client;
+    }
 }

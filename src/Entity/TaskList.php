@@ -148,6 +148,7 @@ class TaskList
         $this->taskItems = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->emailInvitations = new ArrayCollection();
+        $this->favourite = new ArrayCollection();
     }
 
     /**

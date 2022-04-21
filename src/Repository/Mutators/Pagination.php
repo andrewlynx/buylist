@@ -15,6 +15,8 @@ class Pagination
 
     /**
      * @param int $perPage
+     *
+     * @codeCoverageIgnore
      */
     public function setPerPage(int $perPage): void
     {

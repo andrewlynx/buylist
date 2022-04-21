@@ -6,7 +6,6 @@ use App\Entity\AdminNotification;
 use App\Entity\Notification;
 use App\Entity\TaskList;
 use App\Entity\User;
-use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -96,101 +95,34 @@ class NotificationService
     }
 
     /**
-     * @param int $event
-     * @param User $user
-     * @param TaskList|null $taskList
-     * @param User|null $userInvolved
-     *
-     * @return Notification
-     *
-     * @throws Exception
-     */
-    public function createOrUpdate(
-        int $event,
-        User $user,
-        ?TaskList $taskList = null,
-        ?User $userInvolved = null
-    ): Notification {
-        $notification = $this->getOrCreate(
-            $event,
-            $user,
-            $taskList,
-            $userInvolved
-        );
-
-        $this->em->persist($notification);
-        $this->em->flush();
-
-        return $notification;
-    }
-
-    /**
      * @param int           $event
      * @param User          $user
      * @param TaskList|null $taskList
      * @param User|null     $userInvolved
      * @param string|null   $text
      *
-     * @return Notification
+     * @return Notification|null
      *
      * @throws Exception
      */
-    public function getOrCreate(
+    public function checkExistence(
         int $event,
         User $user,
         ?TaskList $taskList = null,
         ?User $userInvolved = null,
         ?string $text = null
-    ): Notification {
+    ): ?Notification {
         /** @var Notification $notification */
         $notification = $this->em->getRepository(Notification::class)->findOneBy([
-            'event' => $event,
+            //'event' => $event,
             'user' => $user->getId(),
             'taskList' => $taskList ? $taskList->getId() : null,
             'userInvolved' => $userInvolved,
             'text' => $text,
             'seen' => false
         ]);
-        if (!$notification) {
-            $notification = (new Notification())
-                ->setEvent($event)
-                ->setUser($user)
-                ->setTaskList($taskList)
-                ->setUserInvolved($userInvolved)
-                ->setText($text);
-        }
-
-        $notification->setDate(new DateTime());
 
         return $notification;
-    }
-
-    /**
-     * Returns translation string to display on a page
-     *
-     * @param Notification $notification
-     *
-     * @return string
-     */
-    public static function getDescription(Notification $notification): string
-    {
-        switch ($notification->getEvent()) {
-            case self::EVENT_WELCOME:
-                return 'notification.welcome';
-            case self::EVENT_INVITED:
-                return 'notification.invitation';
-            case self::EVENT_LIST_CHANGED:
-                return 'notification.list_changed';
-            case self::EVENT_LIST_ARCHIVED:
-                return 'notification.list_archived';
-            case self::EVENT_LIST_REMOVED:
-                return 'notification.list_removed';
-            case self::EVENT_UNSUBSCRIBED:
-                return 'notification.unsubscribed';
-
-            default:
-                return 'notification.not_found';
-        }
     }
 
     /**

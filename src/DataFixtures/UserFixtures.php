@@ -76,6 +76,8 @@ class UserFixtures extends Fixture
         return $taskList;
     }
 
+
+
     /**
      * @param int $type
      *

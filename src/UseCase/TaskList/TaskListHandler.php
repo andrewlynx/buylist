@@ -9,15 +9,11 @@ use App\Entity\Object\Email;
 use App\Entity\TaskList;
 use App\Entity\User;
 use App\Repository\TaskListRepository;
-use App\Service\Notification\ListArchivedNotification;
-use App\Service\Notification\ListRemovedNotification;
-use App\Service\Notification\UserUnsubscribedNotification;
+use App\Service\Notification\NotificationFactory;
 use App\UseCase\InvitationHandler\InvitationHandler;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use InvalidArgumentException;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class TaskListHandler
 {
@@ -32,39 +28,31 @@ class TaskListHandler
     private $invitationHandler;
 
     /**
-     * @var ListArchivedNotification
+     * @var SharedListProcessor
      */
-    private $listArchivedNotification;
+    private $sharedListProcessor;
 
     /**
-     * @var ListRemovedNotification
+     * @var NotificationFactory
      */
-    private $listRemovedNotification;
+    private $notificationFactory;
 
     /**
-     * @var UserUnsubscribedNotification
-     */
-    private $userUnsubscribedNotification;
-
-    /**
-     * @param EntityManagerInterface       $em
-     * @param InvitationHandler            $invitationHandler
-     * @param ListArchivedNotification     $listArchivedNotification
-     * @param ListRemovedNotification      $listRemovedNotification
-     * @param UserUnsubscribedNotification $userUnsubscribedNotification
+     * @param EntityManagerInterface $em
+     * @param InvitationHandler      $invitationHandler
+     * @param SharedListProcessor    $sharedListProcessor
+     * @param NotificationFactory    $notificationFactory
      */
     public function __construct(
         EntityManagerInterface $em,
         InvitationHandler $invitationHandler,
-        ListArchivedNotification $listArchivedNotification,
-        ListRemovedNotification $listRemovedNotification,
-        UserUnsubscribedNotification $userUnsubscribedNotification
+        SharedListProcessor $sharedListProcessor,
+        NotificationFactory $notificationFactory
     ) {
         $this->em = $em;
         $this->invitationHandler = $invitationHandler;
-        $this->listArchivedNotification = $listArchivedNotification;
-        $this->listRemovedNotification = $listRemovedNotification;
-        $this->userUnsubscribedNotification = $userUnsubscribedNotification;
+        $this->sharedListProcessor = $sharedListProcessor;
+        $this->notificationFactory = $notificationFactory;
     }
 
     /**
@@ -130,41 +118,19 @@ class TaskListHandler
      * @return TaskListUsers
      *
      * @throws Exception
-     * @throws TransportExceptionInterface
      */
     public function processSharedList(TaskListUsersRaw $taskListUsers, TaskList $taskList): TaskListUsers
     {
-        $usersDTO = new TaskListUsers();
+        $this->sharedListProcessor->setTaskList($taskList);
 
         /** @var Email $email */
         foreach ($taskListUsers->users as $email) {
-            /** @var User|null $user */
-            $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email->getValue()]);
 
-            if ($user && $user !== $taskList->getCreator() && !$user->isBanned($taskList->getCreator())) {
-                $taskList->addShared($user);
-                $this->listArchivedNotification
-                    ->for($user)
-                    ->aboutTaskList($taskList)
-                    ->setUserInvolved($taskList->getCreator())
-                    ->createOrUpdate();
-
-                $usersDTO->addRegistered($user);
-            } elseif ($user === $taskList->getCreator()) {
-                $usersDTO->addNotAllowed($user->getEmail());
-            } elseif ($user && $user->isBanned($taskList->getCreator())) {
-                $usersDTO->addNotAllowed($user->getEmail());
-            } else {
-                try {
-                    $this->invitationHandler->createInvitation($email, $taskList);
-                    $usersDTO->addInvitationSent($email->getValue());
-                } catch (InvalidArgumentException $e) {
-                    $usersDTO->addInvitationExists($email->getValue());
-                }
-            }
+            $this->sharedListProcessor->setEmail($email);
+            $this->sharedListProcessor->process();
         }
 
-        return $usersDTO;
+        return $this->sharedListProcessor->getDto();
     }
 
     /**
@@ -198,7 +164,7 @@ class TaskListHandler
         $taskList->setArchived($status);
         $this->em->flush();
 
-        $this->listArchivedNotification
+        $this->notificationFactory->makeListArchived()
             ->forUsers($taskList->getShared()->toArray())
             ->aboutTaskList($taskList)
             ->setUserInvolved($taskList->getCreator())
@@ -220,7 +186,7 @@ class TaskListHandler
         $taskList->removeShared($user);
         $this->em->flush();
 
-        $this->userUnsubscribedNotification
+        $this->notificationFactory->makeUserUnsubscribed()
             ->for($taskList->getCreator())
             ->aboutTaskList($taskList)
             ->setUserInvolved($user);
@@ -245,7 +211,7 @@ class TaskListHandler
         $this->em->remove($taskList);
         $this->em->flush();
 
-        $this->listRemovedNotification
+        $this->notificationFactory->makeListRemoved()
             ->forUsers($shared)
             ->setUserInvolved($creator)
             ->addText($name)

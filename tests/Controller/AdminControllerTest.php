@@ -76,7 +76,7 @@ class AdminControllerTest extends WebTestCase
         );
 
         $client->request(
-            'GET',
+            'POST',
             ControllerTestHelper::generateRoute(
                 'notification_read_admin',
                 $admin->getAdminNotifications()->first()->getId()

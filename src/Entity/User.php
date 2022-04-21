@@ -627,9 +627,9 @@ class User implements UserInterface
     }
 
     /**
-     * @return DateTimeInterface
+     * @return DateTimeInterface|null
      */
-    public function getPreviousVisitTime(): DateTimeInterface
+    public function getPreviousVisitTime(): ?DateTimeInterface
     {
         return $this->previousVisitTime;
     }

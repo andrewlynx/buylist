@@ -33,6 +33,8 @@ class ListType
     /**
      * @param string $alias
      *
+     * @codeCoverageIgnore
+     *
      * @return ListType
      */
     public function setAlias(string $alias): self

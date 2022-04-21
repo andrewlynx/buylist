@@ -3,39 +3,40 @@
 namespace App\Service\Notification;
 
 use App\Entity\Notification;
+use App\Entity\NotificationInvited;
+use App\Entity\NotificationListArchived;
+use App\Entity\NotificationListChanged;
+use App\Entity\NotificationListRemoved;
+use App\Entity\NotificationUnsubscribed;
+use App\Entity\NotificationWelcome;
 use App\Entity\TaskList;
 use App\Entity\User;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use InvalidArgumentException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-abstract class AbstractNotification implements NotificationInterface
+class NotificationFactory
 {
     /**
      * @var Collection<Notification>
      */
-    protected $notifications;
+    private $notifications;
 
     /**
      * @var NotificationService
      */
-    protected $notificationService;
-
-    /**
-     * @var array
-     */
-    protected $requiredFields;
+    private $notificationService;
 
     /**
      * @var TaskList
      */
-    protected $taskList;
+    private $taskList;
 
     /**
      * @var string
      */
-    protected $text;
+    private $text;
 
     /**
      * @var TokenStorageInterface
@@ -45,12 +46,12 @@ abstract class AbstractNotification implements NotificationInterface
     /**
      * @var User
      */
-    protected $userInvolved;
+    private $userInvolved;
 
     /**
      * @var Collection<User>
      */
-    protected $users;
+    private $users;
 
     /**
      * @param NotificationService   $notificationService
@@ -65,11 +66,76 @@ abstract class AbstractNotification implements NotificationInterface
     }
 
     /**
+     * @var Notification
+     */
+    private $notification;
+
+    /**
+     * @return $this
+     */
+    public function makeInvited(): self
+    {
+        $this->notification = new NotificationInvited();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function makeListRemoved(): self
+    {
+        $this->notification = new NotificationListRemoved();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function makeListArchived(): self
+    {
+        $this->notification = new NotificationListArchived();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function makeListChanged(): self
+    {
+        $this->notification = new NotificationListChanged();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function makeUserUnsubscribed(): self
+    {
+        $this->notification = new NotificationUnsubscribed();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function makeWelcome(): self
+    {
+        $this->notification = new NotificationWelcome();
+
+        return $this;
+    }
+
+    /**
      * @param User $user
      *
-     * @return NotificationInterface
+     * @return $this
      */
-    public function for(User $user): NotificationInterface
+    public function for(User $user): self
     {
         $this->users->add($user);
 
@@ -79,9 +145,9 @@ abstract class AbstractNotification implements NotificationInterface
     /**
      * @param array<User> $users
      *
-     * @return NotificationInterface
+     * @return $this
      */
-    public function forUsers(array $users): NotificationInterface
+    public function forUsers(array $users): self
     {
         foreach ($users as $user) {
             $this->users->add($user);
@@ -93,9 +159,9 @@ abstract class AbstractNotification implements NotificationInterface
     /**
      * @param TaskList $taskList
      *
-     * @return NotificationInterface
+     * @return $this
      */
-    public function aboutTaskList(TaskList $taskList): NotificationInterface
+    public function aboutTaskList(TaskList $taskList): self
     {
         $this->taskList = $taskList;
 
@@ -105,9 +171,9 @@ abstract class AbstractNotification implements NotificationInterface
     /**
      * @param string $text
      *
-     * @return NotificationInterface
+     * @return $this
      */
-    public function addText(string $text): NotificationInterface
+    public function addText(string $text): self
     {
         $this->text = $text;
 
@@ -117,9 +183,9 @@ abstract class AbstractNotification implements NotificationInterface
     /**
      * @param User $user
      *
-     * @return NotificationInterface
+     * @return $this
      */
-    public function setUserInvolved(User $user): NotificationInterface
+    public function setUserInvolved(User $user): self
     {
         $this->userInvolved = $user;
 
@@ -129,39 +195,34 @@ abstract class AbstractNotification implements NotificationInterface
     /**
      * @throws \Exception
      */
-    public function createOrUpdate()
+    public function createOrUpdate(): void
     {
-        $this->checkRequiredFields();
-
         /** @var User $user */
         foreach ($this->users->getIterator() as $user) {
             if ($user === $this->getUser()) {
                 continue;
             }
-            $notification = $this->notificationService->getOrCreate(
-                $this->getType(),
+            $notification = $this->notificationService->checkExistence(
+                $this->notification->getEvent(),
                 $user,
                 $this->taskList,
                 $this->userInvolved,
                 $this->text
             );
+            if (!$notification) {
+                $notification = $this->notification
+                    ->setUser($user)
+                    ->setTaskList($this->taskList)
+                    ->setUserInvolved($this->userInvolved)
+                    ->setText($this->text);
+            }
+
+            $notification->setDate(new DateTime());
 
             $this->notifications->add($notification);
         }
 
         $this->notificationService->save($this->notifications);
-    }
-
-    /**
-     *
-     */
-    private function checkRequiredFields()
-    {
-        foreach ($this->requiredFields as $required) {
-            if ($this->$required === null) {
-                throw new InvalidArgumentException(sprintf('%s should not be empty for %s', $required, self::class));
-            }
-        }
     }
 
     /**

@@ -24,6 +24,7 @@ class TaskListTest extends WebTestCase
         $taskList
             ->setName('name')
             ->addShared($user2)
+            ->addToFavourite($user2)
             ->addTaskItem($taskItem)
             ->setDate($date)
             ->setArchived(false)
@@ -36,6 +37,7 @@ class TaskListTest extends WebTestCase
 
         $this->assertNull($taskList->getId());
         $this->assertSame($user2, $taskList->getShared()->first());
+        $this->assertTrue($taskList->isInFavourites($user2));
         $this->assertSame($taskItem, $taskList->getTaskItems()->first());
         $this->assertSame($date, $taskList->getDate());
         $this->assertFalse($taskList->isArchived());
@@ -53,5 +55,8 @@ class TaskListTest extends WebTestCase
 
         $taskList->removeShared($user2);
         $this->assertEmpty($taskList->getShared());
+
+        $taskList->removeFromFavourites($user2);
+        $this->assertFalse($taskList->isInFavourites($user2));
     }
 }

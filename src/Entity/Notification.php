@@ -9,8 +9,18 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=NotificationRepository::class)
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="event", type="integer")
+ * @ORM\DiscriminatorMap({
+ *     "1" = "NotificationWelcome",
+ *     "2" = "NotificationInvited",
+ *     "3" = "NotificationListChanged",
+ *     "4" = "NotificationListArchived",
+ *     "5" = "NotificationListRemoved",
+ *     "6" = "NotificationUnsubscribed",
+ * })
  */
-class Notification
+abstract class Notification
 {
     /**
      * @ORM\Id
@@ -19,14 +29,12 @@ class Notification
      *
      * @var int|null
      */
-    private $id;
+    protected $id;
 
     /**
-     * @ORM\Column(type="integer", nullable=false)
-     *
      * @var int
      */
-    private $event;
+    protected $event;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="notifications")
@@ -34,42 +42,47 @@ class Notification
      *
      * @var User
      */
-    private $user;
+    protected $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=TaskList::class, inversedBy="notifications")
      *
      * @var TaskList|null
      */
-    private $taskList;
+    protected $taskList;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      *
      * @var string|null
      */
-    private $text;
+    protected $text;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
      *
      * @var User|null
      */
-    private $userInvolved;
+    protected $userInvolved;
 
     /**
      * @ORM\Column(type="datetime")
      *
      * @var DateTimeInterface
      */
-    private $date;
+    protected $date;
 
     /**
      * @ORM\Column(type="boolean")
      *
      * @var bool
      */
-    private $seen = false;
+    protected $seen = false;
+
+    /**
+     * @var string
+     */
+    protected $description;
 
     /**
      * @return int|null
@@ -85,18 +98,6 @@ class Notification
     public function getEvent(): ?int
     {
         return $this->event;
-    }
-
-    /**
-     * @param int $event
-     *
-     * @return $this
-     */
-    public function setEvent(int $event): self
-    {
-        $this->event = $event;
-
-        return $this;
     }
 
     /**
@@ -226,7 +227,7 @@ class Notification
      */
     public function getDescription(): string
     {
-        return NotificationService::getDescription($this);
+        return $this->description;
     }
 
     /**

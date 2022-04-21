@@ -48,7 +48,7 @@ $( document ).ready(function() {
         console.log($('#loader').attr('data-url'));
         $.ajax({
             url: $('#loader').attr('data-url'),
-            method: 'GET'
+            method: 'POST'
         }).done(function( msg ) {
             $('#tls').append(msg);
         });
@@ -124,7 +124,7 @@ $( document ).ready(function() {
         let url = $('#app-data').attr('data-update-notofications');
         $.ajax({
             url: url,
-            method: 'GET'
+            method: 'POST'
         }).done(function( msg ) {
             console.log(msg.status);
             if (msg.status === msgSuccess) {

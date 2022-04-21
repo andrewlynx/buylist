@@ -9,7 +9,7 @@ use App\DTO\TaskItem\TaskItemIncrement;
 use App\Entity\TaskItem;
 use App\Entity\TaskList;
 use App\Entity\User;
-use App\Service\Notification\ListChangedNotification;
+use App\Service\Notification\NotificationFactory;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -22,18 +22,18 @@ class TaskItemHandler
     private $em;
 
     /**
-     * @var ListChangedNotification
+     * @var NotificationFactory
      */
-    private $listChangedNotification;
+    private $notificationFactory;
 
     /**
      * @param EntityManagerInterface  $em
-     * @param ListChangedNotification $listChangedNotification
+     * @param NotificationFactory     $notificationFactory
      */
-    public function __construct(EntityManagerInterface $em, ListChangedNotification $listChangedNotification)
+    public function __construct(EntityManagerInterface $em, NotificationFactory $notificationFactory)
     {
         $this->em = $em;
-        $this->listChangedNotification = $listChangedNotification;
+        $this->notificationFactory = $notificationFactory;
     }
 
     /**
@@ -63,7 +63,7 @@ class TaskItemHandler
             ->setQty($dto->qty)
             ->setTaskList($taskList->setUpdatedAt(new DateTime()));
 
-        $this->listChangedNotification
+        $this->notificationFactory->makeListChanged()
             ->forUsers($taskList->getAllUsers())
             ->aboutTaskList($taskList)
             ->setUserInvolved($user)
@@ -92,7 +92,7 @@ class TaskItemHandler
         $taskList = $taskItem->getTaskList();
         $this->setTaskListUpdatedTime($taskList);
 
-        $this->listChangedNotification
+        $this->notificationFactory->makeListChanged()
             ->forUsers($taskList->getAllUsers())
             ->aboutTaskList($taskList)
             ->setUserInvolved($user)
@@ -140,7 +140,7 @@ class TaskItemHandler
         $taskList = $taskItem->getTaskList();
         $this->setTaskListUpdatedTime($taskList);
 
-        $this->listChangedNotification
+        $this->notificationFactory->makeListChanged()
             ->forUsers($taskList->getAllUsers())
             ->aboutTaskList($taskList)
             ->setUserInvolved($user)

@@ -5,6 +5,7 @@ namespace App\Tests\UseCase\TaskList;
 use App\Constant\TaskListTypes;
 use App\DTO\TaskList\TaskListUsersRaw;
 use App\Entity\Notification;
+use App\Entity\NotificationListChanged;
 use App\Repository\TaskListRepository;
 use App\Tests\TestTrait;
 use App\UseCase\TaskList\TaskListHandler;
@@ -113,15 +114,14 @@ class TaskListHandlerTest extends WebTestCase
         $user = $this->getUser(1);
         $user2 = $this->getUser(2);
         $date = new \DateTime();
-        $notification = new Notification();
+        $notification = new NotificationListChanged();
         $notification
             ->setTaskList($taskList)
             ->setText('text')
             ->setSeen(false)
             ->setUser($user)
             ->setUserInvolved($user2)
-            ->setDate($date)
-            ->setEvent(3);
+            ->setDate($date);
         static::$container->get('doctrine.orm.entity_manager')->persist($notification);
         static::$container->get('doctrine.orm.entity_manager')->flush();
 

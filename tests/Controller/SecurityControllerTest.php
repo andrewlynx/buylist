@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Form;
 
-class SecurityControllerTest extends WebTestCase
+class SecurityControllerTest extends ControllerTestHelper
 {
     public function testLoginIncorrectEmail()
     {
@@ -34,6 +34,33 @@ class SecurityControllerTest extends WebTestCase
         $client->followRedirect();
 
         $this->assertSame('/en/task-list/', $client->getResponse()->headers->get('Location'));
+    }
+
+    public function testLoginAlreadyLoggedIn()
+    {
+        $client = static::createClient();
+        $client = $this->logInUser($client);
+        $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('app_login')
+        );
+        $this->assertResponseRedirects();
+        $client->followRedirect();
+        $client->followRedirect();
+        $this->assertSame('/en/task-list/', $client->getResponse()->headers->get('Location'));
+    }
+
+    public function testLogout()
+    {
+        $client = static::createClient();
+        $client = $this->logInUser($client);
+        $client->request(
+            'GET',
+            ControllerTestHelper::generateRoute('app_logout')
+        );
+        $this->assertResponseRedirects();
+        $client->followRedirect();
+        $this->assertSame('/en/welcome', $client->getResponse()->headers->get('Location'));
     }
 
     private function getForm(KernelBrowser $client): Form

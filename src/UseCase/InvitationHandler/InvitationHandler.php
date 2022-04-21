@@ -8,6 +8,7 @@ use App\Entity\TaskList;
 use App\Entity\User;
 use App\Repository\EmailInvitationRepository;
 use App\Service\Notification\InvitedNotification;
+use App\Service\Notification\NotificationFactory;
 use App\Service\Notification\NotificationService;
 use App\UseCase\Email\InvitationEmailHandler;
 use DateTime;
@@ -29,23 +30,23 @@ class InvitationHandler
     private $emailHandler;
 
     /**
-     * @var InvitedNotification
+     * @var NotificationFactory
      */
-    private $invitedNotification;
+    private $notificationFactory;
 
     /**
      * @param EntityManagerInterface $em
      * @param InvitationEmailHandler $emailHandler
-     * @param InvitedNotification    $invitedNotification
+     * @param NotificationFactory    $notificationFactory
      */
     public function __construct(
         EntityManagerInterface $em,
         InvitationEmailHandler $emailHandler,
-        InvitedNotification $invitedNotification
+        NotificationFactory $notificationFactory
     ) {
         $this->em = $em;
         $this->emailHandler = $emailHandler;
-        $this->invitedNotification = $invitedNotification;
+        $this->notificationFactory = $notificationFactory;
     }
 
     /**
@@ -89,7 +90,7 @@ class InvitationHandler
             $this->em->persist($taskList);
             $this->em->remove($invitation);
 
-            $this->invitedNotification
+            $this->notificationFactory->makeInvited()
                 ->for($user)
                 ->aboutTaskList($taskList)
                 ->setUserInvolved($taskList->getCreator())
