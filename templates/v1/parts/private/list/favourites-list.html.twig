@@ -3,7 +3,7 @@
     {% if task_list.creator.nickname != author %}
         {% set author = task_list.creator.nickname %}
 
-        By <a href="{{ path('user_user', {'email': task_list.creator.email}) }}">
+        By <a href="{{ path('user_show', {'email': task_list.creator.email}) }}">
             {{ author }} ({{ task_list.creator.email }})
         </a>
     {% endif %}

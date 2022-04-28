@@ -56,7 +56,7 @@ class TaskList
     /**
      * @var Collection<User>
      *
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="shared")
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="shared", cascade={"persist"})
      */
     private $shared;
 
@@ -100,7 +100,7 @@ class TaskList
     /**
      * @var Collection<Notification>
      *
-     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="taskList")
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="taskList", orphanRemoval=true)
      */
     private $notifications;
 

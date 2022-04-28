@@ -46,22 +46,26 @@ class UserFixtures extends Fixture
 
         /** @var User $user */
         $user = $this->em->getRepository(User::class)->find(1);
+        /** @var User $user2 */
+        $user2 = $this->em->getRepository(User::class)->find(2);
 
         $this->createTaskListByType(TaskListTypes::DEFAULT, $user);
-        $this->createTaskListByType(TaskListTypes::COUNTER, $user);
+        $this->createTaskListByType(TaskListTypes::COUNTER, $user, $user2);
+        $this->createTaskListByType(TaskListTypes::COUNTER, $user2, $user);
 
         $this->em->flush();
     }
 
     /**
-     * @param int  $type
-     * @param User $user
+     * @param int       $type
+     * @param User      $user
+     * @param User|null $shared
      *
      * @return TaskList
      *
      * @throws Exception
      */
-    private function createTaskListByType(int $type, User $user): TaskList
+    private function createTaskListByType(int $type, User $user, ?User $shared = null): TaskList
     {
         $taskList = (new TaskList())
             ->setName($this->getTaskListName($type))
@@ -70,6 +74,10 @@ class UserFixtures extends Fixture
             ->setUpdatedAt(new DateTime())
             ->setCreator($user)
             ->setType($type);
+
+        if ($shared) {
+            $taskList->addShared($shared);
+        }
 
         $this->em->persist($taskList);
 

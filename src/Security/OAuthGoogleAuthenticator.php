@@ -23,6 +23,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
+/**
+ * @codeCoverageIgnore
+ */
 class OAuthGoogleAuthenticator extends SocialAuthenticator
 {
     use TargetPathTrait;

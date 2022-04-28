@@ -4,7 +4,6 @@ namespace App\Service\Notification;
 
 use App\Entity\AdminNotification;
 use App\Entity\Notification;
-use App\Entity\TaskList;
 use App\Entity\User;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -95,30 +94,19 @@ class NotificationService
     }
 
     /**
-     * @param int           $event
-     * @param User          $user
-     * @param TaskList|null $taskList
-     * @param User|null     $userInvolved
-     * @param string|null   $text
+     * @param Notification $notification
      *
      * @return Notification|null
      *
      * @throws Exception
      */
-    public function checkExistence(
-        int $event,
-        User $user,
-        ?TaskList $taskList = null,
-        ?User $userInvolved = null,
-        ?string $text = null
-    ): ?Notification {
+    public function checkExistence(Notification $notification): ?Notification {
         /** @var Notification $notification */
-        $notification = $this->em->getRepository(Notification::class)->findOneBy([
-            //'event' => $event,
-            'user' => $user->getId(),
-            'taskList' => $taskList ? $taskList->getId() : null,
-            'userInvolved' => $userInvolved,
-            'text' => $text,
+        $notification = $this->em->getRepository(get_class($notification))->findOneBy([
+            'user' => $notification->getUser()->getId(),
+            'taskList' => $notification->getTaskList() ? $notification->getTaskList()->getId() : null,
+            'userInvolved' => $notification->getUserInvolved(),
+            'text' => $notification->getText(),
             'seen' => false
         ]);
 

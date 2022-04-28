@@ -88,7 +88,7 @@ class UserController extends TranslatableController
     }
 
     /**
-     * @Route("/user/{email}", name="user")
+     * @Route("/show/{email}", name="show")
      *
      * @param string $email
      * @param Request $request
@@ -97,7 +97,7 @@ class UserController extends TranslatableController
      *
      * @throws NonUniqueResultException
      */
-    public function user(string $email, Request $request): Response
+    public function show(string $email, Request $request): Response
     {
         /** @var UserRepository $userRepo */
         $userRepo = $this->getDoctrine()->getRepository(User::class);
@@ -136,6 +136,7 @@ class UserController extends TranslatableController
         $currentUser = $this->getUser();
         if ($friend) {
             $userHandler->addToFavourites($currentUser, $friend);
+            $this->addFlash('success', 'user.added_to_favourites');
         } else {
             $this->addFlash('danger', 'user.not_found');
         }
@@ -165,6 +166,7 @@ class UserController extends TranslatableController
         $currentUser = $this->getUser();
         if ($friend) {
             $userHandler->removeFromFavourites($currentUser, $friend);
+            $this->addFlash('success', 'user.removed_from_favourites');
         } else {
             $this->addFlash('danger', 'user.not_found');
         }
@@ -194,6 +196,7 @@ class UserController extends TranslatableController
         $currentUser = $this->getUser();
         if ($friend) {
             $userHandler->blockUser($currentUser, $friend);
+            $this->addFlash('success', 'user.blocked');
         } else {
             $this->addFlash('danger', 'user.not_found');
         }
@@ -223,6 +226,7 @@ class UserController extends TranslatableController
         $currentUser = $this->getUser();
         if ($friend) {
             $userHandler->unblockUser($currentUser, $friend);
+            $this->addFlash('success', 'user.unblocked');
         } else {
             $this->addFlash('danger', 'user.not_found');
         }

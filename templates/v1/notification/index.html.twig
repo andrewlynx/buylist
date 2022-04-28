@@ -34,7 +34,7 @@
                 <div class="notification-block">
             {% endif %}
             <div class="notification">
-                <a href="{{ path('user_user', {'email': notification.userInvolved.email}) }}">
+                <a href="{{ path('user_show', {'email': notification.userInvolved.email}) }}">
                     <div class="user-box small {{ notification.userInvolved.color }} float-left">
                         {{ notification.userInvolved.nickname|first|capitalize }}
                     </div>

@@ -20,4 +20,13 @@ class NotificationControllerTest extends WebTestCase
         $client->request('GET', ControllerTestHelper::generateRoute('notification_index'));
         $this->assertResponseIsSuccessful();
     }
+
+    public function testClear()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+
+        $client->request('GET', ControllerTestHelper::generateRoute('notification_clear'));
+        $this->assertResponseIsSuccessful();
+    }
 }

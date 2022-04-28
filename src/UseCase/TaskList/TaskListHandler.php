@@ -125,7 +125,6 @@ class TaskListHandler
 
         /** @var Email $email */
         foreach ($taskListUsers->users as $email) {
-
             $this->sharedListProcessor->setEmail($email);
             $this->sharedListProcessor->process();
         }

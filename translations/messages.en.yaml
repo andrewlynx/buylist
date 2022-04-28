@@ -103,6 +103,7 @@ security:
   restore_form_help: 'Enter your email address and we we will send you a link to reset your password'
   restore_pw: 'Forgot Password?'
   send_pw_reset: 'Send password reset email'
+  should_be_logged: 'You should be logged in to continue'
   sign_in: 'Sign In'
   sign_in_google: 'Sign in with Google'
   sign_in_to: 'Sign In to'
@@ -125,7 +126,9 @@ validation:
   invalid_submission: 'Invalid form data'
 user:
   add_to_favourites: 'Add to favourites'
+  added_to_favourites: 'Added to favourites'
   block: 'Block users'
+  blocked: 'User blocked'
   blocked_users: 'Blocked users'
   email: Email
   helpers: Helpers
@@ -139,6 +142,8 @@ user:
   password_change_help: 'Fill this field only if you want to change your password'
   register: Register
   remove_from_favourites: 'Remove from favourites'
+  removed_from_favourites: 'Removed from favourites'
   shared_with_you: 'User lists shared with you'
+  unblocked: 'User unblocked'
   unblock_user: 'Unblock user'
   your_lists_shared: 'Your lists shared to user'

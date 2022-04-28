@@ -202,20 +202,15 @@ class NotificationFactory
             if ($user === $this->getUser()) {
                 continue;
             }
-            $notification = $this->notificationService->checkExistence(
-                $this->notification->getEvent(),
-                $user,
-                $this->taskList,
-                $this->userInvolved,
-                $this->text
+            $newNotification = $this->notification
+                ->setUser($user)
+                ->setTaskList($this->taskList)
+                ->setUserInvolved($this->userInvolved)
+                ->setText($this->text);
+            $foundNotification = $this->notificationService->checkExistence(
+                $newNotification
             );
-            if (!$notification) {
-                $notification = $this->notification
-                    ->setUser($user)
-                    ->setTaskList($this->taskList)
-                    ->setUserInvolved($this->userInvolved)
-                    ->setText($this->text);
-            }
+            $notification = $foundNotification ?? $newNotification;
 
             $notification->setDate(new DateTime());
 

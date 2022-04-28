@@ -7,7 +7,7 @@
     {% if users %}
         {% for user in users %}
             <p class="well">
-                <a class="mr-auto" href="{{ path('user_user', {'email': user.email}) }}">{{ user.email }}</a>
+                <a class="mr-auto" href="{{ path('user_show', {'email': user.email}) }}">{{ user.email }}</a>
                 {% include 'v1/parts/private/user/favourites-button.html.twig' with {'user': user} %}
                 {% include 'v1/parts/private/user/block-button.html.twig' with {'user': user} %}
             </p>
@@ -17,7 +17,7 @@
         {% endif %}
         {% for user in app.user.bannedUsers %}
             <p class="well">
-                <a class="mr-auto" href="{{ path('user_user', {'email': user.email}) }}">{{ user.email }}</a>
+                <a class="mr-auto" href="{{ path('user_show', {'email': user.email}) }}">{{ user.email }}</a>
                 {% include 'v1/parts/private/user/block-button.html.twig' with {'user': user} %}
             </p>
         {% endfor %}

@@ -20,7 +20,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -269,7 +268,6 @@ class TaskListController extends TranslatableController
      * @return Response
      *
      * @throws Exception
-     * @throws TransportExceptionInterface
      */
     public function createOrEdit(Request $request, TaskList $taskList = null): Response
     {
@@ -311,7 +309,7 @@ class TaskListController extends TranslatableController
      *
      * @return Response
      *
-     * @throws TransportExceptionInterface
+     * @throws Exception
      */
     public function createOrEditCounter(Request $request, TaskList $taskList = null): Response
     {
@@ -354,7 +352,6 @@ class TaskListController extends TranslatableController
      * @return Response
      *
      * @throws Exception
-     * @throws TransportExceptionInterface
      */
     public function edit(TaskList $taskList, Request $request): Response
     {
@@ -581,7 +578,7 @@ class TaskListController extends TranslatableController
      *
      * @return TaskList
      *
-     * @throws TransportExceptionInterface
+     * @throws Exception
      */
     private function processCreateForm(FormInterface $form, TaskList $taskList): TaskList
     {

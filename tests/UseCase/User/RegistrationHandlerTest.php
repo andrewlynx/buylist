@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Tests\UseCase\TaskItem;
+namespace App\Tests\UseCase\User;
 
 use App\DTO\TaskList\TaskListShare;
 use App\DTO\User\Registration;
 use App\DTO\User\Settings;
 use App\Entity\EmailInvitation;
-use App\Entity\TaskList;
 use App\Tests\TestTrait;
 use App\UseCase\User\RegistrationHandler;
 use DateTime;

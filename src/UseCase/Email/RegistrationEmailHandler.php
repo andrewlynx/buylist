@@ -46,7 +46,7 @@ class RegistrationEmailHandler extends AbstractEmailHandler
                 (new TemplatedEmail())
                     ->to($user->getEmail())
                     ->subject('Please Confirm your Email')
-                    ->htmlTemplate('public/registration/confirmation_email.html.twig')
+                    ->htmlTemplate('v1/public/registration/confirmation_email.html.twig')
             );
         } catch (Throwable $e) {
             $this->session->getFlashBag()->add('error', $e->getMessage());

@@ -12,6 +12,7 @@ use App\UseCase\User\RegistrationHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use Throwable;
@@ -52,8 +53,7 @@ class RegistrationController extends TranslatableController
 
                 $user = $registrationHandler->register($registrationData);
 
-                // Confirmation email is commented until this functionality is required
-                //$emailHandler->sendConfirmationEmail($user);
+                $emailHandler->sendConfirmationEmail($user);
 
                 return $guardHandler->authenticateUserAndHandleSuccess(
                     $user,
@@ -81,20 +81,23 @@ class RegistrationController extends TranslatableController
      */
     public function verifyUserEmail(Request $request, RegistrationEmailHandler $emailHandler): Response
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
         try {
+            $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
             /** @var User $user */
             $user = $this->getUser();
             $emailHandler->handleEmailConfirmation($request, $user);
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('danger', $exception->getReason());
 
-            return $this->redirectToRoute('app_register');
+            return $this->redirectToRoute('task_list_index');
+        } catch (AccessDeniedException $exception) {
+            $this->addFlash('danger', $this->translator->trans('security.should_be_logged'));
+
+            return $this->redirectToRoute('app_login');
         }
 
         $this->addFlash('success', 'Your email address has been verified.');
 
-        return $this->redirectToRoute('app_register');
+        return $this->redirectToRoute('task_list_index');
     }
 }

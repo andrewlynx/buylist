@@ -5,6 +5,7 @@ namespace App\Tests\Controller;
 use App\Entity\User;
 use App\Tests\TestTrait;
 use App\UseCase\User\UserHandler;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -75,7 +76,7 @@ class UserControllerTest extends WebTestCase
         $client = ControllerTestHelper::logInUser($client);
         $client->request(
             'GET',
-            'en/user/user/user2@example.com'
+            'en/user/show/user2@example.com'
         );
         $this->assertResponseIsSuccessful();
     }
@@ -88,7 +89,7 @@ class UserControllerTest extends WebTestCase
         $this->expectException(NotFoundHttpException::class);
         $client->request(
             'GET',
-            'en/user/user/incorrect_user@name'
+            'en/user/show/incorrect_user@name'
         );
     }
 
@@ -100,7 +101,8 @@ class UserControllerTest extends WebTestCase
             'GET',
             'en/user/add-to-favourites/user2@example.com'
         );
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+        $client->followRedirect();
+        $this->assertContains('Added to favourites', $client->getResponse()->getContent());
 
         $testUser = $this->getUser(1);
         $favouriteUser = $this->getUser(2);
@@ -138,7 +140,8 @@ class UserControllerTest extends WebTestCase
             'GET',
             'en/user/remove-from-favourites/user2@example.com'
         );
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+        $client->followRedirect();
+        $this->assertContains('Removed from favourites', $client->getResponse()->getContent());
 
         $testUser = $this->getUser(1);
         $favouriteUser = $this->getUser(2);
@@ -158,5 +161,94 @@ class UserControllerTest extends WebTestCase
             'User not found',
             $client->getResponse()->getContent()
         );
+    }
+
+    public function testBlockUser()
+    {
+        $client = static::createClient();
+
+        $user = $this->getUser(1);
+        $user2 = $this->getUser(2);
+        $taskList2 = $this->getTaskList(2);
+        $taskList3 = $this->getTaskList(3);
+        $this->assertTrue($taskList2->getShared()->contains($user2));
+        $this->assertTrue($taskList3->getShared()->contains($user));
+
+        $this->blockUser($client);
+
+        $this->assertTrue($user->isBanned($user2));
+        $taskList2 = $this->getTaskList(2);
+        $taskList3 = $this->getTaskList(3);
+        $this->assertFalse($taskList2->getShared()->contains($user2));
+        $this->assertFalse($taskList3->getShared()->contains($user));
+    }
+
+    public function testBlockUserWrongEmail()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+        $client->request(
+            'GET',
+            '/en/user/block/some@wrong.email'
+        );
+        $client->followRedirect();
+        $this->assertContains(
+            'User not found',
+            $client->getResponse()->getContent()
+        );
+    }
+
+    public function testUnblockUser()
+    {
+        $client = static::createClient();
+        $this->blockUser($client);
+        $user = $this->getUser(1);
+        $user2 = $this->getUser(2);
+        $this->assertTrue($user->isBanned($user2));
+
+        $client->request(
+            'GET',
+            '/en/user/unblock/user2@example.com'
+        );
+        $client->followRedirect();
+        $this->assertContains(
+            'User unblocked',
+            $client->getResponse()->getContent()
+        );
+
+        $user = $this->getUser(1);
+        $user2 = $this->getUser(2);
+        $this->assertFalse($user->isBanned($user2));
+    }
+
+    public function testUnblockUserWrongEmail()
+    {
+        $client = static::createClient();
+        $client = ControllerTestHelper::logInUser($client);
+        $client->request(
+            'GET',
+            '/en/user/unblock/some@wrong.email'
+        );
+        $client->followRedirect();
+        $this->assertContains(
+            'User not found',
+            $client->getResponse()->getContent()
+        );
+    }
+
+    private function blockUser(KernelBrowser $client): KernelBrowser
+    {
+        $client = ControllerTestHelper::logInUser($client);
+        $client->request(
+            'GET',
+            '/en/user/block/user2@example.com'
+        );
+        $client->followRedirect();
+        $this->assertContains(
+            'User blocked',
+            $client->getResponse()->getContent()
+        );
+
+        return $client;
     }
 }
