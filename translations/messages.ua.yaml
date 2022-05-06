@@ -43,11 +43,13 @@ list:
   load_more: 'Більше'
   name: Назва
   new: 'Новий список'
+  publish: 'Зробити публічним'
   remove_from_favourites: 'Видалити з обраних'
   restore: Відновити
   simple: 'Звичайний список'
   shared: 'Спільний'
   show_completed: 'Показати виконані'
+  unpublish: 'Зробити непублічним'
   unsubscribe: Відписатися
   unsubscribed: 'Ви успішно скасували підписку на list'
   updated: 'Список оновлено'

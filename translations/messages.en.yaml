@@ -43,11 +43,13 @@ list:
   load_more: 'Load More'
   name: Name
   new: 'New list'
+  publish: 'Make public'
   remove_from_favourites: 'Remove from favourites'
   restore: Restore
   shared: 'shared'
   show_completed: 'Show completed'
   simple: 'Simple list'
+  unpublish: 'Make not public'
   unsubscribe: Unsubscribe
   unsubscribed: 'You successfully unsubscribed from list'
   updated: 'List updated'
