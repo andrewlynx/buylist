@@ -1,15 +1,27 @@
-<nav class="navbar navbar-default navbar-expand-lg">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a href="{{ path('index') }}"><h4>{{ _site_name }}</h4></a>
-        </div>
-        <ul class="nav navbar-nav navbar-left">
-            <li><a class="btn btn-primary" href="{{ path('app_login') }}">{{ 'security.login'|trans }}</a></li>
-            <li><a class="btn btn-primary" href="{{ path('app_register') }}">{{ 'security.registration'|trans }}</a></li>
-            <li><a class="btn btn-primary" href="{{ path('about') }}">{{ 'menu.about'|trans }}</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-            {% include 'v1/parts/lang-dropdown.html.twig' %}
-        </ul>
+<div class="bg-container">
+    <div class="top-bg bg-layer">
     </div>
+</div>
+<nav class="navbar navbar-expand-lg">
+    <ul class="navbar-nav mr-auto">
+        <li class="logo">
+            <a href="/">
+                <img class="img-fluid" src="/img/logo.svg" alt="Listiq">
+            </a>
+        </li>
+    </ul>
+    <ul class="menu">
+        <li>
+            <a class="link" href="{{ path('about') }}">{{ 'menu.about_us'|trans }}</a>
+        </li>
+        <li>
+            <a class="btn btn-outline-primary" href="{{ path('app_register') }}">{{ 'security.sign_up'|trans }}</a>
+        </li>
+        <li>
+            <a class="btn btn-primary" href="{{ path('app_login') }}">{{ 'security.sign_in'|trans }}</a>
+        </li>
+        <li class="link">
+            {% include 'v1/parts/lang-dropdown.html.twig' %}
+        </li>
+    </ul>
 </nav>

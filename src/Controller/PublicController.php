@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\TaskListPublic;
+use App\Repository\TaskListPublicRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,6 +58,31 @@ class PublicController extends AbstractController
         }
 
         return $this->renderLocalizedTemplate('about', $request->getLocale());
+    }
+
+    /**
+     * @Route("/list-public/{id}", name="list_public")
+     *
+     * @param string                   $id
+     * @param Request                  $request
+     * @param TaskListPublicRepository $repo
+     *
+     * @return Response
+     */
+    public function taskListPublic(string $id, Request $request, TaskListPublicRepository $repo): Response
+    {
+        /** @var TaskListPublic $taskListPublic */
+        $taskListPublic = $repo->find($id);
+        if ($taskListPublic && $taskListPublic->isPublic()) {
+            return $this->render(
+                $this->getPublicUrl('task-list', $request->getLocale()),
+                [
+                    'task_list' => $taskListPublic->getTaskList(),
+                ]
+            );
+        }
+
+        throw $this->createNotFoundException();
     }
 
     /**

@@ -15,6 +15,11 @@
             <span class="iconly-brokenHeart label favourite"></span>
         {% endif %}
     {% endblock %}
+    {% block tl_public %}
+        {% if task_list.isPublic %}
+            <span class="iconly-brokenSend label public"></span>
+        {% endif %}
+    {% endblock %}
     {% block tl_archive %}
         {{ form(archive_item_forms[task_list.id]) }}
     {% endblock %}

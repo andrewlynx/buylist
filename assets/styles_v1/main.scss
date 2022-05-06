@@ -32,6 +32,10 @@
         background-color: #ffe6de;
         color: #cb664f;
       }
+      &.public {
+        background-color: #e7f7e4;
+        color: #44ac30;
+      }
     }
     .list-archive.btn, .list-delete.btn {
       &:before {
@@ -66,6 +70,7 @@
   .t-l-s-block {
     border-bottom: 1px solid #e7e7e7;
     margin-bottom: 20px;
+    word-break: break-word;
   }
   .u-links {
     border: none;

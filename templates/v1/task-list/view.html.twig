@@ -50,7 +50,7 @@
                     {% endif %}
                 </div>
                 <div class="t-l-s-block">
-                    <a class="btn btn-outline-primary float-left" href="{{ path('task_list_edit', {'id': task_list.id}) }}">
+                    <a class="btn btn-outline-primary float-left iconly-brokenEdit" href="{{ path('task_list_edit', {'id': task_list.id}) }}">
                         {{ 'list.edit'|trans }}
                     </a>
                     {% if app.user == task_list.creator %}
@@ -66,6 +66,9 @@
                             {{ 'list.activate_list_to_edit'|trans }}
                         </div>
                     {% endif %}
+                    <div class="clearfix"></div>
+                    {{ form(task_list_public) }}
+                    {% include 'v1/parts/private/list/public-link.html.twig' with {'task_list': task_list} %}
                 </div>
             {% endblock %}
         </div>

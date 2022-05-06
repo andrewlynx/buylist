@@ -7,9 +7,11 @@ use App\DTO\TaskList\TaskListUsers;
 use App\DTO\TaskList\TaskListUsersRaw;
 use App\Entity\Object\Email;
 use App\Entity\TaskList;
+use App\Entity\TaskListPublic;
 use App\Entity\User;
 use App\Repository\TaskListRepository;
 use App\Service\Notification\NotificationFactory;
+use App\Service\TaskListPublic\TaskListPublicFactory;
 use App\UseCase\InvitationHandler\InvitationHandler;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,21 +40,29 @@ class TaskListHandler
     private $notificationFactory;
 
     /**
+     * @var TaskListPublicFactory
+     */
+    private $taskListPublicFactory;
+
+    /**
      * @param EntityManagerInterface $em
      * @param InvitationHandler      $invitationHandler
      * @param SharedListProcessor    $sharedListProcessor
      * @param NotificationFactory    $notificationFactory
+     * @param TaskListPublicFactory  $taskListPublicFactory
      */
     public function __construct(
         EntityManagerInterface $em,
         InvitationHandler $invitationHandler,
         SharedListProcessor $sharedListProcessor,
-        NotificationFactory $notificationFactory
+        NotificationFactory $notificationFactory,
+        TaskListPublicFactory $taskListPublicFactory
     ) {
         $this->em = $em;
         $this->invitationHandler = $invitationHandler;
         $this->sharedListProcessor = $sharedListProcessor;
         $this->notificationFactory = $notificationFactory;
+        $this->taskListPublicFactory = $taskListPublicFactory;
     }
 
     /**
@@ -260,6 +270,27 @@ class TaskListHandler
         } else {
             $user->addToFavourites($taskList);
         }
+        $this->em->flush();
+
+        return $taskList;
+    }
+
+    /**
+     * @param TaskList $taskList
+     * @param bool     $status
+     *
+     * @return TaskList
+     */
+    public function togglePublic(TaskList $taskList, bool $status): TaskList
+    {
+        if ($taskList->getTaskListPublic() === null) {
+            $taskList->setTaskListPublic(
+                $this->taskListPublicFactory->make()
+            );
+        }
+
+        $taskList->getTaskListPublic()->setPublic($status);
+        $this->em->persist($taskList);
         $this->em->flush();
 
         return $taskList;

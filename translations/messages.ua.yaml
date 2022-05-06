@@ -96,10 +96,12 @@ security:
   already_have_acc: 'Вже зареєстровані?'
   dont_have_acc: 'Ще не зареєстровані?'
   login: Вхiд
+  no_token: 'Токен відновлення пароля не був знайдений'
   or: Або
   pw_restoration: 'Забули пароль?'
   registration: Реєстрацiя
   reset_password: 'Відновлення вашого пароля'
+  reset_password_successful: 'Успішно, можете заходити на сайт з новим паролем'
   restore_form_help: 'Вкажіть свій email і ми відправимо посилання для зміни паролю'
   restore_pw: 'Відновлення пароля'
   should_be_logged: 'Ви повинні зайти на сайт щоб продовжити'
@@ -115,6 +117,7 @@ share_list:
   user_is_list_author: 'Цей користувач - автор списку'
   user_not_found: 'Користувача не знайдено. Було надіслано листа з запрошенням на цей email'
 validation:
+  access_denied: 'Доступ заборонено'
   clear_archive: 'Ви впевнені, що хочете видалити всі заархівовані списки?'
   clear_notification_prompt: 'Ви впевнені, що хочете видалити всі повідомлення?'
   delete_prompt: 'Ви впевнені, що хочете видалити цей список?'
@@ -124,6 +127,7 @@ validation:
   invalid_csrf: 'Недійсний токен CSRF'
   invalid_json_request: 'Невірний формат данних: %error%'
   invalid_submission: 'Невірні данні'
+  reload_page: 'Сталася помилка. Спробуйте перезавантажити сторінку'
 user:
   add_to_favourites: 'Додати в улюблені'
   added_to_favourites: 'Додано в улюблені'

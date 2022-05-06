@@ -1,0 +1,27 @@
+{% extends 'v1/public/base.html.twig' %}
+
+{% block title %}{{ task_list.name }}{% endblock %}
+
+{% block content %}
+    {% block task_list_title %}
+        <div class="label-box label-{{ task_list.colorLabel }}"></div>
+        <h4 class="t-l-title">{{ task_list.name }}</h4>
+        <p>{{ task_list.description|auto_url|raw|nl2br }}</p>
+    {% endblock %}
+    {% block task_items_list %}
+        <div id="list-items">
+            {% for task_item in task_list.taskItems %}
+                <div class="col-md-12 ti {{  task_item.completed ? 'completed' }}" id="item-id-{{ task_item.id }}">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="tin">{{ task_item.name|auto_url|raw }}</div>
+                        </div>
+                        <div class="tid col-md-6">
+                            <div class="tiq">{{ task_item.qty|auto_url|raw }}</div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endblock %}
+{% endblock %}

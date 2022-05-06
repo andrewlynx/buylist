@@ -100,7 +100,7 @@ class ResetPasswordController extends TranslatableController
 
         $token = $this->getTokenFromSession();
         if (null === $token) {
-            throw $this->createNotFoundException('No reset password token found in the URL or in the session.');
+            throw $this->createNotFoundException($this->translator->trans('security.no_token'));
         }
 
         try {

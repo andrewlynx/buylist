@@ -6,10 +6,10 @@ use App\DTO\TaskList\TaskListShare;
 use App\DTO\User\Registration;
 use App\DTO\User\Settings;
 use App\Entity\EmailInvitation;
+use App\Exceptions\UserException;
 use App\Tests\TestTrait;
 use App\UseCase\User\RegistrationHandler;
 use DateTime;
-use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class RegistrationHandlerTest extends WebTestCase
@@ -25,7 +25,7 @@ class RegistrationHandlerTest extends WebTestCase
         /** @var RegistrationHandler $registrationHandler */
         $registrationHandler = static::$container->get(RegistrationHandler::class);
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(UserException::class);
         $this->expectExceptionMessage('validation.incorrect_email');
         $registrationHandler->register($dto);
     }

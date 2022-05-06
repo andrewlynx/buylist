@@ -36,7 +36,7 @@ class TaskItemControllerTest extends WebTestCase
 
         $responseArray = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
-        $this->assertEquals($responseArray['data'], 'Invalid CSRF token');
+        $this->assertEquals($responseArray['data'], 'Something was wrong. Try to reload the page');
     }
 
     public function testTaskItemCreateAndComplete()
@@ -90,7 +90,7 @@ class TaskItemControllerTest extends WebTestCase
 
         $responseArray = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals($responseArray['status'], AppConstant::JSON_STATUS_ERROR);
-        $this->assertEquals($responseArray['data'], 'Invalid CSRF token');
+        $this->assertEquals($responseArray['data'], 'Something was wrong. Try to reload the page');
     }
 
     private function createTaskItem(KernelBrowser $client): KernelBrowser

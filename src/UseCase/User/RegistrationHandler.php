@@ -7,6 +7,7 @@ use App\DTO\User\Registration;
 use App\DTO\User\Settings;
 use App\Entity\Object\Email;
 use App\Entity\User;
+use App\Exceptions\UserException;
 use App\Repository\UserRepository;
 use App\UseCase\InvitationHandler\InvitationHandler;
 use App\Validator\Locale;
@@ -109,7 +110,7 @@ class RegistrationHandler
      *
      * @return User
      *
-     * @throws Exception
+     * @throws UserException
      */
     public function updateSettings(User $user, Settings $dto): User
     {
@@ -127,7 +128,7 @@ class RegistrationHandler
                     )
                 );
             } else {
-                throw new Exception('user.incorrect_current_password');
+                throw new UserException('user.incorrect_current_password');
             }
         }
 
@@ -156,6 +157,7 @@ class RegistrationHandler
      * @return User
      *
      * @throws NonUniqueResultException
+     * @throws Exception
      */
     public function makeAdmin(string $userName): User
     {

@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %} - {{ _site_name }}</title>
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('common') }}
-        {% endblock %}
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-    </head>
-    <body>
-    {% include 'v1/parts/public/header.html.twig' %}
-    <div class="container main">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('common') }}
+    {% endblock %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body class="home {% block body_class %}{% endblock %}">
+    <div class="container public">
+        {% include 'v1/parts/public/header.html.twig' %}
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div class="alert alert-{{ label }}">
@@ -21,9 +21,8 @@
         {% endfor %}
         {% block content %}{% endblock %}
     </div>
-    {% include 'v1/parts/footer.html.twig' %}
     {% block javascripts %}
         {{ encore_entry_script_tags('common') }}
     {% endblock %}
-    </body>
+</body>
 </html>

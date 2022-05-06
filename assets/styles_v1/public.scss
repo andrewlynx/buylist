@@ -13,7 +13,7 @@
   }
   .navbar {
     padding-top: 0;
-    margin-bottom: 154px;
+    margin-bottom: 80px;
   }
   .welcome-header {
     font-size: 48px;
@@ -66,13 +66,18 @@
     }
   }
 }
-.home {
-  min-height: 100vh;
-  overflow-x: hidden;
+.homepage {
   background-image: url("/public/img/main/main.png");
   background-repeat: no-repeat;
   background-size: 1200px;
   background-position-x: calc(50% + 400px);
+  .navbar {
+    margin-bottom: 154px;
+  }
+}
+.home {
+  min-height: 100vh;
+  overflow-x: hidden;
   .bg-container {
     position: relative;
     .top-bg {

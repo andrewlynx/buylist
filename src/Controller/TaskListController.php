@@ -384,11 +384,13 @@ class TaskListController extends TranslatableController
         $this->checkSharedAccess($taskList, $user);
 
         $archiveForm = $this->getArchiveListForm($taskList);
+        $publicForm = $this->getPublicListForm($taskList);
 
         return $this->render(
             TaskListTypes::getViewPath($taskList->getType()),
             [
                 'task_list' => $taskList,
+                'task_list_public' => $publicForm->createView(),
                 'task_list_archive' => $archiveForm->createView(),
                 'complete_item_forms' => $this->getCompleteItemFormsViews($taskList->getTaskItems()),
                 'increment_item_forms' => $this->getIncrementItemFormsViews($taskList->getTaskItems()),
@@ -445,7 +447,7 @@ class TaskListController extends TranslatableController
         if ($archiveForm->isSubmitted() && $archiveForm->isValid()) {
             $this->taskListHandler->archive(
                 $taskList,
-                (bool) $request->request->get('list_archive')['status'] ?? false
+                (bool) $request->request->get('task_list_archive')['status'] ?? false
             );
 
             $this->addFlash(
@@ -547,6 +549,27 @@ class TaskListController extends TranslatableController
     }
 
     /**
+     * @Route("/{id}/public", name="toggle_public")
+     *
+     * @param TaskList $taskList
+     * @param Request  $request
+     *
+     * @return Response
+     *
+     * @throws Exception
+     */
+    public function togglePublic(TaskList $taskList, Request $request): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $status = (bool) $request->request->get('task_list_public')['status'] ?? false;
+        $this->checkCreatorAccess($taskList, $user);
+        $this->taskListHandler->togglePublic($taskList, $status);
+
+        return new RedirectResponse($request->headers->get('referer'));
+    }
+
+    /**
      * @param TaskList $taskList
      * @param User     $user
      *
@@ -555,7 +578,7 @@ class TaskListController extends TranslatableController
     protected function checkCreatorAccess(TaskList $taskList, User $user): void
     {
         if ($taskList->getCreator() !== $user) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedException($this->translator->trans('validation.access_denied'));
         }
     }
 
@@ -568,7 +591,7 @@ class TaskListController extends TranslatableController
     protected function checkSharedAccess(TaskList $taskList, User $user): void
     {
         if (!($taskList->getCreator() === $user || $taskList->getShared()->contains($user))) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedException($this->translator->trans('validation.access_denied'));
         }
     }
 

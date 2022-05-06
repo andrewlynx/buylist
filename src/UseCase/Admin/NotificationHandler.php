@@ -4,6 +4,7 @@ namespace App\UseCase\Admin;
 
 use App\Entity\AdminNotification;
 use App\Entity\User;
+use App\Exceptions\UserException;
 use App\Repository\AdminNotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -44,12 +45,12 @@ class NotificationHandler
      * @param AdminNotification|null $notification
      * @param User                   $user
      *
-     * @throws Exception
+     * @throws UserException
      */
     public function markSeen(?AdminNotification $notification, User $user): void
     {
         if ($notification === null || $notification->getUser() !== $user) {
-            throw new Exception('notification.not_found');
+            throw new UserException('notification.not_found');
         }
 
         $notification->setSeen(true);

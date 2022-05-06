@@ -3,6 +3,7 @@
 namespace App\DTO\TaskList;
 
 use App\Entity\Object\Email;
+use App\Exceptions\UserException;
 
 class TaskListUsersRaw
 {
@@ -16,6 +17,8 @@ class TaskListUsersRaw
 
     /**
      * @param array $formData
+     *
+     * @throws UserException
      */
     public function __construct(array $formData)
     {

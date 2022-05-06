@@ -2,7 +2,7 @@
 
 namespace App\Entity\Object;
 
-use InvalidArgumentException;
+use App\Exceptions\UserException;
 
 class Email
 {
@@ -13,11 +13,13 @@ class Email
 
     /**
      * @param string $value
+     *
+     * @throws UserException
      */
     public function __construct(string $value)
     {
         if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidArgumentException('validation.incorrect_email');
+            throw new UserException('validation.incorrect_email');
         }
         $this->value = $value;
     }

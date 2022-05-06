@@ -5,13 +5,14 @@ namespace App\Controller\Traits;
 use App\Constant\TaskListTypes;
 use App\Entity\TaskItem;
 use App\Entity\TaskList;
-use App\Form\ListArchiveType;
+use App\Exceptions\UserException;
+use App\Form\TaskListArchiveType;
 use App\Form\TaskItemCompleteType;
 use App\Form\TaskItemIncrementType;
+use App\Form\TaskListPublic;
 use App\Form\UnsubscribeType;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Validator\Exception\ValidatorException;
 
 trait FormsTrait
 {
@@ -81,9 +82,23 @@ trait FormsTrait
     protected function getArchiveListForm(TaskList $taskList): FormInterface
     {
         return $this->createForm(
-            ListArchiveType::class,
+            TaskListArchiveType::class,
             ['status' => $taskList->isArchived()],
             ['action' => $this->generateUrl('task_list_archive_list', ['id' => $taskList->getId()])]
+        );
+    }
+
+    /**
+     * @param TaskList $taskList
+     *
+     * @return FormInterface
+     */
+    protected function getPublicListForm(TaskList $taskList): FormInterface
+    {
+        return $this->createForm(
+            TaskListPublic::class,
+            ['status' => $taskList->isPublic()],
+            ['action' => $this->generateUrl('task_list_toggle_public', ['id' => $taskList->getId()])]
         );
     }
 
@@ -134,11 +149,13 @@ trait FormsTrait
     /**
      * @param string      $formName
      * @param string|null $token
+     *
+     * @throws UserException
      */
     protected function checkCsrf(string $formName, ?string $token): void
     {
         if (!$this->isCsrfTokenValid($formName, $token)) {
-            throw new ValidatorException('validation.invalid_csrf');
+            throw new UserException('validation.reload_page');
         }
     }
 }

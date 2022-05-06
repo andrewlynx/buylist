@@ -140,6 +140,13 @@ class TaskList
     private $hideCompleted = false;
 
     /**
+     * @var TaskListPublic
+     *
+     * @ORM\OneToOne(targetEntity=TaskListPublic::class, mappedBy="taskList", cascade={"persist", "remove"})
+     */
+    private $taskListPublic;
+
+    /**
      *
      */
     public function __construct()
@@ -546,5 +553,37 @@ class TaskList
         $this->hideCompleted = $hideCompleted;
 
         return $this;
+    }
+
+    /**
+     * @return TaskListPublic|null
+     */
+    public function getTaskListPublic(): ?TaskListPublic
+    {
+        return $this->taskListPublic;
+    }
+
+    /**
+     * @param TaskListPublic $taskListPublic
+     *
+     * @return $this
+     */
+    public function setTaskListPublic(TaskListPublic $taskListPublic): self
+    {
+        if ($taskListPublic->getTaskList() !== $this) {
+            $taskListPublic->setTaskList($this);
+        }
+
+        $this->taskListPublic = $taskListPublic;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPublic(): bool
+    {
+        return $this->taskListPublic !== null && $this->taskListPublic->isPublic();
     }
 }

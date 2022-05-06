@@ -68,7 +68,7 @@ class TaskListControllerTest extends WebTestCase
         );
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->filter('form[name="list_archive"]')->first()->form();
+        $form = $crawler->filter('form[name="task_list_archive"]')->first()->form();
         $client->submit($form);
 
         $crawler = $client->request(
@@ -124,7 +124,7 @@ class TaskListControllerTest extends WebTestCase
         $client->catchExceptions(false);
 
         $client = ControllerTestHelper::logInUser($client, 'user2@example.com');
-        $this->expectExceptionMessage('Access Denied.');
+        $this->expectExceptionMessage('Access Denied');
         $client->request('GET', ControllerTestHelper::generateRoute('task_list_view', 1));
     }
 
@@ -146,7 +146,7 @@ class TaskListControllerTest extends WebTestCase
         $client->catchExceptions(false);
 
         $client = ControllerTestHelper::logInUser($client, 'user3@example.com');
-        $this->expectExceptionMessage('Access Denied.');
+        $this->expectExceptionMessage('Access Denied');
         $client->request(
             'DELETE',
             ControllerTestHelper::generateRoute('task_list_delete', 1),
@@ -391,7 +391,7 @@ class TaskListControllerTest extends WebTestCase
         );
         $this->assertResponseIsSuccessful();
         $this->assertContains(
-            'Access Denied.',
+            'Access Denied',
             $client->getResponse()->getContent()
         );
     }

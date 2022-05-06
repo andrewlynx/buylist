@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use App\Repository\TaskItemRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @ORM\Entity(repositoryClass=TaskItemRepository::class)

@@ -1,60 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Welcome!{% endblock %}</title>
-    {% block stylesheets %}
-        {{ encore_entry_link_tags('common') }}
-    {% endblock %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-</head>
-<body class="home">
-<div class="container public">
-    <div class="bg-container">
-        <div class="top-bg bg-layer">
-        </div>
+{% extends 'v1/public/base.html.twig' %}
+
+{% block body_class %}homepage{% endblock %}
+
+{% block content %}
+    <h1 class="welcome-header">Welcome to <span>{{ _site_name }}!</span></h1>
+    <div class="welcome-info">
+        This is a lightweight app for creating,<br>sharing and managing simple lists.
     </div>
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alert alert-{{ label }}">
-                {{ message|raw }}
-            </div>
-        {% endfor %}
-    {% endfor %}
-    <nav class="navbar navbar-expand-lg">
-        <ul class="navbar-nav mr-auto">
-            <li class="logo">
-                <a href="/">
-                    <img class="img-fluid" src="/img/logo.svg" alt="Listiq">
-                </a>
-            </li>
-        </ul>
-        <ul class="menu">
-            <li>
-                <a class="link" href="{{ path('about') }}">{{ 'menu.about_us'|trans }}</a>
-            </li>
-            <li>
-                <a class="btn btn-outline-primary" href="{{ path('app_register') }}">{{ 'security.sign_up'|trans }}</a>
-            </li>
-            <li>
-                <a class="btn btn-primary" href="{{ path('app_login') }}">{{ 'security.sign_in'|trans }}</a>
-            </li>
-            <li class="link">
-                {% include 'v1/parts/lang-dropdown.html.twig' %}
-            </li>
-        </ul>
-    </nav>
-    {% block content %}
-        <h1 class="welcome-header">Welcome to <span>{{ _site_name }}!</span></h1>
-        <div class="welcome-info">
-            This is a lightweight app for creating,<br>sharing and managing simple lists.
-        </div>
-        <a class="btn btn-primary sign-in" href="{{ path('app_login') }}">{{ 'security.sign_in'|trans }}</a>
-    {% endblock %}
-</div>
-{% block javascripts %}
-    {{ encore_entry_script_tags('common') }}
+    <a class="btn btn-primary sign-in" href="{{ path('app_login') }}">{{ 'security.sign_in'|trans }}</a>
 {% endblock %}
-</body>
-</html>
