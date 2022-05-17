@@ -3,5 +3,7 @@
 {% block title %}{{ 'list.your_lists'|trans }}{% endblock %}
 
 {% block content %}
-    {% include 'v1/parts/private/calendar/calendar.html.twig' %}
+    <div class="big-calendar">
+        {% include 'v1/parts/private/calendar/calendar.html.twig' %}
+    </div>
 {% endblock %}

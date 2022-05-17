@@ -426,11 +426,13 @@ form[name="task_list"] {
   table-layout: fixed;
   margin-bottom: 30px;
   .day {
-    border: 1px grey solid;
+    border: 4px solid transparent;
     padding: 4px;
     vertical-align: top;
     overflow-x: hidden;
     white-space: nowrap;
+    background: #fff;
+    border-radius: 10px;
     .date {
       font-size: 9px;
       font-weight: bold;
@@ -445,10 +447,15 @@ form[name="task_list"] {
     }
   }
   .day-0, .day-6 {
-    border: 1px red solid;
+    background-color: rgba(128, 0, 0, 0.1);
   }
   .today {
     background-color: rgba(0, 128, 0, 0.1);
+  }
+}
+.big-calendar #calendar {
+  .day {
+    height: 80px;
   }
 }
 @media (max-width: 991.98px) {
