@@ -67,6 +67,9 @@ final class Builder implements ContainerAwareInterface
             ->addChild('menu.archive', ['route' => 'task_list_archive'])
             ->setLinkAttribute('class', 'iconly-brokenBookmark menu-item');
         $menu
+            ->addChild('menu.calendar', ['route' => 'calendar_index'])
+            ->setLinkAttribute('class', 'iconly-brokenCalendar menu-item');
+        $menu
             ->addChild('menu.settings', ['route' => 'user_settings'])
             ->setLinkAttribute('class', 'iconly-brokenSetting menu-item');
         if ($user->hasRole(User::ROLE_ADMIN)) {

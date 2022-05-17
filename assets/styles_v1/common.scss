@@ -26,6 +26,7 @@ $sidebar-width: 263px;
 @import "~bootstrap/scss/_transitions";
 @import "~bootstrap/scss/_utilities";
 @import "fonts";
+@import '~js-datepicker/dist/datepicker.min.css';
 
 body {
   font-family: 'Montserrat', sans-serif;

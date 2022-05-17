@@ -1,3 +1,11 @@
+dow:
+  sun: Su
+  mon: Mo
+  tue: Tu
+  wen: We
+  thu: Th
+  fri: Fr
+  sat: Sa
 event:
   invalid_event: 'Invalid event'
 footer:
@@ -33,6 +41,7 @@ list:
   counter: 'Counter List'
   create_new: 'Create'
   created: 'List created'
+  date: 'Date'
   description: Description
   edit: Edit
   editing: editing
@@ -65,6 +74,7 @@ menu:
   about: About
   about_us: 'About Us'
   archive: Archive
+  calendar: Calendar
   credentials: Credentials
   lists: 'My Lists'
   lists_favourites: 'Favourite Lists'

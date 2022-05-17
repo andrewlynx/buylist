@@ -1,6 +1,20 @@
+import datepicker from "js-datepicker";
+
 $( document ).ready(function() {
     const msgSuccess = 'success';
     const emailPattern = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
+
+    if ($('.js-datepicker').length > 0) {
+        datepicker('.js-datepicker', {
+            startDay: 0,
+            formatter: (input, date, instance) => {
+                // date converts to zero time zone, so we add offset back to get correct date
+                date.setTime(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
+                let value = date.toISOString().slice(0, 10);
+                input.value = value;
+            }
+        });
+    }
 
     function getCurrentLink() {
         return location.protocol+'//'+location.host+location.pathname;

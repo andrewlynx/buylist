@@ -14,6 +14,7 @@ use App\Form\ShareListEmailType;
 use App\Form\TaskListCounterType;
 use App\Form\TaskListType;
 use App\Repository\TaskListRepository;
+use App\Service\Calendar\Calendar;
 use App\UseCase\TaskList\TaskListHandler;
 use Exception;
 use Symfony\Component\Form\FormInterface;
@@ -37,13 +38,20 @@ class TaskListController extends TranslatableController
     private $taskListHandler;
 
     /**
+     * @var Calendar
+     */
+    private $calendar;
+
+    /**
      * @param TranslatorInterface $translator
      * @param TaskListHandler     $taskListHandler
+     * @param Calendar            $calendar
      */
-    public function __construct(TranslatorInterface $translator, TaskListHandler $taskListHandler)
+    public function __construct(TranslatorInterface $translator, TaskListHandler $taskListHandler, Calendar $calendar)
     {
         parent::__construct($translator);
         $this->taskListHandler = $taskListHandler;
+        $this->calendar = $calendar;
     }
 
     /**
@@ -52,6 +60,8 @@ class TaskListController extends TranslatableController
      * @param TaskListRepository $taskListRepository
      *
      * @return Response
+     *
+     * @throws Exception
      */
     public function index(TaskListRepository $taskListRepository): Response
     {
@@ -62,6 +72,7 @@ class TaskListController extends TranslatableController
         return $this->render(
             'v1/task-list/index.html.twig',
             [
+                'calendar' => $this->calendar->createWeek(new \DateTime(), $user)->getDays(),
                 'task_lists' => $taskLists,
                 'archive_item_forms' => $this->getArchiveListFormsViews($taskLists),
                 'load_more_link' => $this->generateUrl('task_list_load_more', ['page' => 1]),

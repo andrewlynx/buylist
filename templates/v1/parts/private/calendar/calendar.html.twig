@@ -1,0 +1,18 @@
+<table id="calendar">
+    {% for week in calendar|batch(7) %}
+    <tr>
+        {% for day in week %}
+
+            <td class="day day-{{ day.date|date("w") }} {% if "now"|date("Y-m-d") is same as(day.date|date("Y-m-d")) %}today{% endif %}">
+                <a href="{{ path('calendar_day', {'date': day.date|date("Y-m-d")}) }}">
+                    <span class="date">{{ day.date|date("F j") }}</span>
+                    <span class="d-of-w">{{ constant('App\\Constant\\TranslateConstant::DAY_OF_WEEK')[day.date|date("w")]|trans }}</span>
+                </a>
+                {% for task_list in day.lists %}
+                    <p><a href="{{ path('task_list_view', {'id': task_list.id}) }}">{{ task_list.name }}</a></p>
+                {% endfor %}
+            </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>

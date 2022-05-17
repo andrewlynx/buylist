@@ -1,3 +1,11 @@
+dow:
+  sun: Нд
+  mon: Пн
+  tue: Вт
+  wen: Ср
+  thu: Чт
+  fri: Пт
+  sat: Сб
 event:
   invalid_event: 'Некоректна подія'
 footer:
@@ -33,6 +41,7 @@ list:
   counter: 'Лічильник'
   create_new: 'Створити'
   created: Created
+  date: 'Дата'
   description: Деталi
   edit: Редагувати
   editing: редагування
@@ -65,6 +74,7 @@ menu:
   about: 'Про сайт'
   about_us: 'Про нас'
   archive: Архів
+  calendar: Календар
   credentials: 'Доступи'
   lists: 'Мої списки'
   lists_favourites: 'Обрані списки'

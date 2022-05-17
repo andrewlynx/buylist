@@ -9,6 +9,7 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -70,6 +71,16 @@ class TaskListCounterType extends AbstractType
                 'label' => 'list.items',
                 'allow_add' => true,
                 'allow_delete' => true,
+            ])
+            ->add('date', DateType::class, [
+                'required' => false,
+                'widget' => 'single_text',
+                'format' => 'yyyy-MM-dd',
+                'html5' => false,
+                'label' => 'list.date',
+                'attr' => [
+                    'class' => 'js-datepicker',
+                ],
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'form.save'

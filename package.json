@@ -4,6 +4,7 @@
   "dependencies": {
     "bootstrap": "^4.6.0",
     "core-js": "^3.8.0",
+    "js-datepicker": "^5.18.0",
     "select2": "^4.0.13",
     "select2-bootstrap4-theme": "^1.0.0"
   },

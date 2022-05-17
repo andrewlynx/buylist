@@ -3,9 +3,6 @@
 {% block title %}{{ 'list.your_lists'|trans }}{% endblock %}
 
 {% block content %}
-    {% include 'v1/common/_search_form.html.twig' %}
-    {% include 'v1/parts/private/calendar/calendar.html.twig' %}
-    {% include 'v1/parts/private/list/type-filters.html.twig' %}
     {% if task_lists %}
         <div class="tls" id="tls">
             {% include 'v1/parts/private/list/list.html.twig' with {

@@ -41,7 +41,9 @@
         <div class="col-sm-4 t-l-sidebar">
             {% block task_list_sidebar %}
                 {% include 'v1/parts/private/list/shared-user.html.twig' %}
-
+                <div class="t-l-s-block">
+                    <h6>{{ task_list.date|date("F jS Y") }}</h6>
+                </div>
                 <div class="t-l-s-block">
                     <p>{{ 'list.created'|trans }}: {{ task_list.createdAt|date }}</p>
                     <p>{{ 'list.last_update'|trans }}: {{ task_list.updatedAt|date }}</p>

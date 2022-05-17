@@ -60,6 +60,8 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
+                <h5>{{ 'list.date'|trans }}</h5>
+                {{ form_row(form.date) }}
             </div>
         </div>
     {{ form_end(form) }}

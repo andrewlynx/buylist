@@ -7,7 +7,9 @@ use App\Entity\TaskList;
 use App\Entity\User;
 use App\Repository\Mutators\ListType;
 use App\Repository\Mutators\Pagination;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -160,6 +162,43 @@ class TaskListRepository extends ServiceEntityRepository
         $query = $this->listTypeFilter->filter($query);
 
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * @param User $user
+     * @param DateTime $start
+     * @param DateTime $end
+     *
+     * @return ArrayCollection
+     */
+    public function getByDates(User $user, DateTime $start, DateTime $end): ArrayCollection
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->Where('t.creator = :user')
+            ->andWhere('t.date >= :start')
+            ->andWhere('t.date <= :end')
+            ->setParameter('user', $user)
+            ->setParameter('start', $start->setTime(00, 00))
+            ->setParameter('end', $end->setTime(23, 59, 59));
+
+        $qbShared = $this->createQueryBuilder('t')
+            ->addSelect('CASE WHEN t.creator in (:favourites) THEN 1 ELSE 0 END AS HIDDEN favourites')
+            ->innerJoin('t.shared', 'u', 'WITH', 'u.email = :email')
+            ->andWhere('t.archived = 0')
+            ->andWhere('t.date >= :start')
+            ->andWhere('t.date <= :end')
+            ->setParameter('email', $user->getEmail())
+            ->setParameter('favourites', $user->getFavouriteUsers())
+            ->setParameter('start', $start->setTime(00, 00))
+            ->setParameter('end', $end->setTime(23, 59, 59))
+        ;
+
+        return new ArrayCollection(
+            array_merge(
+                $qb->getQuery()->getResult(),
+                $qbShared->getQuery()->getResult()
+            )
+        );
     }
 
     /**

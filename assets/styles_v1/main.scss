@@ -421,6 +421,36 @@ form[name="task_list"] {
     }
   }
 }
+#calendar {
+  width: 100%;
+  table-layout: fixed;
+  margin-bottom: 30px;
+  .day {
+    border: 1px grey solid;
+    padding: 4px;
+    vertical-align: top;
+    overflow-x: hidden;
+    white-space: nowrap;
+    .date {
+      font-size: 9px;
+      font-weight: bold;
+    }
+    .d-of-w {
+      float: right;
+      font-size: 8px;
+    }
+    p {
+      margin-bottom: 0;
+      font-size: 11px;
+    }
+  }
+  .day-0, .day-6 {
+    border: 1px red solid;
+  }
+  .today {
+    background-color: rgba(0, 128, 0, 0.1);
+  }
+}
 @media (max-width: 991.98px) {
   .btn {
     min-width: 0;
