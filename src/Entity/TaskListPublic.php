@@ -21,7 +21,9 @@ class TaskListPublic
     /**
      * @var TaskList
      *
-     * @ORM\OneToOne(targetEntity=TaskList::class, inversedBy="taskListPublic", cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\OneToOne(targetEntity=TaskList::class, inversedBy="taskListPublic",
+     *     cascade={"persist", "remove"}, fetch="EAGER"
+     * )
      * @ORM\JoinColumn(nullable=false)
      */
     private $taskList;

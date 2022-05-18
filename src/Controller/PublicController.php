@@ -71,7 +71,7 @@ class PublicController extends AbstractController
      */
     public function taskListPublic(string $id, Request $request, TaskListPublicRepository $repo): Response
     {
-        /** @var TaskListPublic $taskListPublic */
+        /** @var TaskListPublic|null $taskListPublic */
         $taskListPublic = $repo->find($id);
         if ($taskListPublic && $taskListPublic->isPublic()) {
             return $this->render(

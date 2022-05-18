@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Service\Notification\NotificationFactory;
 use App\UseCase\InvitationHandler\InvitationHandler;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use InvalidArgumentException;
 
 class SharedListProcessor
@@ -24,7 +25,7 @@ class SharedListProcessor
     private $invitationHandler;
 
     /**
-     * @var TaskList
+     * @var TaskList|null
      */
     private $taskList;
 
@@ -39,7 +40,7 @@ class SharedListProcessor
     private $user;
 
     /**
-     * @var Email
+     * @var Email|null
      */
     private $email;
 
@@ -65,7 +66,7 @@ class SharedListProcessor
     }
 
     /**
-     *
+     * @throws Exception
      */
     public function process(): void
     {
@@ -97,6 +98,9 @@ class SharedListProcessor
         }
     }
 
+    /**
+     * @return TaskListUsers
+     */
     public function getDto(): TaskListUsers
     {
         $dto = $this->taskListUsersDto;

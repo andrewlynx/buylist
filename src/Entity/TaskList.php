@@ -140,7 +140,7 @@ class TaskList
     private $hideCompleted = false;
 
     /**
-     * @var TaskListPublic
+     * @var TaskListPublic|null
      *
      * @ORM\OneToOne(targetEntity=TaskListPublic::class, mappedBy="taskList", cascade={"persist", "remove"})
      */

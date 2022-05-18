@@ -64,13 +64,13 @@ class Month implements CalendarIntervalInterface
         $this->currentDay = $day;
         $firstDay = clone $day;
         $firstDay = $firstDay->modify('first day of this month');
-        $dayOfWeek = 6 - $firstDay->format("w");
+        $dayOfWeek = 6 - (int)$firstDay->format("w");
         $this->firstDay = $firstDay->modify("-$dayOfWeek days");
 
         $endDay = clone $day;
         $endDay = $endDay->modify('last day of this month');
 
-        $dayOfWeek = 7 - $endDay->format("w");
+        $dayOfWeek = 7 - (int)$endDay->format("w");
         $this->endDay = $endDay->modify("+$dayOfWeek days");
 
         return $this;

@@ -16,7 +16,8 @@ class TaskListPublicFactory
     /**
      * @param TaskListPublicRepository $repo
      */
-    public function __construct(TaskListPublicRepository $repo) {
+    public function __construct(TaskListPublicRepository $repo)
+    {
         $this->repo = $repo;
     }
 

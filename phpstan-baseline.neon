@@ -32,6 +32,26 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
+			count: 2
+			path: tests/Controller/JsonApi/NotificationControllerTest.php
+
+		-
+			message: "#^Parameter \\#6 \\$content of method Symfony\\\\Component\\\\BrowserKit\\\\AbstractBrowser\\:\\:request\\(\\) expects string\\|null, string\\|false given\\.$#"
+			count: 1
+			path: tests/Controller/JsonApi/NotificationControllerTest.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Mime\\\\RawMessage\\:\\:getHtmlBody\\(\\)\\.$#"
+			count: 2
+			path: tests/Controller/RegistrationControllerTest.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Mime\\\\RawMessage\\:\\:getHtmlBody\\(\\)\\.$#"
+			count: 1
+			path: tests/Controller/ResetPasswordControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
 			count: 6
 			path: tests/Controller/TaskItemControllerTest.php
 
@@ -39,3 +59,9 @@ parameters:
 			message: "#^Parameter \\#6 \\$content of method Symfony\\\\Component\\\\BrowserKit\\\\AbstractBrowser\\:\\:request\\(\\) expects string\\|null, string\\|false given\\.$#"
 			count: 4
 			path: tests/Controller/TaskItemControllerTest.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Mime\\\\RawMessage\\:\\:getHtmlBody\\(\\)\\.$#"
+			count: 1
+			path: tests/UseCase/Email/RegistrationEmailHandlerTest.php
+

@@ -85,7 +85,7 @@ class NotificationService
     /**
      * @param Collection<Notification> $notifications
      */
-    public function save(Collection $notifications)
+    public function save(Collection $notifications): void
     {
         foreach ($notifications->getIterator() as $notification) {
             $this->em->persist($notification);
@@ -100,7 +100,8 @@ class NotificationService
      *
      * @throws Exception
      */
-    public function checkExistence(Notification $notification): ?Notification {
+    public function checkExistence(Notification $notification): ?Notification
+    {
         /** @var Notification $notification */
         $notification = $this->em->getRepository(get_class($notification))->findOneBy([
             'user' => $notification->getUser()->getId(),

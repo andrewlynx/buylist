@@ -22,7 +22,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
 /**
- * @Route("/{_locale}/json-api/notification", name="notification_", locale="en", requirements={"_locale": "[a-z]{2}"}, methods={"POST"})
+ * @Route("/{_locale}/json-api/notification",
+ *     name="notification_", locale="en",
+ *     requirements={"_locale": "[a-z]{2}"}, methods={"POST"}
+ * )
  */
 class NotificationController extends TranslatableController
 {

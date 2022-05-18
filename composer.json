@@ -88,6 +88,7 @@
             "@auto-scripts"
         ],
         "phpstan": "phpstan analyse -c phpstan.neon",
+        "phpstan-update": "phpstan analyse --generate-baseline -c phpstan.neon",
         "phpcs": "php vendor/bin/phpcs",
         "composer-install": "composer install --no-dev",
         "doctrine-migrate": "./bin/console d:m:m",
