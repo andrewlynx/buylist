@@ -65,10 +65,6 @@ class Calendar
      */
     public function getDays(): ArrayCollection
     {
-        if ($this->interval === null) {
-            throw new Exception('Create interval first');
-        }
-
         return $this->interval->getDays();
     }
 }

@@ -76,7 +76,7 @@ class TaskListControllerTest extends WebTestCase
             ControllerTestHelper::generateRoute('task_list_archive')
         );
         $this->assertContains(
-            'New Counter List',
+            'My New Counter List',
             $client->getResponse()->getContent()
         );
 
@@ -327,7 +327,7 @@ class TaskListControllerTest extends WebTestCase
         $client = ControllerTestHelper::logInUser($client);
 
         $taskList = $this->getTaskList(2);
-        $this->assertEquals('New Counter List', $taskList->getName());
+        $this->assertEquals('My New Counter List', $taskList->getName());
 
         $crawler = $client->request(
             'GET',

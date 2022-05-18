@@ -31,7 +31,7 @@ class SearchControllerTest extends WebTestCase
         ]);
         $client->submit($form);
         $this->assertContains(
-            'New Task List',
+            'My New Task List',
             $client->getResponse()->getContent()
         );
     }

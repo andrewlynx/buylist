@@ -72,6 +72,7 @@ class UserFixtures extends Fixture
             ->setDescription('Simple Description')
             ->setCreatedAt(new DateTime())
             ->setUpdatedAt(new DateTime())
+            ->setDate((new DateTime())->modify("+$type days"))
             ->setCreator($user)
             ->setType($type);
 
@@ -95,13 +96,13 @@ class UserFixtures extends Fixture
     {
         switch ($type) {
             case TaskListTypes::COUNTER:
-                $name = 'New Counter List';
+                $name = 'My New Counter List';
                 break;
             case TaskListTypes::TODO:
-                $name = 'New Todo List';
+                $name = 'My New Todo List';
                 break;
             default:
-                $name = 'New Task List';
+                $name = 'My New Task List';
         }
 
         return $name;
